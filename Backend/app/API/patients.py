@@ -118,4 +118,24 @@ def update_patient_me(
     if not updated_patient:
         raise HTTPException(status_code=404, detail="Patient not found")
 
-    return {"message": "Patient updated successfully"}
+    # Get the updated patient data to return
+    patient = crud.get_patient(db, patient_id=user_id)
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+
+    # Convert row to dict
+    patient_dict = {
+        "user_id": patient[0],
+        "email": patient[1],
+        "role": patient[3],
+        "full_name": patient[4],
+        "phone": patient[5],
+        "date_of_birth": patient[6],
+        "gender": patient[7],
+        "address": patient[8],
+        "avatar_url": patient[9],
+        "patient_id": patient[0],
+        "insurance_id": patient[10]
+    }
+
+    return {"message": "Patient updated successfully", "patient": patient_dict}

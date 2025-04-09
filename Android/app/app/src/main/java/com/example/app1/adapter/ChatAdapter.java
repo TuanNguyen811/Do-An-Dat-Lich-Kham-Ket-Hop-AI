@@ -97,7 +97,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void bind(ChatMessage message) {
             if (message.getText().startsWith("!")) {
-                messageText.setText("Chuẩn đoán...");
+                messageText.setText("Phân tích");
             } else {
                 messageText.setText(message.getText());
             }
@@ -114,7 +114,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(ChatMessage message) {
-            String formatted = message.getText()
+
+            String text = message.getText();
+
+            // Cắt bỏ các ký tự xuống dòng ở cuối chuỗi
+            text = text.replaceAll("\\n+$", "");
+
+            String formatted = text
                     .replaceAll("\\*\\*(.*?)\\*\\*", "<b>$1</b>")         // **bold**
                     .replaceAll("\\*(.*?)\\*", "<i>$1</i>")               // *italic*
                     .replaceAll("\\*/(.*?)\\*/", "<u>$1</u>")             // */underline*/

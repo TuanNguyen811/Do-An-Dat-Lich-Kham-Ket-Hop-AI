@@ -59,4 +59,9 @@
         <item name="android:textColor">#FFFFFF</item>
         <item name="backgroundTint">@color/dark_blue</item>
     </style>
+    <style name="CardViewClickAnimation">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
+    </style>
 </resources>

@@ -22,6 +22,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.app1.API.ApiClient;
 import com.example.app1.API.AuthService;
 import com.example.app1.R;
+import com.example.app1.dialog.SelectShiftBottomSheet;
+import com.example.app1.dialog.UpdateProfileBottomSheet;
 import com.example.app1.utils.AvatarResponse;
 import com.example.app1.utils.SessionManager;
 
@@ -40,15 +42,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements UpdateProfileBottomSheet.OnProfileUpdateListener {
     private ConstraintLayout button_profile_exit;
 
     private static final String TAG = "ProfileActivity";
 
-    private TextView textViewName, textViewEmail, textViewPhone;
+    private TextView textViewName, textViewEmail, textViewPhone, textViewInsuranceId;
     private TextView textViewBirthdate, textViewGender, textViewAddress, textViewName1;
     private Button buttonLogout;
-
+    private ConstraintLayout buttonUpdateProfile;
     private AuthService authService;
     private SessionManager sessionManager;
 
@@ -56,6 +58,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Uri selectedImageUri;
     private ImageView imageViewAvatar;
     private BottomNavigationView bottomNavigationView;
+    private UpdateProfileBottomSheet bottomSheetDialogFragment;
+    private Patient patient;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
             return true;
         });
         // Initialize views
+        buttonUpdateProfile = findViewById(R.id.button_update_profile);
         textViewName1 = findViewById(R.id.profile_textViewName1);
         button_profile_exit = findViewById(R.id.button_profile_exit);
         buttonLogout = findViewById(R.id.profile_buttonLogout);
@@ -99,6 +104,7 @@ public class ProfileActivity extends AppCompatActivity {
         textViewGender = findViewById(R.id.profile_textViewGender);
         textViewAddress = findViewById(R.id.profile_textViewAddress);
         imageViewAvatar = findViewById(R.id.imageView_profile);
+        textViewInsuranceId = findViewById(R.id.profile_textViewinsurance_id);
         // Set button click listeners
         button_profile_exit.setOnClickListener(v -> {
             startActivity(new Intent(ProfileActivity.this, MainActivity.class));
@@ -127,7 +133,14 @@ public class ProfileActivity extends AppCompatActivity {
             // Check for storage permission
                 chooseImage();
         });
+        buttonUpdateProfile.setOnClickListener(v -> {
+            bottomSheetDialogFragment = new UpdateProfileBottomSheet();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("patient", patient);
+            bottomSheetDialogFragment.setArguments(bundle);
+            bottomSheetDialogFragment.show(getSupportFragmentManager(), "UpdateProfileBottomSheet");
 
+        });
 
     }
     private void chooseImage() {
@@ -256,6 +269,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<Patient> call, Response<Patient> response) {
 
                 if (response.isSuccessful() && response.body() != null) {
+                    patient = response.body();
                     displayUserProfile(response.body());
                 } else {
                     // Handle error
@@ -291,7 +305,7 @@ public class ProfileActivity extends AppCompatActivity {
         textViewName.setText(patient.getFull_name());
         textViewName1.setText(patient.getFull_name());
         textViewEmail.setText(patient.getEmail());
-
+        textViewInsuranceId.setText(String.valueOf(patient.getInsurance_id()));
         // Handle optional fields
         textViewPhone.setText(patient.getPhone() != null ? patient.getPhone() : "Not provided");
         textViewBirthdate.setText(patient.getDate_of_birth() != null ? patient.getDate_of_birth() : "Not provided");
@@ -320,5 +334,10 @@ public class ProfileActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onProfileUpdated(Patient updatedPatient) {
+        loadUserProfile();
     }
 }

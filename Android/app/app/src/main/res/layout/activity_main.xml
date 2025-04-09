@@ -13,12 +13,14 @@
         android:layout_height="match_parent"
         android:background="@color/light_blue">
 
-
-        <LinearLayout
+        <!-- Header Section -->
+        <androidx.cardview.widget.CardView
             android:id="@+id/headerLayout"
             android:layout_width="0dp"
             android:layout_height="80dp"
-            android:orientation="horizontal"
+            app:cardBackgroundColor="@color/dark_blue"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -26,8 +28,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/headerContentLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/dark_blue">
+                android:layout_height="match_parent">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imageView_main_Avatar"
@@ -49,65 +50,123 @@
                     android:layout_marginStart="16dp"
                     android:text="Hi, Người lạ?"
                     android:textColor="@color/white"
-                    android:textSize="24sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/imageView_main_Avatar"
                     app:layout_constraintStart_toEndOf="@+id/imageView_main_Avatar"
                     app:layout_constraintTop_toTopOf="@+id/imageView_main_Avatar" />
 
+                <ImageView
+                    android:id="@+id/notificationIcon"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="2dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView_main_Avatar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/imageView_main_Avatar"
+                    app:srcCompat="@drawable/notification"
+                    app:tint="@color/white" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="80dp"
-            android:layout_marginBottom="65dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/headerLayout">
+            app:layout_constraintTop_toBottomOf="@+id/headerLayout">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/dark_blue"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/helpText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="How can I help you today? "
-                    android:textColor="@color/white"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/editText_main_chat"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/edittext_background"
-                    android:drawableStart="@drawable/microphone"
-                    android:drawableEnd="@drawable/ic_send2"
-                    android:drawablePadding="16dp"
-                    android:ems="10"
-                    android:hint="Chat now..."
-                    android:inputType="none"
-                    android:padding="16dp"
-                    android:textColor="@color/light_blue"
-                    android:textColorHint="@color/white" />
-
+                <!-- Dark Blue Section -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_blue">
+                    android:background="@color/dark_blue"
+                    android:paddingBottom="30dp">
+
+                    <TextView
+                        android:id="@+id/helpText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="20dp"
+                        android:text="How can I help you today?"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/chatInputCard"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="20dp"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="4dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/helpText">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="16dp"
+                                android:src="@drawable/microphone"
+                                app:tint="@color/dark_blue" />
+
+                            <EditText
+                                android:id="@+id/editText_main_chat"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="8dp"
+                                android:layout_weight="1"
+                                android:background="@null"
+                                android:hint="Chat now..."
+                                android:inputType="none"
+                                android:padding="16dp"
+                                android:textColor="@color/dark_blue"
+                                android:textColorHint="@android:color/darker_gray"
+                                android:textSize="16sp" />
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="16dp"
+                                android:src="@drawable/ic_send2"
+                                app:tint="@color/dark_blue" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- Light Blue Section with Cards -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/light_blue"
+                    android:paddingBottom="16dp">
 
                     <ImageView
                         android:id="@+id/bannerImage"
@@ -115,7 +174,6 @@
                         android:layout_height="130dp"
                         android:background="#00F2EEEE"
                         android:scaleType="fitXY"
-                        android:tint="@color/dark_blue"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -133,26 +191,33 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
+                        <!-- Appointment Card -->
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cardView_main_appointment"
-                            android:layout_width="120dp"
+                            android:layout_width="0dp"
                             android:layout_height="150dp"
-                            android:layout_margin="4dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="3dp">
+                            android:layout_margin="6dp"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:orientation="vertical">
+                                android:background="@android:color/white"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
                                 <ImageView
                                     android:id="@+id/scheduleIcon"
                                     android:layout_width="70dp"
                                     android:layout_height="70dp"
-                                    android:layout_gravity="center"
-                                    android:layout_margin="16dp"
-                                    android:scaleType="fitXY"
+                                    android:layout_margin="8dp"
+                                    android:scaleType="fitCenter"
                                     app:srcCompat="@drawable/btn_2" />
 
                                 <TextView
@@ -164,30 +229,36 @@
                                     android:textColor="@color/dark_blue"
                                     android:textSize="16sp"
                                     android:textStyle="bold" />
-
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
 
+                        <!-- Health Metrics Card -->
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cardView_main_PatientHealthMetrics"
-                            android:layout_width="120dp"
+                            android:layout_width="0dp"
                             android:layout_height="150dp"
-                            android:layout_margin="4dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="3dp">
+                            android:layout_margin="6dp"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:orientation="vertical">
+                                android:background="@android:color/white"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
                                 <ImageView
                                     android:id="@+id/healthIcon"
                                     android:layout_width="70dp"
                                     android:layout_height="70dp"
-                                    android:layout_gravity="center"
-                                    android:layout_margin="16dp"
-                                    android:scaleType="fitXY"
+                                    android:layout_margin="8dp"
+                                    android:scaleType="fitCenter"
                                     app:srcCompat="@drawable/btn_4"
                                     tools:ignore="DuplicateIds" />
 
@@ -201,32 +272,38 @@
                                     android:textSize="16sp"
                                     android:textStyle="bold"
                                     tools:ignore="DuplicateIds" />
-
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
 
+                        <!-- Chatbot Card -->
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cardView_main_chatbot"
-                            android:layout_width="120dp"
+                            android:layout_width="0dp"
                             android:layout_height="150dp"
-                            android:layout_margin="4dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="3dp">
+                            android:layout_margin="6dp"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:orientation="vertical">
+                                android:background="@android:color/white"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
                                 <ImageView
                                     android:id="@+id/chatBotIcon"
                                     android:layout_width="70dp"
                                     android:layout_height="70dp"
-                                    android:layout_gravity="center"
-                                    android:layout_margin="16dp"
+                                    android:layout_margin="8dp"
                                     android:background="@drawable/background_oval_2"
                                     android:padding="8dp"
-                                    android:scaleType="fitXY"
+                                    android:scaleType="fitCenter"
                                     app:srcCompat="@drawable/gemini_color"
                                     tools:ignore="DuplicateIds" />
 
@@ -240,100 +317,372 @@
                                     android:textSize="16sp"
                                     android:textStyle="bold"
                                     tools:ignore="DuplicateIds" />
-
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
                     </LinearLayout>
 
+                    <!-- Departments Section -->
                     <LinearLayout
+                        android:id="@+id/departmentsSection"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/light_blue"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
                         android:orientation="vertical"
                         app:layout_constraintTop_toBottomOf="@+id/cardContainer">
 
+
+
+                        <!-- Health Stats Preview -->
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="20dp"
+                            app:cardCornerRadius="16dp"
+                            app:cardElevation="4dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="16dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Thông tin sức khỏe của bạn"
+                                    android:textColor="@color/dark_blue"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/last_updated_text"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="4dp"
+                                    android:text="Cập nhật: --/--/----"
+                                    android:textColor="#666666"
+                                    android:textSize="12sp" />
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="12dp"
+                                    android:orientation="horizontal">
+
+                                    <!-- Heart Rate -->
+                                    <LinearLayout
+                                        android:id="@+id/heart_rate_widget"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
+
+                                        <ImageView
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:background="@drawable/background_oval_2"
+                                            android:padding="8dp"
+                                            android:src="@drawable/ic_send"
+                                            app:tint="@color/white" />
+
+                                        <TextView
+                                            android:id="@+id/heart_rate_value"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="8dp"
+                                            android:text="75"
+                                            android:textColor="@color/dark_blue"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Nhịp tim"
+                                            android:textColor="#666666"
+                                            android:textSize="12sp" />
+                                    </LinearLayout>
+
+                                    <!-- Blood Pressure -->
+                                    <LinearLayout
+                                        android:id="@+id/blood_pressure_widget"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
+
+                                        <ImageView
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:background="@drawable/background_oval_2"
+                                            android:padding="8dp"
+                                            android:src="@drawable/ic_add"
+                                            app:tint="@color/white" />
+
+                                        <TextView
+                                            android:id="@+id/blood_pressure_value"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="8dp"
+                                            android:text="120/80"
+                                            android:textColor="@color/dark_blue"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Huyết áp"
+                                            android:textColor="#666666"
+                                            android:textSize="12sp" />
+                                    </LinearLayout>
+
+                                    <!-- BMI -->
+                                    <LinearLayout
+                                        android:id="@+id/bmi_widget"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
+
+                                        <ImageView
+                                            android:layout_width="36dp"
+                                            android:layout_height="36dp"
+                                            android:background="@drawable/background_oval_2"
+                                            android:padding="8dp"
+                                            android:src="@drawable/ic_edit"
+                                            app:tint="@color/white" />
+
+                                        <TextView
+                                            android:id="@+id/bmi_value"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="8dp"
+                                            android:text="22.5"
+                                            android:textColor="@color/dark_blue"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="BMI"
+                                            android:textColor="#666666"
+                                            android:textSize="12sp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <!-- Second row of stats -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="16dp"
+                                    android:orientation="horizontal">
+
+                                    <!-- Weight -->
+                                    <LinearLayout
+                                        android:id="@+id/weight_widget"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/weight_value"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="65.5"
+                                            android:textColor="@color/dark_blue"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Cân nặng (kg)"
+                                            android:textColor="#666666"
+                                            android:textSize="12sp" />
+                                    </LinearLayout>
+
+                                    <!-- Height -->
+                                    <LinearLayout
+                                        android:id="@+id/height_widget"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/height_value"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="170.0"
+                                            android:textColor="@color/dark_blue"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Chiều cao (cm)"
+                                            android:textColor="#666666"
+                                            android:textSize="12sp" />
+                                    </LinearLayout>
+
+                                    <!-- Blood Glucose -->
+                                    <LinearLayout
+                                        android:id="@+id/blood_glucose_widget"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:background="?attr/selectableItemBackground"
+                                        android:clickable="true"
+                                        android:focusable="true"
+                                        android:gravity="center"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/blood_glucose_value"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="5.6"
+                                            android:textColor="@color/dark_blue"
+                                            android:textSize="16sp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="Đường huyết"
+                                            android:textColor="#666666"
+                                            android:textSize="12sp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <!-- Button to view full health metrics -->
+                                <Button
+                                    android:id="@+id/btn_view_full_metrics"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="16dp"
+                                    android:background="@drawable/button_background"
+                                    android:text="Xem đầy đủ thông tin sức khỏe"
+                                    android:textAllCaps="false"
+                                    android:textColor="@android:color/white" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginEnd="16dp"
-                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginEnd="20dp"
                             android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/healthInfo1"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
+                                android:paddingTop="4dp"
                                 android:text="Danh sách khoa, dịch vụ"
                                 android:textColor="@color/dark_blue"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/viewAll_main_departmainent"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:background="?attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:padding="4dp"
                                 android:text="View All"
-                                android:textAlignment="textEnd"
                                 android:textColor="@color/dark_blue"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
-
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerView_main_department"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="8dp"
-                            android:layout_weight="1" />
-
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:clipToPadding="false"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp" />
+                        <!-- Health News Section -->
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="16dp"
-                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="24dp"
+                            android:layout_marginEnd="20dp"
                             android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/healthInfo"
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="Báo sức khỏe"
                                 android:textColor="@color/dark_blue"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/viewAll"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
+                                android:background="?attr/selectableItemBackground"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:padding="4dp"
                                 android:text="View All"
-                                android:textAlignment="textEnd"
                                 android:textColor="@color/dark_blue"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-
+                        <!-- Health News Preview Cards -->
+                       
+                        <!-- Add padding at the bottom for better scrolling -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="67dp" />
                     </LinearLayout>
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
             </LinearLayout>
         </ScrollView>
 
+        <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:layout_gravity="bottom"
             android:background="@color/white"
+            app:elevation="8dp"
             app:itemIconTint="@color/dark_blue"
             app:itemTextColor="@color/dark_blue"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -342,5 +691,4 @@
             app:menu="@menu/bottom_nav_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

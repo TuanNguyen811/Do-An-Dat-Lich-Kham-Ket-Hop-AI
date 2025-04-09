@@ -79,8 +79,32 @@ def update_patient(db: Session, patient_id: int, patient_data: Dict[str, Any]):
     if not patient:
         return None
 
-    # Update user data
-    update_user(db, patient_id, patient_data)
+    # Separate user data and patient-specific data
+    patient_specific_fields = ["insurance_id"]
+    user_data = {k: v for k, v in patient_data.items() if k not in patient_specific_fields}
+    patient_specific_data = {k: v for k, v in patient_data.items() if k in patient_specific_fields}
+
+    # Update user data if any
+    if user_data:
+        update_user(db, patient_id, user_data)
+
+    # Update patient-specific data if any
+    if patient_specific_data:
+        update_parts = []
+        params = {"patient_id": patient_id}
+
+        for key, value in patient_specific_data.items():
+            update_parts.append(f"{key} = :{key}")
+            params[key] = value
+
+        query = text(f"""
+            UPDATE Patients
+            SET {', '.join(update_parts)}
+            WHERE patient_id = :patient_id
+        """)
+
+        db.execute(query, params)
+        db.commit()
 
     return get_patient(db, patient_id)
 

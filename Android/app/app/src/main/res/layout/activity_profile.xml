@@ -27,6 +27,7 @@
                 android:background="@color/dark_blue">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/button_update_profile"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginTop="32dp"
@@ -208,6 +209,21 @@
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="16dp"
                         tools:text="Male" />
+                    <TextView
+                        android:id="@+id/textViewinsurance_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Address"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profile_textViewinsurance_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="16dp"
+                        tools:text="123 Example Street, City, Country" />
 
                     <TextView
                         android:id="@+id/textViewAddressLabel"

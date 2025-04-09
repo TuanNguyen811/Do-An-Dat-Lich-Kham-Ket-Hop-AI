@@ -5,63 +5,90 @@
     android:layout_width="205dp"
     android:layout_height="270dp"
     android:layout_margin="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="6dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp">
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/ImageView_main_department_avatar"
-            android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/imageContainer"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/textView_main_department_name"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
             app:layout_constraintDimensionRatio="16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_crop" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ImageView_main_department_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                app:srcCompat="@android:drawable/ic_menu_crop" />
+
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/textView_main_department_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Title"
             android:textColor="#333333"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ImageView_main_department_avatar" />
+            app:layout_constraintTop_toBottomOf="@+id/imageContainer" />
 
         <TextView
             android:id="@+id/textView_main_department_description"
             android:layout_width="0dp"
-            android:layout_height="70dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="4"
             android:text="Subtitle"
             android:textColor="#666666"
             android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/button_main_department_appointments"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView_main_department_name" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/button_main_department_appointments"
             android:layout_width="0dp"
-            android:layout_height="35dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/button_background"
             android:backgroundTint="@null"
             android:text="Đặt lịch"
             android:textColor="@android:color/white"
+            android:textSize="14sp"
+            app:cornerRadius="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:rippleColor="@android:color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

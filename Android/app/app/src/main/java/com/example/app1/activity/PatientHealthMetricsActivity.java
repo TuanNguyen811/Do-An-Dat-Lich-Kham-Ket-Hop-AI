@@ -36,7 +36,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
     private EditText editSystolicBp, editDiastolicBp, editHeartRate, editBodyTemperature;
     private EditText editRespiratoryRate, editWeightKg, editHeightCm, editBmi;
     private EditText editBloodGlucose, editCholesterolTotal, editLdl, editHdl;
-    private EditText editTriglycerides, editHemoglobin;
+    private EditText editTriglycerides, editHemoglobin, editOtherMetrics;
 
     private TextView textInfo;
     private Button btnUpdate, btnResearch;
@@ -72,7 +72,8 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
         loadPatientHealthMetrics();
 
         btnUpdate.setOnClickListener(v -> updatePatientHealthMetrics());
-        btnResearch.setOnClickListener(v -> researchHealth());
+        btnResearch.setOnClickListener(v ->
+                researchHealth());
 
         setupBmiCalculation(editWeightKg, editHeightCm, editBmi);
 
@@ -103,6 +104,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
     }
 
     private void researchHealth() {
+        updatePatientHealthMetrics();
         ResearchHealthDetailBottomSheet researchHealthDetailBottomSheet = new ResearchHealthDetailBottomSheet();
         Bundle args = new Bundle();
         args.putSerializable("patient", patient_user);
@@ -150,6 +152,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
         editHdl = findViewById(R.id.editHdl);
         editTriglycerides = findViewById(R.id.editTriglycerides);
         editHemoglobin = findViewById(R.id.editHemoglobin);
+        editOtherMetrics = findViewById(R.id.editOtherMetrics);
 
         btnResearch = findViewById(R.id.btn_health_research);
         btnUpdate = findViewById(R.id.btn_health_Update);
@@ -236,7 +239,10 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
             metrics.setHemoglobin(Double.parseDouble(hemoglobinStr));
         }
 
-
+        String otherMetricsStr = editOtherMetrics.getText().toString().trim();
+        if (!TextUtils.isEmpty(otherMetricsStr)) {
+            metrics.setOther_metrics(otherMetricsStr);
+        }
         // Set current timestamp for recorded_at
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
         metrics.setRecorded_at(sdf.format(new Date()));
@@ -300,6 +306,9 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
         if (metrics.getHemoglobin() != null) {
             editHemoglobin.setText(String.valueOf(metrics.getHemoglobin()));
         }
+        if (metrics.getOther_metrics() != null) {
+            editOtherMetrics.setText(metrics.getOther_metrics());
+        }
     }
 
     private void clearForm() {
@@ -317,6 +326,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
         editHdl.setText("");
         editTriglycerides.setText("");
         editHemoglobin.setText("");
+        editOtherMetrics.setText("");
     }
 
     private void showLoading(boolean isLoading) {

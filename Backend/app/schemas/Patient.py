@@ -8,14 +8,12 @@ from schemas.User import *
 # Patient specific schemas
 class PatientBase(BaseModel):
     insurance_id: int
-    pass
 
 class PatientCreate(UserCreate, PatientBase):
     pass
 
 class PatientUpdate(UserUpdate, PatientBase):
     insurance_id: Optional[int] = None
-    pass
 
 class PatientInDB(UserInDB, PatientBase):
     patient_id: int

@@ -20,6 +20,7 @@ public class PatientHealthMetrics  implements Serializable {
     private Double hemoglobin;
     private Integer id;
     private String recorded_at;
+    private String other_metrics; // Optional field for additional metrics
 
     // Default constructor
     public PatientHealthMetrics() {
@@ -49,7 +50,34 @@ public class PatientHealthMetrics  implements Serializable {
         this.recorded_at = recorded_at;
     }
 
+    public PatientHealthMetrics(Integer patient_id, Integer systolic_bp, Integer diastolic_bp, Integer heart_rate, Double body_temperature, Integer respiratory_rate, Double weight_kg, Double height_cm, Double bmi, Double blood_glucose, Double cholesterol_total, Double ldl, Double hdl, Double triglycerides, Double hemoglobin, Integer id, String recorded_at, String other_metrics) {
+        this.patient_id = patient_id;
+        this.systolic_bp = systolic_bp;
+        this.diastolic_bp = diastolic_bp;
+        this.heart_rate = heart_rate;
+        this.body_temperature = body_temperature;
+        this.respiratory_rate = respiratory_rate;
+        this.weight_kg = weight_kg;
+        this.height_cm = height_cm;
+        this.bmi = bmi;
+        this.blood_glucose = blood_glucose;
+        this.cholesterol_total = cholesterol_total;
+        this.ldl = ldl;
+        this.hdl = hdl;
+        this.triglycerides = triglycerides;
+        this.hemoglobin = hemoglobin;
+        this.id = id;
+        this.recorded_at = recorded_at;
+        this.other_metrics = other_metrics;
+    }
+
     // Getters and Setters
+    public String getOther_metrics() {
+        return other_metrics;
+    }
+    public void setOther_metrics(String other_metrics) {
+        this.other_metrics = other_metrics;
+    }
     public Integer getPatient_id() {
         return patient_id;
     }

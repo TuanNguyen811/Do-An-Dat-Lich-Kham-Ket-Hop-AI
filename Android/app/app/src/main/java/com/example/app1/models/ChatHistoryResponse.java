@@ -39,6 +39,8 @@ public class ChatHistoryResponse {
 
         @SerializedName("role")
         private String type;
+        @SerializedName("time_vn")
+        private String time_vn;
 
         public ChatMessage() {
         }
@@ -46,7 +48,17 @@ public class ChatHistoryResponse {
             this.text = text;
             this.type = type;
         }
-
+        public ChatMessage(String text, String type, String time_vn) {
+            this.text = text;
+            this.type = type;
+            this.time_vn = time_vn;
+        }
+        public String getTime_vn() {
+            return time_vn;
+        }
+        public void setTime_vn(String time_vn) {
+            this.time_vn = time_vn;
+        }
         public String getText() {
             return text;
         }

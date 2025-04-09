@@ -85,7 +85,9 @@ def update_user(db: Session, user_id: int, user_data: Dict[str, Any]):
     if "password" in user_data:
         valid_fields.append("password_hash")
         # In a real application, you would hash the password here
-        user_data["password_hash"] = user_data.pop("password")
+       # password_hash = security.get_password_hash()
+        password_hash = security.get_password_hash(user_data["password"])
+        user_data["password_hash"] = password_hash
 
     for key, value in user_data.items():
         if key in valid_fields:

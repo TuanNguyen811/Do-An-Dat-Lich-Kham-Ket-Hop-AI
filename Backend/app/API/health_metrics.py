@@ -64,7 +64,7 @@ def get_health_metrics(
             body_temperature=0, respiratory_rate=0,
             weight_kg=0, height_cm=0, bmi=0,
             blood_glucose=0, cholesterol_total=0,
-            ldl=0, hdl=0, triglycerides=0, hemoglobin=0
+            ldl=0, hdl=0, triglycerides=0, hemoglobin=0, other_metrics =None
         )
         metrics = create_or_update_health_metric(db, default_metrics)
     return metrics

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="@color/dark_blue"
+    android:fitsSystemWindows="true"
     tools:context=".activity.ChatActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -44,7 +45,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_chat"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_blue"
         android:clipToPadding="false"
@@ -52,6 +53,7 @@
         android:paddingBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/layout_message_input"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:listitem="@layout/item_bot_message" />

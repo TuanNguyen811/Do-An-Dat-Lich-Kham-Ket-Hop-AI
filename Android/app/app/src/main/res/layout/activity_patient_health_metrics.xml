@@ -284,6 +284,28 @@
                     android:layout_marginBottom="16dp"
                     android:hint="Enter hemoglobin"
                     android:inputType="numberDecimal" />
+                <!-- other_metrics-->
+                <TextView
+                    android:id="@+id/textView_health__other_metrics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="Other Health Parameters:"
+                    android:textColor="@color/black" />
+
+                <EditText
+                    android:id="@+id/editOtherMetrics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="top|start"
+                    android:hint="Enter other health parameters"
+                    android:imeOptions="actionDone"
+                    android:inputType="textMultiLine"
+                    android:maxLines="20"
+                    android:minLines="3"
+                    android:overScrollMode="always"
+                    android:scrollbars="vertical" />
 
             </LinearLayout>
         </ScrollView>

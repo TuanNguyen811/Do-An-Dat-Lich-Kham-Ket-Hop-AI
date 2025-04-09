@@ -7,7 +7,6 @@ public class SessionManager {
     private static final String PREF_NAME = "AuthAppPrefs";
     private static final String KEY_TOKEN = "token";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
-
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private Context context;

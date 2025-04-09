@@ -29,6 +29,7 @@ def create_or_update_health_metric(db: Session, metric: PatientHealthMetricsCrea
                 hdl = :hdl,
                 triglycerides = :triglycerides,
                 hemoglobin = :hemoglobin,
+                other_metrics = :other_metrics,
                 recorded_at = CURRENT_TIMESTAMP
             WHERE patient_id = :patient_id
         """)
@@ -48,7 +49,8 @@ def create_or_update_health_metric(db: Session, metric: PatientHealthMetricsCrea
             "ldl": metric.ldl,
             "hdl": metric.hdl,
             "triglycerides": metric.triglycerides,
-            "hemoglobin": metric.hemoglobin
+            "hemoglobin": metric.hemoglobin,
+            "other_metrics" : metric.other_metrics
         })
         db.commit()
 
@@ -58,7 +60,7 @@ def create_or_update_health_metric(db: Session, metric: PatientHealthMetricsCrea
             INSERT INTO PatientHealthMetrics (
                 patient_id, systolic_bp, diastolic_bp, heart_rate, 
                 body_temperature, respiratory_rate, weight_kg, height_cm, bmi,
-                blood_glucose, cholesterol_total, ldl, hdl, triglycerides, hemoglobin
+                blood_glucose, cholesterol_total, ldl, hdl, triglycerides, hemoglobin, other_metrics
             ) VALUES (
                 :patient_id, 
                 COALESCE(:systolic_bp, 0),
@@ -74,7 +76,8 @@ def create_or_update_health_metric(db: Session, metric: PatientHealthMetricsCrea
                 COALESCE(:ldl, 0),
                 COALESCE(:hdl, 0),
                 COALESCE(:triglycerides, 0),
-                COALESCE(:hemoglobin, 0)
+                COALESCE(:hemoglobin, 0),
+                COALESCE(:other_metrics, "")
             )
         """)
 
@@ -93,7 +96,8 @@ def create_or_update_health_metric(db: Session, metric: PatientHealthMetricsCrea
             "ldl": metric.ldl,
             "hdl": metric.hdl,
             "triglycerides": metric.triglycerides,
-            "hemoglobin": metric.hemoglobin
+            "hemoglobin": metric.hemoglobin,
+            "other_metrics": metric.other_metrics
         })
         db.commit()
 
@@ -108,7 +112,7 @@ def get_health_metric_by_patient(db: Session, patient_id: int) -> Optional[dict]
             id, patient_id, recorded_at, 
             systolic_bp, diastolic_bp, heart_rate, 
             body_temperature, respiratory_rate, weight_kg, height_cm, bmi,
-            blood_glucose, cholesterol_total, ldl, hdl, triglycerides, hemoglobin
+            blood_glucose, cholesterol_total, ldl, hdl, triglycerides, hemoglobin, other_metrics
         FROM PatientHealthMetrics
         WHERE patient_id = :patient_id
     """)
@@ -135,5 +139,6 @@ def get_health_metric_by_patient(db: Session, patient_id: int) -> Optional[dict]
         "ldl": result[13],
         "hdl": result[14],
         "triglycerides": result[15],
-        "hemoglobin": result[16]
+        "hemoglobin": result[16],
+        "other_metrics": result[17]
     }

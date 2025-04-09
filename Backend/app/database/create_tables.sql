@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS PatientHealthMetrics (
     triglycerides FLOAT(5,2),   -- triglycerides (mg/dL)
 
     hemoglobin FLOAT(4,2),      -- hemoglobin (g/dL)
-
+    other_metrics TEXT,          -- các chỉ số khác (nếu có)
     FOREIGN KEY (patient_id) REFERENCES Patients(patient_id)
 
 );

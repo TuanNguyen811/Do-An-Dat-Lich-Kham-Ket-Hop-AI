@@ -72,7 +72,6 @@ public class SelectShiftBottomSheet extends BottomSheetDialogFragment {
         textView_fragment_shift4.setEnabled(false);
 
 
-
         apiService = ApiClient.getAuthService(getContext());
         appointmentStats = new ArrayList<>();
 
@@ -89,7 +88,7 @@ public class SelectShiftBottomSheet extends BottomSheetDialogFragment {
             appointmentDate = "";
         }
         textView_selected_date = view.findViewById(R.id.textView_selected_date);
-        textView_selected_date.setText(appointmentDayOfWeek + ", " + DateUtils.formatDate(appointmentDate));
+        textView_selected_date.setText(appointmentDayOfWeek + ", " + DateUtils.formatDate2(appointmentDate));
 
         apiService.getAppointmentStats(doctor.getUser_id(), appointmentDate).enqueue(new Callback<CombinedResultsResponse>() {
             @Override

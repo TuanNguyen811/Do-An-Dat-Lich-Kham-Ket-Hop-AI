@@ -30,7 +30,8 @@
             android:theme="@style/Theme.App1" />
         <activity
             android:name=".activity.ChatbotActivity"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustResize"
+        android:exported="false" />
         <activity
             android:name=".activity.NotificationsActivity"
             android:exported="false" />

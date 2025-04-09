@@ -51,6 +51,11 @@ public interface AuthService {
     Call<ResponseBody> getAvatar(
             @Header("Authorization") String token
     );
+    @PUT("/profile/patient/update")
+    Call<Patient> updatePatientProfile(
+            @Header("Authorization") String token,
+            @Body Patient request
+    );
 
     @GET("departments")
     Call<List<Department>> getDepartments();

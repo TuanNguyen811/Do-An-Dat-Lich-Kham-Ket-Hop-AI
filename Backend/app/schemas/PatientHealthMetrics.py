@@ -19,7 +19,7 @@ class PatientHealthMetricsCreate(BaseModel):
     hdl: Optional[float] = Field(None, description="High-density lipoprotein (mg/dL)")
     triglycerides: Optional[float] = Field(None, description="Triglycerides (mg/dL)")
     hemoglobin: Optional[float] = Field(None, description="Hemoglobin (g/dL)")
-
+    other_metrics: Optional[str] = Field(None, description="Other health metrics in JSON format")
 # Response schema for retrieving health metrics
 class PatientHealthMetricsResponse(PatientHealthMetricsCreate):
     id: int

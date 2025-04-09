@@ -3,6 +3,7 @@ package com.example.app1.activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,6 +24,7 @@ import com.example.app1.models.ChatHistoryResponse;
 import com.example.app1.models.ChatRequest;
 import com.example.app1.models.ChatResponse;
 import com.example.app1.models.Department;
+import com.example.app1.models.Patient;
 import com.example.app1.utils.SessionManager;
 import com.google.gson.JsonObject;
 
@@ -45,12 +47,23 @@ public class ChatbotActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
     private SessionManager sessionManager;
     private AuthService apiService;
-
+    private Patient patient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatbot);
+
+        final View rootView = findViewById(android.R.id.content);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                RecyclerView recyclerView = findViewById(R.id.recycler_view_chat);
+                if (recyclerView.getAdapter() != null && recyclerView.getAdapter().getItemCount() > 0) {
+                    recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                }
+            }
+        });
 
         // Initialize views
         recyclerView = findViewById(R.id.recycler_view_chat);
@@ -89,12 +102,18 @@ public class ChatbotActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> onBackPressed());
 
         // Load chat history
-        loadChatHistory();
 
         String messages = (String) getIntent().getSerializableExtra("messages");
         if (messages != null) {
             sendMessageToApi(messages);
         }
+        patient = (Patient) getIntent().getSerializableExtra("patient_user");
+        if (patient != null) {
+            setTitle("Chatbot " + patient.getFull_name());
+        } else {
+            setTitle("Chatbot");
+        }
+        loadChatHistory();
 
     }
 
@@ -112,7 +131,19 @@ public class ChatbotActivity extends AppCompatActivity {
         resetChatSession();
         chatAdapter.clearMessages();
         // Show welcome message
-        sendMessageToApi("Bạn hãy đóng vai là một bác sĩ tên là Bác sĩ Tuân, chuyên tư vấn sức khỏe. Tôi sẽ hỏi bạn về các vấn đề sức khỏe, bạn chỉ cần tập trung vào tư vấn y tế thôi, không lan man sang chủ đề khác. Trả lời ngắn gọn, rõ ràng như đang nhắn tin. Hãy bắt đầu bằng một lời chào và giới thiệu ngắn nhé!");
+        StringBuffer welcomeMessage = new StringBuffer();
+        welcomeMessage.append("Bạn hãy đóng vai là một bác sĩ tên là Bác sĩ Tuân Nguyễn AI (22 tuổi), chuyên tư vấn sức khỏe. " +
+                "Tôi sẽ hỏi bạn về các vấn đề sức khỏe, bạn chỉ cần tập trung vào tư vấn y tế thôi," +
+                " không lan man sang chủ đề khác. Trả lời ngắn gọn, rõ ràng như đang nhắn tin. " +
+                "Hãy bắt đầu bằng một lời chào và giới thiệu ngắn nhé!");
+        if (patient != null){
+            welcomeMessage.append("Tên tôi là ").append(patient.getFull_name()).append(". ");
+            welcomeMessage.append("Giới tính ").append(patient.getGender()).append(". ");
+            welcomeMessage.append("Ngày sinh ").append(patient.getDate_of_birth()).append(" ");
+        } else {
+            welcomeMessage.append("Tôi không có thông tin gì cả. ");
+        }
+        sendMessageToApi(welcomeMessage.toString());
         loadChatHistory();
     }
 

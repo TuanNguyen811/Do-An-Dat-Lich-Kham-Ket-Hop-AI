@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.RegisterActivity">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,8 +13,8 @@
         <TextView
             android:id="@+id/textViewRegisterTitle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Đăng ký tài khoản"
+            android:layout_height="0dp"
+            android:text="Cập nhật thông tin cá nhân"
             android:textColor="@color/dark_blue"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -56,6 +55,7 @@
                 android:id="@+id/register_editTextEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -115,6 +115,25 @@
                 android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutinsurance_id"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Birthdate (YYYY-MM-DD)"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutBirthdate">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/register_editTextinsurance_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:inputType="date" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <TextView
             android:id="@+id/profile_textViewGender"
             android:layout_width="wrap_content"
@@ -122,13 +141,12 @@
             android:layout_marginTop="16dp"
             android:text="Gender"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutBirthdate" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayoutinsurance_id" />
 
         <RadioGroup
             android:id="@+id/radioGroupGender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -181,7 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:background="@drawable/button_background"
-            android:text="Register"
+            android:text="Cập nhật"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutAddress" />
@@ -195,21 +213,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/register_textViewLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="Already have an account? Login here"
-            android:textColor="@color/dark_blue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/register_buttonRegister" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

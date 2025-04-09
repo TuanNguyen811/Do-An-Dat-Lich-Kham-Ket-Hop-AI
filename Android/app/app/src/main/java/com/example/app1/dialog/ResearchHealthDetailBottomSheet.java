@@ -148,7 +148,9 @@ public class ResearchHealthDetailBottomSheet extends BottomSheetDialogFragment {
             message.append("* **Triglycerides:** ").append(metrics.getTriglycerides()).append(" mg/dL\n");
         if (metrics.getHemoglobin() != 0.0f)
             message.append("* **Hemoglobin:** ").append(metrics.getHemoglobin()).append(" g/dL\n");
-
+        if (metrics.getOther_metrics() != null && !metrics.getOther_metrics().isEmpty()) {
+            message.append("* **Các chỉ số khác:** ").append(metrics.getOther_metrics()).append("\n");
+        }
         sendMessageToApi(message.toString());
     }
 

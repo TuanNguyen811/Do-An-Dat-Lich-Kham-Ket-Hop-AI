@@ -78,10 +78,7 @@ from .Notification import (
 
 # Import patient health metrics schemas
 from .PatientHealthMetrics import (
-    PatientHealthMetricsBase,
     PatientHealthMetricsCreate,
-    PatientHealthMetricsUpdate,
-    PatientHealthMetricsInDB,
     PatientHealthMetricsResponse
 )
 

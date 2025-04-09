@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AppointmentsActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/dark_blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="Health Metrics"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/back" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Weight - Moved to top position -->
+                <TextView
+                    android:id="@+id/textView_health__thongTin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="Thông tin người dùng:"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Weight (kg)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editWeightKg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter weight"
+                    android:inputType="numberDecimal" />
+
+                <!-- Height -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Height (cm)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editHeightCm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter height"
+                    android:inputType="numberDecimal" />
+
+                <!-- BMI - Moved next to height and weight -->
+                <TextView
+                    android:id="@+id/BMI"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="BMI"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editBmi3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:enabled="false"
+                    android:hint="Enter BMI"
+                    android:inputType="numberDecimal"
+                    android:textStyle="bold" />
+
+                <!-- Body Temperature -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Body Temperature (°C)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editBodyTemperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter body temperature"
+                    android:inputType="numberDecimal" />
+
+                <!-- Heart Rate -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Heart Rate (bpm)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editHeartRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter heart rate"
+                    android:inputType="number" />
+
+                <!-- Blood Pressure - Grouped systolic and diastolic together -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Systolic Blood Pressure (mmHg)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editSystolicBp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter systolic BP"
+                    android:inputType="number" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Diastolic Blood Pressure (mmHg)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editDiastolicBp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter diastolic BP"
+                    android:inputType="number" />
+
+                <!-- Blood Glucose -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Blood Glucose (mg/dL)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editBloodGlucose"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter blood glucose"
+                    android:inputType="numberDecimal" />
+
+                <!-- Respiratory Rate -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Respiratory Rate (breaths/min)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editRespiratoryRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter respiratory rate"
+                    android:inputType="number" />
+
+                <!-- Cholesterol Group - All cholesterol measurements grouped -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total Cholesterol (mg/dL)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editCholesterolTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter total cholesterol"
+                    android:inputType="numberDecimal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="HDL (mg/dL)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editHdl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter HDL"
+                    android:inputType="numberDecimal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LDL (mg/dL)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editLdl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter LDL"
+                    android:inputType="numberDecimal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Triglycerides (mg/dL)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTriglycerides"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:hint="Enter triglycerides"
+                    android:inputType="numberDecimal" />
+
+                <!-- Hemoglobin -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hemoglobin (g/dL)"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editHemoglobin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Enter hemoglobin"
+                    android:inputType="numberDecimal" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="77dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/btn_health_research"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/button_background"
+                android:backgroundTint="#00FFFFFF"
+                android:text="research health"
+                app:icon="@drawable/icons8_ai_50"
+                app:iconTint="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btn_health_Update"
+                android:layout_width="136dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/button_background"
+                android:text="UPDATE"
+                app:icon="@drawable/ic_edit" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

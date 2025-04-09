@@ -77,15 +77,30 @@ CREATE TABLE IF NOT EXISTS Appointments (
 
 -- Bảng PatientHealthMetrics (Chỉ số sức khỏe bệnh nhân)
 CREATE TABLE IF NOT EXISTS PatientHealthMetrics (
-    metric_id INT PRIMARY KEY AUTO_INCREMENT,
-    patient_id INT NOT NULL,
-    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    heart_rate INT,
-    blood_pressure_systolic INT,
-    blood_pressure_diastolic INT,
-    blood_sugar_level FLOAT,
-    notes TEXT,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    patient_id INT NOT NULL, -- khóa liên kết nếu có bảng bệnh nhân riêng
+    recorded_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    systolic_bp TINYINT,        -- huyết áp tâm thu (mmHg)
+    diastolic_bp TINYINT,       -- huyết áp tâm trương (mmHg)
+    heart_rate TINYINT,         -- nhịp tim (bpm)
+    body_temperature FLOAT(3,1),-- nhiệt độ cơ thể (°C)
+    respiratory_rate TINYINT,   -- nhịp thở (lần/phút)
+
+    weight_kg FLOAT(5,2),       -- cân nặng (kg)
+    height_cm FLOAT(5,2),       -- chiều cao (cm)
+    bmi FLOAT(4,2),             -- chỉ số BMI (kg/m²)
+
+    blood_glucose FLOAT(5,2),   -- đường huyết (mg/dL)
+    cholesterol_total FLOAT(5,2), -- cholesterol tổng (mg/dL)
+    ldl FLOAT(5,2),             -- cholesterol xấu (LDL)
+    hdl FLOAT(5,2),             -- cholesterol tốt (HDL)
+    triglycerides FLOAT(5,2),   -- triglycerides (mg/dL)
+
+    hemoglobin FLOAT(4,2),      -- hemoglobin (g/dL)
+
     FOREIGN KEY (patient_id) REFERENCES Patients(patient_id)
+
 );
 
 -- Bảng MedicalHistory (Lịch sử khám bệnh)

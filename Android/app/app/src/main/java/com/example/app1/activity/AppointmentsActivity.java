@@ -179,18 +179,52 @@ public class AppointmentsActivity extends AppCompatActivity {
             @Override
             public void onCancelAppointment(Appointment appointment) {
                 // Handle cancel appointment action
-                updateAppointments(appointment, "Cancelled");
+                if (appointment.getStatus().equals("Cancelled")){
+                    updateAppointments(appointment, "Scheduled");
+                }else if(appointment.getStatus().equals("Scheduled")){
+                    updateAppointments(appointment, "Cancelled");
+                }else {
+
+                }
             }
 
             @Override
             public void onRescheduleAppointment(Appointment appointment) {
+
+                if(appointment.getStatus().equals("Cancelled")){
+                    deteleAppointment(appointment);
+                }
                 // Handle reschedule appointment action
                // showRescheduleDialog(appointment);
+               // updateAppointments(appointment, "Cancelled");
             }
         });
         bottomSheet.show(getSupportFragmentManager(), "AppointmentDetailBottomSheet");
     }
 
+    public void deteleAppointment(Appointment appointment) {
+        String token = sessionManager.getToken();
+        apiService.deleteAppointment(token, appointment.getAppointment_id()).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    // Appointment deleted successfully
+                    Toast.makeText(AppointmentsActivity.this, "Appointment deleted", Toast.LENGTH_SHORT).show();
+                    appointmentList.remove(appointment);
+                    appointmentAdapter.notifyDataSetChanged();
+
+                } else {
+                    // Handle error
+                    Toast.makeText(AppointmentsActivity.this, "Failed to delete appointment", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(AppointmentsActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
     public void updateAppointments(Appointment appointment, String status) {
         if (status.equals("")){
             if (appointment.getStatus().equals("Cancelled")){

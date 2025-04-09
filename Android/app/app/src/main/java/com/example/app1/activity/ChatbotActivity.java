@@ -22,6 +22,7 @@ import com.example.app1.adapter.ChatAdapter;
 import com.example.app1.models.ChatHistoryResponse;
 import com.example.app1.models.ChatRequest;
 import com.example.app1.models.ChatResponse;
+import com.example.app1.models.Department;
 import com.example.app1.utils.SessionManager;
 import com.google.gson.JsonObject;
 
@@ -89,6 +90,12 @@ public class ChatbotActivity extends AppCompatActivity {
 
         // Load chat history
         loadChatHistory();
+
+        String messages = (String) getIntent().getSerializableExtra("messages");
+        if (messages != null) {
+            sendMessageToApi(messages);
+        }
+
     }
 
     private void showNewChatConfirmation() {

@@ -1,6 +1,7 @@
 package com.example.app1.activity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -160,13 +161,20 @@ public class AppointmentActivity extends AppCompatActivity implements SelectDepa
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(AppointmentActivity.this, "Đặt lịch khám thành công"  + response.body(), Toast.LENGTH_SHORT).show();
+                    // Chuyển hướng về trang Appointments
+                    Intent intent = new Intent(AppointmentActivity.this, AppointmentsActivity.class);
+                    startActivity(intent);
                     finish();
                 } else {
                     try {
                         Toast.makeText(AppointmentActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
+                    // Chuyển hướng về trang Appointments
+                    Intent intent = new Intent(AppointmentActivity.this, AppointmentsActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             }
             @Override

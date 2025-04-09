@@ -13,7 +13,8 @@ import com.example.app1.models.ChatHistoryResponse.ChatMessage;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import android.text.Html;
+import android.text.Spanned;
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_USER_MESSAGE = 1;
     private static final int VIEW_TYPE_BOT_MESSAGE = 2;
@@ -50,6 +51,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (holder instanceof UserMessageViewHolder) {
                 ((UserMessageViewHolder) holder).bind(message);
             } else if (holder instanceof BotMessageViewHolder) {
+
                 ((BotMessageViewHolder) holder).bind(message);
             }
         }
@@ -94,7 +96,12 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(ChatMessage message) {
-            messageText.setText(message.getText());
+            if (message.getText().startsWith("!")) {
+                messageText.setText("Chuẩn đoán...");
+            } else {
+                messageText.setText(message.getText());
+            }
+
         }
     }
 
@@ -107,7 +114,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         void bind(ChatMessage message) {
-            messageText.setText(message.getText().replaceAll("\\n$", ""));
+            String formatted = message.getText()
+                    .replaceAll("\\*\\*(.*?)\\*\\*", "<b>$1</b>")         // **bold**
+                    .replaceAll("\\*(.*?)\\*", "<i>$1</i>")               // *italic*
+                    .replaceAll("\\*/(.*?)\\*/", "<u>$1</u>")             // */underline*/
+                    .replaceAll("\\n", "<br>");                           // xuống dòng
+
+            Spanned spanned = Html.fromHtml(formatted, Html.FROM_HTML_MODE_LEGACY);
+            messageText.setText(spanned);
         }
     }
 }

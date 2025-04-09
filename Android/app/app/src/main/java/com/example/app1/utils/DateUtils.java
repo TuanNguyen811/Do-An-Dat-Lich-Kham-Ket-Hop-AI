@@ -17,7 +17,18 @@ public class DateUtils {
             return inputDate; // fallback nếu lỗi
         }
     }
+    public static String formatDate2(String inputDate) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
 
+        try {
+            Date date = inputFormat.parse(inputDate);
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return inputDate; // fallback nếu lỗi
+        }
+    }
     public static boolean isDateInFuture(String today) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         try {

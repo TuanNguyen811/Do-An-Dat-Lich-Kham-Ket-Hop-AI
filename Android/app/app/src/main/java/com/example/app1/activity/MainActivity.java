@@ -56,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Department> departmentList;
     private EditText searchView_main;
 
-    private CardView cardView_main_appointment,  cardView_main_chatbot;
+    private CardView cardView_main_appointment,  cardView_main_chatbot, cardView_main_PatientHealthMetrics;
+
+    private Patient patient_user;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -135,15 +137,26 @@ public class MainActivity extends AppCompatActivity {
         });
 
         searchView_main = findViewById(R.id.editText_main_chat);
-
         searchView_main.setOnClickListener(v -> {
             if (cheackToken()) {
                 Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
                 startActivity(intent);
             }
         });
-        searchView_main.setFocusable(false);
+        cardView_main_PatientHealthMetrics = findViewById(R.id.cardView_main_PatientHealthMetrics);
+        cardView_main_PatientHealthMetrics.setOnClickListener(v -> {
+            if (cheackToken()) {
+                Intent intent = new Intent(MainActivity.this, PatientHealthMetricsActivity.class);
+                intent.putExtra("patient_user", patient_user);
+                startActivity(intent);
 
+
+            }
+        });
+
+
+        searchView_main.setFocusable(false);
+        searchView_main.setFocusableInTouchMode(false);
         // If intro has been shown, proceed with setting the content view
         loadUserProfile();
         downloadAvatar();
@@ -252,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         apiService.getPatientProfile(token).enqueue(new Callback<Patient>() {
             @Override
             public void onResponse(Call<Patient> call, Response<Patient> response) {
-
+                patient_user = response.body();
                 if (response.isSuccessful() && response.body() != null) {
                     name.setText("Xin chào!, " + response.body().getFull_name());
 

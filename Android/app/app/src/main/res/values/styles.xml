@@ -51,4 +51,12 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="BottomSheetTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="buttonStyle">@style/MyCustomButton</item>
+    </style>
+
+    <style name="MyCustomButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="backgroundTint">@color/dark_blue</item>
+    </style>
 </resources>

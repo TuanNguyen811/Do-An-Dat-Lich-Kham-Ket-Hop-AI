@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName;
 public class ChatResponse {
     @SerializedName("reply")
     private String reply;
-
+    //time_vn
+    @SerializedName("time_vn")
+    private String time_vn;
     @SerializedName("type")
     private String type = "bot";
 
@@ -15,6 +17,17 @@ public class ChatResponse {
     public ChatResponse(String reply, String type) {
         this.reply = reply;
         this.type = type;
+    }
+    public ChatResponse(String reply, String type, String time_vn) {
+        this.reply = reply;
+        this.type = type;
+        this.time_vn = time_vn;
+    }
+    public String getTime_vn() {
+        return time_vn;
+    }
+    public void setTime_vn(String time_vn) {
+        this.time_vn = time_vn;
     }
     public String getReply() {
         return reply;

@@ -224,6 +224,33 @@ def update_appointment_status(
 
     return {"message": "Appointment status updated successfully", "appointment_id": appointment_id, "status": status}
 
+@router.delete("/appointments/{appointment_id}", response_model=Dict[str, Any])
+def delete_appointment(
+        appointment_id: int,
+        current_user: Dict[str, Any] = Depends(deps.get_current_user),
+        db: Session = Depends(deps.get_db)
+):
+    # Check if appointment exists
+    appointment = crud.get_appointment(db, appointment_id=appointment_id)
+    if not appointment:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+
+    # Apply access control
+    user_role = current_user.get("role")
+    user_id = current_user.get("user_id")
+
+    if user_role == "Patient" and appointment[1] != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this appointment")
+    elif user_role == "Doctor" and appointment[2] != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this appointment")
+
+    # Delete the appointment
+    deleted_appointment = crud.delete_appointment(db, appointment_id=appointment_id)
+    if not deleted_appointment:
+        raise HTTPException(status_code=500, detail="Failed to delete appointment")
+
+    return {"message": "Appointment deleted successfully"}
+
 
 def get_week_and_weekday(date_str: str):
     date_obj = datetime.strptime(date_str, '%Y-%m-%d')

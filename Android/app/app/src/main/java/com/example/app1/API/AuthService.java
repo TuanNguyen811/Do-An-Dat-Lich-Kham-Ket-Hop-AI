@@ -7,11 +7,13 @@ import com.example.app1.utils.TokenResponse;
 import com.google.gson.JsonObject;
 
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -84,6 +86,13 @@ public interface AuthService {
             @Path("appointment_id") int appointmentId,
             @Query("status") String status
     );
+//@router.delete("/appointments/{appointment_id}"
+    @DELETE("/appointments/{appointment_id}")
+    Call<JsonObject> deleteAppointment(
+            @Header("Authorization") String token,
+            @Path("appointment_id") int appointmentId
+    );
+
     @POST("chat")
     Call<ChatResponse> sendChatMessage(@Header("Authorization") String token, @Body ChatRequest request);
 
@@ -92,4 +101,16 @@ public interface AuthService {
 
     @POST("/chat/reset_session")
     Call<JsonObject> resetChatSession(@Header("Authorization") String token);
+
+    // Create a new health metric
+    @POST("/patient/health-metrics")
+    Call<PatientHealthMetrics> createHealthMetric(
+            @Header("Authorization") String token,
+            @Body PatientHealthMetrics healthMetrics
+    );
+
+    @GET("/patient/health-metrics")
+    Call<PatientHealthMetrics> getHealthMetrics(
+            @Header("Authorization") String token
+    );
 }

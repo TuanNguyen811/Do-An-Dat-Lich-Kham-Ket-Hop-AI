@@ -13,7 +13,7 @@ from API import (
     patients,
     users,
     admin,
-    doctor_schedule
+    doctor_schedule, health_metrics
 )
 import google.generativeai as genai
 
@@ -29,9 +29,9 @@ app.include_router(users.router)
 app.include_router(admin.router)
 app.include_router(departments.router)
 app.include_router(appointments.router)
-app.include_router(medical_history.router)
 app.include_router(notifications.router)
 app.include_router(doctor_schedule.router)
+app.include_router(health_metrics.router)
 app.include_router(api_chatbot.router)
 
 from database.database import create_tables

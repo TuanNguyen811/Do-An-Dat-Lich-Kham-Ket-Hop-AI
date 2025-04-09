@@ -80,12 +80,9 @@ from .crud_Notification import (
 )
 
 # Import patient health metrics crud operations
-from .crud_PatientHealthMetrics import (
-    get_patient_health_metric,
-    get_patient_health_metrics,
-    create_patient_health_metric,
-    update_patient_health_metric,
-    delete_patient_health_metric
+from .crud_health_metrics import (
+    create_or_update_health_metric,
+    get_health_metric_by_patient
 )
 
 # Authentication functions

@@ -157,13 +157,22 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
 
         // Configure button visibility based on appointment status
         if ("Scheduled".equalsIgnoreCase(appointment.getStatus())) {
-            btnCancel.setVisibility(View.GONE);
+            btnCancel.setText("Hủy lịch hẹn");
+            btnReschedule.setText("Đổi lịch hẹn");
+            btnCancel.setVisibility(View.VISIBLE);
+            btnReschedule.setVisibility(View.VISIBLE);
+        }else if ("Completed".equalsIgnoreCase(appointment.getStatus())) {
+            btnCancel.setText("Đặt lại lịch");
+            btnCancel.setVisibility(View.VISIBLE);
             btnReschedule.setVisibility(View.GONE);
-        } else {
-            btnCancel.setVisibility(View.GONE);
-            btnReschedule.setVisibility(View.GONE);
+        } else if ("Cancelled".equalsIgnoreCase(appointment.getStatus())) {
+            btnReschedule.setText("Xóa lịch hẹn");
+            btnCancel.setText("Đặt lại lịch");
+            btnCancel.setVisibility(View.VISIBLE);
+            btnReschedule.setVisibility(View.VISIBLE);
         }
-
+        btnCancel.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.dark_blue));
+        btnReschedule.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.dark_blue));
         // Set click listeners
         btnClose.setOnClickListener(v -> dismiss());
 
@@ -185,6 +194,7 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
             }
             dismiss();
         });
+
     }
 
     private String getAppointmentStatusText(String status) {
@@ -234,5 +244,9 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
             default:
                 return shift; // Return the original if unknown
         }
+    }
+    @Override
+    public int getTheme() {
+        return R.style.BottomSheetTheme;
     }
 }

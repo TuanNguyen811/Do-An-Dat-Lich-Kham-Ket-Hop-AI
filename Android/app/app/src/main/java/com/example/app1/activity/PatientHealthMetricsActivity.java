@@ -108,7 +108,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
         ResearchHealthDetailBottomSheet researchHealthDetailBottomSheet = new ResearchHealthDetailBottomSheet();
         Bundle args = new Bundle();
         args.putSerializable("patient", patient_user);
-        args.putSerializable("patient_health_metrics", patientHealthMetrics);
+        args.putSerializable("patient_health_metrics", getPatientHealthMetrics());
         researchHealthDetailBottomSheet.setArguments(args);
         researchHealthDetailBottomSheet.show(getSupportFragmentManager(), "ResearchHealthDetailBottomSheet");
     }

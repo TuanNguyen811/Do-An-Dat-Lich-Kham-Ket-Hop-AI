@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 #Cau hinh API key
-check_configure_genai(api_key="AIzaSyAg_Ts6breyNoOGMTrSNLn96R1D9doodFU")
+check_configure_genai(api_key="")
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 

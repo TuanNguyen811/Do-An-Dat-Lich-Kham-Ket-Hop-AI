@@ -20,7 +20,7 @@ import google.generativeai as genai
 from Chatbot import api_chatbot
 
 app = FastAPI()
-
+#fftfg
 # Include all routers
 app.include_router(auth.router)
 app.include_router(doctors.router)

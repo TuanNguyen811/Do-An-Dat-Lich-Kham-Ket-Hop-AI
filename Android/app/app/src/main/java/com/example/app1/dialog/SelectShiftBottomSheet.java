@@ -98,7 +98,6 @@ public class SelectShiftBottomSheet extends BottomSheetDialogFragment {
                     if (combinedResultsResponse != null) {
                         appointmentStats = combinedResultsResponse.getCombined_results();
                         if (appointmentStats != null) {
-
                             // Cập nhật dữ liệu vào các TextView
                             if (appointmentStats.get(4) < appointmentStats.get(0)) {
                                 textView_fragment_shift1.setText("Đã đặt: " + appointmentStats.get(4) + "/" + appointmentStats.get(0));
@@ -110,7 +109,6 @@ public class SelectShiftBottomSheet extends BottomSheetDialogFragment {
                                 textView_fragment_shift1.setEnabled(false);
                                 textView_fragment_shift1.setTextColor(getResources().getColor(R.color.gray));
                                 textView_fragment_shift1.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_block,0);
-
                             }
                             if (appointmentStats.get(5) < appointmentStats.get(1)) {
                                 textView_fragment_shift2.setTextColor(getResources().getColor(R.color.green));
@@ -143,6 +141,31 @@ public class SelectShiftBottomSheet extends BottomSheetDialogFragment {
 
                             } else {
                                 textView_fragment_shift4.setText("Đã full: " + appointmentStats.get(7) + "/" + appointmentStats.get(3));
+                                textView_fragment_shift4.setEnabled(false);
+                                textView_fragment_shift4.setTextColor(getResources().getColor(R.color.gray));
+                                textView_fragment_shift4.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_block,0);
+                            }
+
+                            if (appointmentStats.get(0) == 0) {
+                                textView_fragment_shift1.setText("Không có ca trực");
+                                textView_fragment_shift1.setEnabled(false);
+                                textView_fragment_shift1.setTextColor(getResources().getColor(R.color.gray));
+                                textView_fragment_shift1.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_block,0);
+                            }
+                            if (appointmentStats.get(1) == 0) {
+                                textView_fragment_shift2.setText("Không có ca trực");
+                                textView_fragment_shift2.setEnabled(false);
+                                textView_fragment_shift2.setTextColor(getResources().getColor(R.color.gray));
+                                textView_fragment_shift2.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_block,0);
+                            }
+                            if (appointmentStats.get(2) == 0) {
+                                textView_fragment_shift3.setText("Không có ca trực");
+                                textView_fragment_shift3.setEnabled(false);
+                                textView_fragment_shift3.setTextColor(getResources().getColor(R.color.gray));
+                                textView_fragment_shift3.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_block,0);
+                            }
+                            if (appointmentStats.get(3) == 0) {
+                                textView_fragment_shift4.setText("Không có ca trực");
                                 textView_fragment_shift4.setEnabled(false);
                                 textView_fragment_shift4.setTextColor(getResources().getColor(R.color.gray));
                                 textView_fragment_shift4.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_block,0);

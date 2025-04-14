@@ -76,6 +76,13 @@ public interface AuthService {
             @Header("Authorization") String token
     );
 
+    @PUT("profile/doctor/update/{doctor_id}")
+    Call<ResponseBody> updateDoctor(
+            @Header("Authorization") String token,
+            @Body Doctor doctor,
+            @Path("doctor_id") int doctor_id
+    );
+
     // Admin - Set/Get Avatar for User
     @Multipart
     @POST("admin_set_avatar_user")
@@ -130,12 +137,18 @@ public interface AuthService {
             @Header("Authorization") String token,
             @Path("schedule_id") int schedule_Id
     );
-    
+
     @GET("appointments")
     Call<List<Appointment>> getAppointments(
             @Header("Authorization") String token,
             @Query("doctor_id") int doctor_id,
             @Query("appointment_date") String appointment_date
     );
-    
+
+    @GET("appointments/by_doctor")
+    Call<List<Appointment>> getAppointmentsByDoctor(
+            @Header("Authorization") String token,
+            @Query("appointment_date") String appointment_date
+    );
+
 }

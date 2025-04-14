@@ -115,9 +115,6 @@ def get_appointments_by_patient(
         raise HTTPException(status_code=404, detail="No appointments found for the given patient")
     return appointments
 
-
-
-
 @router.get("/appointments/{appointment_id}", response_model=Dict[str, Any])
 def get_appointment(
         appointment_id: int,

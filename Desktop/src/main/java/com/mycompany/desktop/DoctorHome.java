@@ -6,14 +6,45 @@ package com.mycompany.desktop;
 
 import com.mycompany.desktop.API.APIClient;
 import com.mycompany.desktop.API.AuthService;
+import static com.mycompany.desktop.AdminHome.compressImage;
 import com.mycompany.desktop.models.Admin;
+import com.mycompany.desktop.models.Appointment;
+import com.mycompany.desktop.models.AvatarResponse;
 import com.mycompany.desktop.models.Doctor;
+import com.mycompany.desktop.models.DoctorSchedule;
+import com.mycompany.desktop.utils.DateUtils;
 import com.mycompany.desktop.utils.SessionManager;
+import com.mycompany.desktop.utils.ValidationUtils;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -24,7 +55,9 @@ public class DoctorHome extends javax.swing.JFrame {
     private AuthService authService;
     private Doctor doctor;
     private int user_id;
-    
+    private List<DoctorSchedule> listDoctorSchedules;
+    private List<Appointment> listAppointments;
+
     public DoctorHome(int user_id) {
         initComponents();
         this.user_id = user_id;
@@ -32,6 +65,8 @@ public class DoctorHome extends javax.swing.JFrame {
 
         authService = APIClient.getAuthService();
         loadDoctorProfile();
+        loadListDoctorSchedul(user_id);
+        loadListAppointments("");
     }
 
     /**
@@ -46,27 +81,8 @@ public class DoctorHome extends javax.swing.JFrame {
         jTabbedPane = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable_Appointments = new javax.swing.JTable();
         jTabbedPane2 = new javax.swing.JTabbedPane();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel_thongTinBacSi = new javax.swing.JLabel();
-        jTextField_bacsi_name = new javax.swing.JTextField();
-        jTextField_bacsi_phone = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jTextField_bacsi_brithdate = new javax.swing.JTextField();
-        jLabel_bacsi_loi = new javax.swing.JLabel();
-        jTextField_bacsi_email = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jRadioButton_bacsi_nam = new javax.swing.JRadioButton();
-        jRadioButton_bacsi_nu = new javax.swing.JRadioButton();
-        jTextField_bacsi_address = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel_avatar = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -81,41 +97,58 @@ public class DoctorHome extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel_thongTinBacSi = new javax.swing.JLabel();
+        jTextField_patient__name = new javax.swing.JTextField();
+        jTextField_patient_phone = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jTextField_patient_brithdate = new javax.swing.JTextField();
+        jLabel_bacsi_loi = new javax.swing.JLabel();
+        jTextField_patient_email = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jRadioButton_patient_nam = new javax.swing.JRadioButton();
+        jRadioButton_patient_nu = new javax.swing.JRadioButton();
+        jTextField_patient_address = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel_patient_avatar = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane9 = new javax.swing.JScrollPane();
-        jTable_DoctorSchedul2 = new javax.swing.JTable();
+        jTable_DoctorSchedul = new javax.swing.JTable();
+        jLabel_ngayhientai = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jLabel_thongTinBacSi1 = new javax.swing.JLabel();
-        jTextField_bacsi_name1 = new javax.swing.JTextField();
-        jTextField_bacsi_phone1 = new javax.swing.JTextField();
-        jButton_themBacSi1 = new javax.swing.JButton();
+        jTextField_doctor_name = new javax.swing.JTextField();
+        jTextField_doctor_phone = new javax.swing.JTextField();
         jButton13 = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        jTextField_bacsi_brithdate1 = new javax.swing.JTextField();
-        jPasswordField_bacsi_pass1 = new javax.swing.JPasswordField();
+        jTextField_doctor_brithdate = new javax.swing.JTextField();
+        jPasswordField_doctor_pass = new javax.swing.JPasswordField();
         jLabel16 = new javax.swing.JLabel();
-        jLabel_bacsi_loi1 = new javax.swing.JLabel();
-        jTextField_bacsi_email1 = new javax.swing.JTextField();
+        jLabel_doctor_loi = new javax.swing.JLabel();
+        jTextField_doctor_emai = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jRadioButton_bacsi_nam1 = new javax.swing.JRadioButton();
-        jRadioButton_bacsi_nu1 = new javax.swing.JRadioButton();
-        jTextField_bacsi_address1 = new javax.swing.JTextField();
+        jRadioButton_doctor_nam = new javax.swing.JRadioButton();
+        jRadioButton_doctor_nu = new javax.swing.JRadioButton();
+        jTextField_doctor_address = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
-        jTextField_bacsi_department_id1 = new javax.swing.JTextField();
+        jTextField_doctor_department_id = new javax.swing.JTextField();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea_bacsi_description1 = new javax.swing.JTextArea();
-        jButton15 = new javax.swing.JButton();
+        jTextArea_doctor_description = new javax.swing.JTextArea();
         jLabel22 = new javax.swing.JLabel();
-        jLabel_avatar1 = new javax.swing.JLabel();
-        jLable_bacsi_avatar_url1 = new javax.swing.JLabel();
+        jLabel_doctor_avatar = new javax.swing.JLabel();
+        jLable_doctor_avatar_url = new javax.swing.JLabel();
         jScrollPane8 = new javax.swing.JScrollPane();
         jTable_DoctorSchedul1 = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
@@ -132,7 +165,7 @@ public class DoctorHome extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_Appointments.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -151,132 +184,12 @@ public class DoctorHome extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
+        jScrollPane1.setViewportView(jTable_Appointments);
+        if (jTable_Appointments.getColumnModel().getColumnCount() > 0) {
+            jTable_Appointments.getColumnModel().getColumn(0).setResizable(false);
+            jTable_Appointments.getColumnModel().getColumn(1).setResizable(false);
+            jTable_Appointments.getColumnModel().getColumn(2).setResizable(false);
         }
-
-        jLabel_thongTinBacSi.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel_thongTinBacSi.setText("T");
-
-        jTextField_bacsi_phone.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_bacsi_phoneActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Name");
-
-        jLabel4.setText("Phone");
-
-        jLabel8.setText("BirthDate     YYYY-MM-DD");
-
-        jTextField_bacsi_email.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_bacsi_emailActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Email");
-
-        jRadioButton_bacsi_nam.setText("Male");
-
-        jRadioButton_bacsi_nu.setText("Female");
-
-        jLabel9.setText("Gender");
-
-        jLabel11.setText("Address");
-
-        jLabel12.setText("Insurance_id");
-
-        jLabel_avatar.setText("avatar");
-        jLabel_avatar.setToolTipText("");
-        jLabel_avatar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel_avatarMouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel_thongTinBacSi)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel_bacsi_loi)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField_bacsi_name, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField_bacsi_email, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField_bacsi_phone, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField_bacsi_address, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                            .addComponent(jTextField_bacsi_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel4Layout.createSequentialGroup()
-                                    .addComponent(jRadioButton_bacsi_nam)
-                                    .addGap(32, 32, 32)
-                                    .addComponent(jRadioButton_bacsi_nu))
-                                .addComponent(jLabel9)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel_thongTinBacSi)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addGap(5, 5, 5)
-                .addComponent(jTextField_bacsi_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_bacsi_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_bacsi_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField_bacsi_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addGap(0, 0, 0)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jRadioButton_bacsi_nam)
-                            .addComponent(jRadioButton_bacsi_nu))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_bacsi_address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_bacsi_loi)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
-        jTabbedPane2.addTab("Thông tin bệnh nhân", jPanel4);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -390,6 +303,126 @@ public class DoctorHome extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Khám bệnh", jPanel7);
 
+        jLabel_thongTinBacSi.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel_thongTinBacSi.setText("T");
+
+        jTextField_patient_phone.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_patient_phoneActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Name");
+
+        jLabel4.setText("Phone");
+
+        jLabel8.setText("BirthDate     YYYY-MM-DD");
+
+        jTextField_patient_email.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_patient_emailActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Email");
+
+        jRadioButton_patient_nam.setText("Male");
+
+        jRadioButton_patient_nu.setText("Female");
+
+        jLabel9.setText("Gender");
+
+        jLabel11.setText("Address");
+
+        jLabel12.setText("Insurance_id");
+
+        jLabel_patient_avatar.setText("avatar");
+        jLabel_patient_avatar.setToolTipText("");
+        jLabel_patient_avatar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel_patient_avatarMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_thongTinBacSi)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel_patient_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel_bacsi_loi)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField_patient__name, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField_patient_email, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField_patient_phone, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField_patient_address, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                            .addComponent(jTextField_patient_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jRadioButton_patient_nam)
+                                    .addGap(32, 32, 32)
+                                    .addComponent(jRadioButton_patient_nu))
+                                .addComponent(jLabel9)))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel_thongTinBacSi)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_patient_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addGap(5, 5, 5)
+                .addComponent(jTextField_patient__name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_patient_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_patient_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField_patient_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jRadioButton_patient_nam)
+                            .addComponent(jRadioButton_patient_nu))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_patient_address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_bacsi_loi)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        jTabbedPane2.addTab("Thông tin bệnh nhân", jPanel4);
+
         jLabel23.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel23.setText("Lịch khám hôm nay");
 
@@ -420,7 +453,7 @@ public class DoctorHome extends javax.swing.JFrame {
 
         jTabbedPane.addTab("", jPanel1);
 
-        jTable_DoctorSchedul2.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_DoctorSchedul.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, "10-10-10-10", null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
@@ -439,7 +472,9 @@ public class DoctorHome extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane9.setViewportView(jTable_DoctorSchedul2);
+        jScrollPane9.setViewportView(jTable_DoctorSchedul);
+
+        jLabel_ngayhientai.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -447,15 +482,19 @@ public class DoctorHome extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 896, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 896, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_ngayhientai))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(56, 56, 56)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel_ngayhientai)
+                .addGap(34, 34, 34)
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addContainerGap(159, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("", jPanel2);
@@ -463,25 +502,16 @@ public class DoctorHome extends javax.swing.JFrame {
         jLabel_thongTinBacSi1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel_thongTinBacSi1.setText("T");
 
-        jTextField_bacsi_phone1.addActionListener(new java.awt.event.ActionListener() {
+        jTextField_doctor_phone.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_bacsi_phone1ActionPerformed(evt);
+                jTextField_doctor_phoneActionPerformed(evt);
             }
         });
 
-        jButton_themBacSi1.setText("Thêm");
-        jButton_themBacSi1.addActionListener(new java.awt.event.ActionListener() {
+        jButton13.setText("Cập nhật");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_themBacSi1ActionPerformed(evt);
-            }
-        });
-
-        jButton13.setText("Sửa");
-
-        jButton14.setText("Xóa");
-        jButton14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton14ActionPerformed(evt);
+                jButton13ActionPerformed(evt);
             }
         });
 
@@ -491,25 +521,26 @@ public class DoctorHome extends javax.swing.JFrame {
 
         jLabel15.setText("BirthDate     YYYY-MM-DD");
 
-        jPasswordField_bacsi_pass1.addActionListener(new java.awt.event.ActionListener() {
+        jPasswordField_doctor_pass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField_bacsi_pass1ActionPerformed(evt);
+                jPasswordField_doctor_passActionPerformed(evt);
             }
         });
 
         jLabel16.setText("Password");
 
-        jTextField_bacsi_email1.addActionListener(new java.awt.event.ActionListener() {
+        jTextField_doctor_emai.setEnabled(false);
+        jTextField_doctor_emai.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_bacsi_email1ActionPerformed(evt);
+                jTextField_doctor_emaiActionPerformed(evt);
             }
         });
 
         jLabel7.setText("Email");
 
-        jRadioButton_bacsi_nam1.setText("Male");
+        jRadioButton_doctor_nam.setText("Male");
 
-        jRadioButton_bacsi_nu1.setText("Female");
+        jRadioButton_doctor_nu.setText("Female");
 
         jLabel17.setText("Gender");
 
@@ -519,28 +550,23 @@ public class DoctorHome extends javax.swing.JFrame {
 
         jLabel21.setText("Department_id");
 
-        jTextArea_bacsi_description1.setColumns(20);
-        jTextArea_bacsi_description1.setRows(3);
-        jScrollPane5.setViewportView(jTextArea_bacsi_description1);
+        jTextField_doctor_department_id.setEnabled(false);
 
-        jButton15.setText("Làm mới");
-        jButton15.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton15ActionPerformed(evt);
-            }
-        });
+        jTextArea_doctor_description.setColumns(20);
+        jTextArea_doctor_description.setRows(3);
+        jScrollPane5.setViewportView(jTextArea_doctor_description);
 
         jLabel22.setText("Avatar_url");
 
-        jLabel_avatar1.setText("avatar");
-        jLabel_avatar1.setToolTipText("");
-        jLabel_avatar1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jLabel_doctor_avatar.setText("avatar");
+        jLabel_doctor_avatar.setToolTipText("");
+        jLabel_doctor_avatar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel_avatar1MouseClicked(evt);
+                jLabel_doctor_avatarMouseClicked(evt);
             }
         });
 
-        jLable_bacsi_avatar_url1.setText("file");
+        jLable_doctor_avatar_url.setText("file");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -549,54 +575,49 @@ public class DoctorHome extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel_avatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel19)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addComponent(jLabel22)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLable_bacsi_avatar_url1))
-                        .addComponent(jLabel20)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel_thongTinBacSi1)
-                                .addGap(252, 252, 252))
-                            .addComponent(jLabel15)
-                            .addComponent(jLabel6))
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel_bacsi_loi1)
-                        .addComponent(jLabel7)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addGap(6, 6, 6)
-                            .addComponent(jButton_themBacSi1)
-                            .addGap(18, 18, 18)
-                            .addComponent(jButton13)
-                            .addGap(18, 18, 18)
-                            .addComponent(jButton14)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
-                            .addComponent(jButton15))
+                    .addComponent(jLabel_doctor_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jScrollPane5)
-                        .addComponent(jTextField_bacsi_email1)
-                        .addComponent(jTextField_bacsi_phone1)
-                        .addComponent(jTextField_bacsi_address1)
-                        .addComponent(jPasswordField_bacsi_pass1)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addComponent(jTextField_bacsi_brithdate1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jRadioButton_bacsi_nam1)
-                                    .addGap(32, 32, 32)
-                                    .addComponent(jRadioButton_bacsi_nu1))
-                                .addComponent(jLabel17)))
+                        .addComponent(jTextField_doctor_emai)
+                        .addComponent(jTextField_doctor_phone)
+                        .addComponent(jTextField_doctor_address)
+                        .addComponent(jPasswordField_doctor_pass)
                         .addGroup(jPanel5Layout.createSequentialGroup()
                             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel5)
-                                .addComponent(jTextField_bacsi_name1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jTextField_doctor_name, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel21)
-                                .addComponent(jTextField_bacsi_department_id1)))))
+                                .addComponent(jTextField_doctor_department_id, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)))
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jButton13)
+                                .addComponent(jLabel19)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jLabel22)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLable_doctor_avatar_url))
+                                .addComponent(jLabel20)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                        .addComponent(jLabel_thongTinBacSi1)
+                                        .addGap(252, 252, 252))
+                                    .addComponent(jLabel15)
+                                    .addComponent(jLabel6))
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel_doctor_loi)
+                                .addComponent(jLabel7)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jTextField_doctor_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                            .addComponent(jRadioButton_doctor_nam)
+                                            .addGap(32, 32, 32)
+                                            .addComponent(jRadioButton_doctor_nu))
+                                        .addComponent(jLabel17))))
+                            .addGap(0, 0, Short.MAX_VALUE))))
                 .addContainerGap(10, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
@@ -605,45 +626,45 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel_thongTinBacSi1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_avatar1, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel_doctor_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addGap(5, 5, 5)
-                        .addComponent(jTextField_bacsi_name1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextField_doctor_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel21)
                         .addGap(4, 4, 4)
-                        .addComponent(jTextField_bacsi_department_id1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTextField_doctor_department_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_bacsi_email1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextField_doctor_emai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jTextField_bacsi_phone1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jTextField_doctor_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(1, 1, 1)
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField_bacsi_brithdate1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jTextField_doctor_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel17)
                         .addGap(0, 0, 0)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jRadioButton_bacsi_nam1)
-                            .addComponent(jRadioButton_bacsi_nu1))))
+                            .addComponent(jRadioButton_doctor_nam)
+                            .addComponent(jRadioButton_doctor_nu))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel19)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_bacsi_address1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextField_doctor_address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel22)
-                    .addComponent(jLable_bacsi_avatar_url1))
+                    .addComponent(jLable_doctor_avatar_url))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel20)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -651,15 +672,11 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel16)
                 .addGap(7, 7, 7)
-                .addComponent(jPasswordField_bacsi_pass1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPasswordField_doctor_pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_bacsi_loi1)
+                .addComponent(jLabel_doctor_loi)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton_themBacSi1)
-                    .addComponent(jButton13)
-                    .addComponent(jButton14)
-                    .addComponent(jButton15))
+                .addComponent(jButton13)
                 .addGap(0, 134, Short.MAX_VALUE))
         );
 
@@ -866,31 +883,358 @@ public class DoctorHome extends javax.swing.JFrame {
             }
         });
     }
-    private void jTextField_bacsi_phone1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_bacsi_phone1ActionPerformed
+
+    private void loadListDoctorSchedul(int doctor_id) {
+        String token = SessionManager.getInstance().getToken();
+        listDoctorSchedules = new ArrayList<>();
+        authService.getSchedule(token, doctor_id).enqueue(new Callback<List<DoctorSchedule>>() {
+            @Override
+            public void onResponse(Call<List<DoctorSchedule>> call, Response<List<DoctorSchedule>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listDoctorSchedules = response.body();
+                    setTableDoctorSchedules(listDoctorSchedules);
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DoctorSchedule>> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+            }
+        });
+    }
+
+    private void loadListAppointments(String appointmentDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = formatter.format(new Date());
+
+        Calendar calendar = Calendar.getInstance();
+        int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+
+        jLabel_ngayhientai.setText("Ngày hôm nay: " + formattedDate + " - Tuần: " + weekOfYear);
+
+        listAppointments = new ArrayList<>();
+        String token = SessionManager.getInstance().getToken();
+        authService.getAppointmentsByDoctor(token, appointmentDate).enqueue(new Callback<List<Appointment>>() {
+            @Override
+            public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listAppointments = response.body();
+                    setTableAppointments(listAppointments);
+                } else {
+                    setTableAppointments(listAppointments);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Appointment>> call, Throwable thrwbl) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        });
+    }
+
+    //set table
+    private void setTableAppointments(List<Appointment> appointments) {
+        DefaultTableModel model = (DefaultTableModel) jTable_Appointments.getModel();
+        model.setRowCount(0);
+
+        for (Appointment appointment : appointments) {
+            String shift = "00";
+            if (appointment.getShiftName().equals("Shift 1")) {
+                shift = "7h-9h";
+            } else if (appointment.getShiftName().equals("Shift 2")) {
+                shift = "9h-11h";
+            } else if (appointment.getShiftName().equals("Shift 3")) {
+                shift = "13h-15h";
+            } else if (appointment.getShiftName().equals("Shift 4")) {
+                shift = "15h-17h";
+            }
+            model.addRow(new Object[]{
+                appointment.getPatientName(),
+                DateUtils.formatDate(appointment.getAppointmentDate()),
+                shift
+            });
+        }
+    }
+
+    private void setTableDoctorSchedules(List<DoctorSchedule> doctorSchedules) {
+        DefaultTableModel model = (DefaultTableModel) jTable_DoctorSchedul.getModel();
+        model.setRowCount(0);
+
+        for (DoctorSchedule doctorSchedule : doctorSchedules) {
+            model.addRow(new Object[]{
+                doctorSchedule.getWeek(),
+                doctorSchedule.getMonday(),
+                doctorSchedule.getTuesday(),
+                doctorSchedule.getWednesday(),
+                doctorSchedule.getThursday(),
+                doctorSchedule.getFriday(),
+                doctorSchedule.getSaturday(),
+                doctorSchedule.getSunday()
+            });
+        }
+    }
+
+    private void setDoctor_toUI(Doctor doctorResponse) {
+        jLabel_thongTinBacSi.setText("Thông tin bác sĩ: " + doctorResponse.getFull_name());
+
+        jTextField_doctor_name.setText(doctorResponse.getFull_name());
+        jTextField_doctor_emai.setText(doctorResponse.getEmail());
+        jTextField_doctor_phone.setText(doctorResponse.getPhone());
+        jTextField_doctor_brithdate.setText(doctorResponse.getDate_of_birth());
+        String gender = doctorResponse.getGender();
+        if (gender.equals("Male")) {
+            jRadioButton_doctor_nam.setSelected(true);
+        } else if (gender.equals("Female")) {
+            jRadioButton_doctor_nu.setSelected(true);
+        }
+        jLable_doctor_avatar_url.setText(doctorResponse.getAvatar_url());
+        downloadAvatar();
+
+        jTextArea_doctor_description.setText(doctorResponse.getDescription());
+        jTextArea_doctor_description.setLineWrap(true);
+        jTextArea_doctor_description.setWrapStyleWord(true);
+        jTextField_doctor_address.setText(doctorResponse.getAddress());
+
+        jTextField_doctor_department_id.setText(doctorResponse.getDepartment_name());
+        jPasswordField_doctor_pass.setText("");
+    }
+
+    private Doctor getDoctorFromUI() {
+        Doctor getDoctor = new Doctor();
+        char[] passChars = jPasswordField_doctor_pass.getPassword();
+        String password = new String(passChars);
+
+        // Kiểm tra dữ liệu nhập vào
+        getDoctor.setFull_name(jTextField_doctor_name.getText().trim());
+        getDoctor.setEmail(jTextField_doctor_emai.getText().trim());
+        getDoctor.setPhone(jTextField_doctor_phone.getText().trim());
+        getDoctor.setDate_of_birth(jTextField_doctor_brithdate.getText().trim());
+
+        if (jRadioButton_doctor_nam.isSelected()) {
+            getDoctor.setGender("Male");
+        } else if (jRadioButton_doctor_nu.isSelected()) {
+            getDoctor.setGender("Female");
+        }
+
+        if (!password.isEmpty()) {
+            getDoctor.setPassword(password);
+        }
+
+        getDoctor.setAddress(jTextField_doctor_address.getText().trim()); // Nếu có trường địa chỉ
+        getDoctor.setDescription(jTextArea_doctor_description.getText().trim());
+        getDoctor.setDepartment_id(doctor.getDepartment_id());
+
+        return getDoctor;
+    }
+
+    //Avatar
+    private void uploadAvatar() {
+        JFileChooser fileChooser = new JFileChooser();
+        if (fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+            JOptionPane.showMessageDialog(this, "bi gi do");
+            return;
+        }
+
+        File file = fileChooser.getSelectedFile();
+        if (!file.exists() || !file.canRead()) {
+            JOptionPane.showMessageDialog(this, "Không thể đọc file được chọn");
+            return;
+        }
+
+        if (file.length() > 5_000_000) {
+            JOptionPane.showMessageDialog(this, "File quá lớn (tối đa 5MB)");
+            return;
+        }
+
+        File inputFile = fileChooser.getSelectedFile();
+        File outputFile = new File("compressed.jpg"); // Ảnh sau khi giảm kích thước
+
+        try {
+            compressImage(inputFile, outputFile, 100 * 1024); // 100KB
+            System.out.println("Image compressed successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), outputFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", outputFile.getName(), requestFile);
+
+        String token = SessionManager.getInstance().getToken();
+
+        authService.uploadAvatar(body, token).enqueue(new Callback<AvatarResponse>() {
+            @Override
+            public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
+                if (response.isSuccessful()) {
+                    JOptionPane.showMessageDialog(DoctorHome.this, "Tải ảnh đại diện thành công");
+                    jLabel_doctor_avatar.setText("");
+                    downloadAvatar();
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AvatarResponse> call, Throwable t) {
+                t.printStackTrace();
+                JOptionPane.showMessageDialog(DoctorHome.this, "Lỗi: " + t.getMessage());
+            }
+        });
+
+        // Reset selectedAvatarFile sau khi đã xử lý
+    }
+
+    public static void compressImage(File inputFile, File outputFile, long targetSize) throws IOException {
+        BufferedImage image = ImageIO.read(inputFile);
+
+        float quality = 1.0f; // Bắt đầu với chất lượng cao nhất
+        while (true) {
+            try (FileOutputStream fos = new FileOutputStream(outputFile); ImageOutputStream ios = ImageIO.createImageOutputStream(fos)) {
+
+                Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+                if (!writers.hasNext()) {
+                    throw new IllegalStateException("No writers found");
+                }
+                ImageWriter writer = writers.next();
+                writer.setOutput(ios);
+
+                ImageWriteParam param = writer.getDefaultWriteParam();
+                param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                param.setCompressionQuality(quality);
+
+                writer.write(null, new IIOImage(image, null, null), param);
+                writer.dispose();
+            }
+
+            if (outputFile.length() <= targetSize || quality <= 0.1f) {
+                break;
+            }
+
+            quality -= 0.05f; // Giảm chất lượng dần dần
+        }
+    }
+
+    private void downloadAvatar() {
+        String token = SessionManager.getInstance().getToken();
+
+        authService.getAvatar(token).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try (InputStream inputStream = response.body().byteStream()) {
+                        byte[] bytes = inputStream.readAllBytes();
+
+//                        ImageIcon avatarIcon = new ImageIcon(bytes);
+//                        Image scaledImage = avatarIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+//                        jLabel_avatar.setIcon(new ImageIcon(scaledImage));
+//                        jLabel_avatar.setText("");
+                        ImageIcon avatarIcon = cropAndScaleImage(bytes, 100, 100);
+                        if (avatarIcon != null) {
+                            jLabel_doctor_avatar.setIcon(avatarIcon);
+                            jLabel_doctor_avatar.setText("");
+                        }
+
+                    } catch (IOException e) {
+                        jLabel_doctor_avatar.setText("Không thể tải ảnh đại diện");
+                        jLabel_doctor_avatar.setIcon(null);
+                    }
+                } else {
+                    jLabel_doctor_avatar.setText("Không thể tải ảnh đại diện");
+                    jLabel_doctor_avatar.setIcon(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                JOptionPane.showMessageDialog(DoctorHome.this, "Lỗi: " + t.getMessage());
+            }
+        });
+    }
+
+    public ImageIcon cropAndScaleImage(byte[] imageBytes, int targetWidth, int targetHeight) {
+        try {
+            BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+
+            int originalWidth = originalImage.getWidth();
+            int originalHeight = originalImage.getHeight();
+
+            float originalRatio = (float) originalWidth / originalHeight;
+            float targetRatio = (float) targetWidth / targetHeight;
+
+            int cropWidth = originalWidth;
+            int cropHeight = originalHeight;
+
+            // Cắt ảnh theo chiều phù hợp để giữ đúng tỉ lệ
+            if (originalRatio > targetRatio) {
+                // Cắt chiều rộng
+                cropWidth = (int) (originalHeight * targetRatio);
+            } else {
+                // Cắt chiều cao
+                cropHeight = (int) (originalWidth / targetRatio);
+            }
+
+            // Tính tọa độ bắt đầu để crop giữa ảnh
+            int x = (originalWidth - cropWidth) / 2;
+            int y = (originalHeight - cropHeight) / 2;
+
+            // Crop ảnh
+            BufferedImage croppedImage = originalImage.getSubimage(x, y, cropWidth, cropHeight);
+
+            // Scale ảnh đã crop
+            Image scaledImage = croppedImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+
+            return new ImageIcon(scaledImage);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void updateDoctor() {
+        String token = SessionManager.getInstance().getToken();
+        Doctor getDoctor = getDoctorFromUI();
+
+        authService.updateDoctor(token, getDoctor, user_id).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    JOptionPane.showMessageDialog(DoctorHome.this, "Thành công");
+                    loadDoctorProfile();
+                } else {
+                    JOptionPane.showMessageDialog(DoctorHome.this, "Thất bại: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(DoctorHome.this, "Loi");
+            }
+        });
+    }
+
+    //Avatar
+    private void jTextField_doctor_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_doctor_phoneActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_bacsi_phone1ActionPerformed
+    }//GEN-LAST:event_jTextField_doctor_phoneActionPerformed
 
-    private void jButton_themBacSi1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_themBacSi1ActionPerformed
-    }//GEN-LAST:event_jButton_themBacSi1ActionPerformed
-
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+    private void jPasswordField_doctor_passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_doctor_passActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton14ActionPerformed
+    }//GEN-LAST:event_jPasswordField_doctor_passActionPerformed
 
-    private void jPasswordField_bacsi_pass1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_bacsi_pass1ActionPerformed
+    private void jTextField_doctor_emaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_doctor_emaiActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField_bacsi_pass1ActionPerformed
+    }//GEN-LAST:event_jTextField_doctor_emaiActionPerformed
 
-    private void jTextField_bacsi_email1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_bacsi_email1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_bacsi_email1ActionPerformed
-
-    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-    }//GEN-LAST:event_jButton15ActionPerformed
-
-    private void jLabel_avatar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_avatar1MouseClicked
-
-    }//GEN-LAST:event_jLabel_avatar1MouseClicked
+    private void jLabel_doctor_avatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_doctor_avatarMouseClicked
+        uploadAvatar();
+    }//GEN-LAST:event_jLabel_doctor_avatarMouseClicked
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         SessionManager.getInstance().clearSession(doctor.getUser_id());
@@ -898,17 +1242,17 @@ public class DoctorHome extends javax.swing.JFrame {
         DoctorHome.this.dispose();
     }//GEN-LAST:event_jButton11ActionPerformed
 
-    private void jLabel_avatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_avatarMouseClicked
+    private void jLabel_patient_avatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_patient_avatarMouseClicked
 
-    }//GEN-LAST:event_jLabel_avatarMouseClicked
+    }//GEN-LAST:event_jLabel_patient_avatarMouseClicked
 
-    private void jTextField_bacsi_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_bacsi_emailActionPerformed
+    private void jTextField_patient_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_patient_emailActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_bacsi_emailActionPerformed
+    }//GEN-LAST:event_jTextField_patient_emailActionPerformed
 
-    private void jTextField_bacsi_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_bacsi_phoneActionPerformed
+    private void jTextField_patient_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_patient_phoneActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_bacsi_phoneActionPerformed
+    }//GEN-LAST:event_jTextField_patient_phoneActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         jTabbedPane.setSelectedIndex(0);
@@ -920,7 +1264,12 @@ public class DoctorHome extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         jTabbedPane.setSelectedIndex(2);
+        setDoctor_toUI(doctor);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        updateDoctor();
+    }//GEN-LAST:event_jButton13ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -962,15 +1311,12 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
-    private javax.swing.JButton jButton_themBacSi1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -993,15 +1339,16 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel jLabel_avatar;
-    private javax.swing.JLabel jLabel_avatar1;
     private javax.swing.JLabel jLabel_bacsi_loi;
-    private javax.swing.JLabel jLabel_bacsi_loi1;
+    private javax.swing.JLabel jLabel_doctor_avatar;
     private javax.swing.JLabel jLabel_doctor_email;
+    private javax.swing.JLabel jLabel_doctor_loi;
     private javax.swing.JLabel jLabel_doctor_name;
+    private javax.swing.JLabel jLabel_ngayhientai;
+    private javax.swing.JLabel jLabel_patient_avatar;
     private javax.swing.JLabel jLabel_thongTinBacSi;
     private javax.swing.JLabel jLabel_thongTinBacSi1;
-    private javax.swing.JLabel jLable_bacsi_avatar_url1;
+    private javax.swing.JLabel jLable_doctor_avatar_url;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1011,11 +1358,11 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
-    private javax.swing.JPasswordField jPasswordField_bacsi_pass1;
-    private javax.swing.JRadioButton jRadioButton_bacsi_nam;
-    private javax.swing.JRadioButton jRadioButton_bacsi_nam1;
-    private javax.swing.JRadioButton jRadioButton_bacsi_nu;
-    private javax.swing.JRadioButton jRadioButton_bacsi_nu1;
+    private javax.swing.JPasswordField jPasswordField_doctor_pass;
+    private javax.swing.JRadioButton jRadioButton_doctor_nam;
+    private javax.swing.JRadioButton jRadioButton_doctor_nu;
+    private javax.swing.JRadioButton jRadioButton_patient_nam;
+    private javax.swing.JRadioButton jRadioButton_patient_nu;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1025,24 +1372,24 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTable_Appointments;
+    private javax.swing.JTable jTable_DoctorSchedul;
     private javax.swing.JTable jTable_DoctorSchedul1;
-    private javax.swing.JTable jTable_DoctorSchedul2;
-    private javax.swing.JTextArea jTextArea_bacsi_description1;
+    private javax.swing.JTextArea jTextArea_doctor_description;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField_bacsi_address;
-    private javax.swing.JTextField jTextField_bacsi_address1;
-    private javax.swing.JTextField jTextField_bacsi_brithdate;
-    private javax.swing.JTextField jTextField_bacsi_brithdate1;
-    private javax.swing.JTextField jTextField_bacsi_department_id1;
-    private javax.swing.JTextField jTextField_bacsi_email;
-    private javax.swing.JTextField jTextField_bacsi_email1;
-    private javax.swing.JTextField jTextField_bacsi_name;
-    private javax.swing.JTextField jTextField_bacsi_name1;
-    private javax.swing.JTextField jTextField_bacsi_phone;
-    private javax.swing.JTextField jTextField_bacsi_phone1;
+    private javax.swing.JTextField jTextField_doctor_address;
+    private javax.swing.JTextField jTextField_doctor_brithdate;
+    private javax.swing.JTextField jTextField_doctor_department_id;
+    private javax.swing.JTextField jTextField_doctor_emai;
+    private javax.swing.JTextField jTextField_doctor_name;
+    private javax.swing.JTextField jTextField_doctor_phone;
+    private javax.swing.JTextField jTextField_patient__name;
+    private javax.swing.JTextField jTextField_patient_address;
+    private javax.swing.JTextField jTextField_patient_brithdate;
+    private javax.swing.JTextField jTextField_patient_email;
+    private javax.swing.JTextField jTextField_patient_phone;
     private java.awt.TextArea textArea1;
     // End of variables declaration//GEN-END:variables
 }

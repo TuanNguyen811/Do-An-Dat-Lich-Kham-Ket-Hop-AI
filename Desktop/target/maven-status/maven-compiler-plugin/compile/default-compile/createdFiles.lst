@@ -8,6 +8,7 @@ com\mycompany\desktop\models\TokenResponse.class
 com\mycompany\desktop\AdminHome$20.class
 com\mycompany\desktop\AdminHome$2.class
 com\mycompany\desktop\AdminHome$15.class
+com\mycompany\desktop\DoctorHome$22.class
 com\mycompany\desktop\AdminHome$9.class
 com\mycompany\desktop\AdminHome$35.class
 com\mycompany\desktop\AdminHome$19.class
@@ -27,6 +28,7 @@ com\mycompany\desktop\AdminHome$23.class
 com\mycompany\desktop\API\TokenInterceptor.class
 com\mycompany\desktop\AdminHome$5.class
 com\mycompany\desktop\Desktop.class
+com\mycompany\desktop\DoctorHome$20.class
 com\mycompany\desktop\AdminHome$13.class
 com\mycompany\desktop\AdminHome$33.class
 com\mycompany\desktop\AdminHome$17.class
@@ -38,5 +40,6 @@ com\mycompany\desktop\AdminHome$4.class
 com\mycompany\desktop\AdminHome$29.class
 com\mycompany\desktop\AdminHome$14.class
 com\mycompany\desktop\AdminHome.class
+com\mycompany\desktop\DoctorHome$21.class
 com\mycompany\desktop\AdminHome$22.class
 com\mycompany\desktop\AdminHome$34.class

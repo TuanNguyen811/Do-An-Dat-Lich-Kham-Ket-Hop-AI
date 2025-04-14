@@ -47,13 +47,13 @@ def read_doctor_me(
     if current_user["role"] != "Doctor":
         raise HTTPException(status_code=403, detail="Not a doctor account")
 
-    doctor = crud_doctor.get_doctor(db, doctor_id=current_user["user_id"])
+    doctor = crud_doctor.get_doctor2(db, doctor_id=current_user["user_id"])
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor profile not found")
 
     # Convert row object to dictionary that can be serialized
-    doctor_dict = {column: getattr(doctor, column) for column in doctor._mapping.keys()}
-    return doctor_dict
+    #doctor_dict = {column: getattr(doctor, column) for column in doctor._mapping.keys()}
+    return doctor
 
 # Doctor routes
 @router.get("/doctors", response_model=List[Dict[str, Any]])
@@ -101,22 +101,22 @@ def get_doctor(
     return doctor_dict
 
 
-@router.put("/profile/doctor/update", response_model=Dict[str, Any])
+@router.put("/profile/doctor/update/{doctor_id}", response_model=Dict[str, Any])
 def update_doctor_me(
         doctor_update: schemas.DoctorUpdate,
         current_user: Dict[str, Any] = Depends(deps.get_current_user),
+        doctor_id: int = None,
         db: Session = Depends(deps.get_db)
 ):
-    if current_user.get("role") != "Doctor":
-        raise HTTPException(status_code=403, detail="Not a doctor account")
-
-    user_id = current_user.get("user_id")
-
     # Convert Pydantic model to dict and remove None values
     update_data = {k: v for k, v in doctor_update.dict().items() if v is not None}
 
-    # Update the doctor
-    updated_doctor = crud.update_doctor(db, doctor_id=user_id, doctor_data=update_data)
+    if current_user.get("role") == "Admin":
+        updated_doctor = crud.update_doctor(db, doctor_id=doctor_id, doctor_data=update_data)
+    else:
+        user_id = current_user.get("user_id")
+        updated_doctor = crud.update_doctor(db, doctor_id=user_id, doctor_data=update_data)
+
     if not updated_doctor:
         raise HTTPException(status_code=404, detail="Doctor not found")
 

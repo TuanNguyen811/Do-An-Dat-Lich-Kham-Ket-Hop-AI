@@ -10,6 +10,7 @@ package com.mycompany.desktop.models;
  */
 public class Doctor extends User{
     private int department_id;
+    private String department_name;
     private String description;
 
     public Doctor() {
@@ -25,6 +26,14 @@ public class Doctor extends User{
         super(user_id, email, full_name, phone, date_of_birth, gender, address, avatar_url, password);
         this.department_id = department_id;
         this.description = description;
+    }
+
+    public String getDepartment_name() {
+        return department_name;
+    }
+
+    public void setDepartment_name(String department_name) {
+        this.department_name = department_name;
     }
 
     public int getDepartment_id() {

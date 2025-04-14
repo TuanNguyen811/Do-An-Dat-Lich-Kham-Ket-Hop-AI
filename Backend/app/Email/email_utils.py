@@ -6,7 +6,7 @@ import logging
 #Cau hinh log
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
+#hi
 #Tao ma OTP ngau nhien
 def generate_otp(length=6):
     otp = ""

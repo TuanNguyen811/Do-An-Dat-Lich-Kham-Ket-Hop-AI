@@ -5,7 +5,6 @@ from typing import Dict, Any, List
 import crud
 import schemas
 from Oauth import deps
-from crud import crud_admin, crud_doctor, crud_patient
 
 router = APIRouter(prefix="", tags=["departments"])
 

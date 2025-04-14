@@ -51,7 +51,6 @@ def count_and_schedule_appointments(
     # Get week and weekday
     week, weekday = get_week_and_weekday(appointment_date)
 
-
     #dem max
     # Get doctor's schedule for the week
     doctor_schedules = crud_DoctorSchedule.get_doctor_schedules_by_week(db, week, doctor_id=doctor_id)
@@ -97,6 +96,7 @@ def get_appointments(
     elif user_role == "Doctor":
         # Doctors can only see appointments they are assigned to
         appointments = [a for a in appointments if a['doctor_id'] == user_id]
+
 
     return appointments
 

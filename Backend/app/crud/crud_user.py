@@ -3,8 +3,7 @@ from sqlalchemy.orm import Session
 
 from Oauth import verify_password, security
 import schemas
-from typing import Optional, Dict, Any, List
-
+from typing import Dict, Any, List
 
 # User CRUD operations
 def get_user_by_email(db: Session, email: str):

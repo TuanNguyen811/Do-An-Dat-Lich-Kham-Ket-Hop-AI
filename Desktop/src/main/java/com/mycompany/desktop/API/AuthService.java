@@ -151,4 +151,24 @@ public interface AuthService {
             @Query("appointment_date") String appointment_date
     );
 
+    //Patient
+    @GET("patients/{patient_id}")
+    Call<Patient> getPatient(
+            @Header("Authorization") String token,
+            @Path("patient_id") int patient_id
+    );
+
+    // Create a new health metric
+    @POST("/doctor/patient/{patient_id}/health-metrics")
+    Call<PatientHealthMetrics> createHealthMetric(
+            @Header("Authorization") String token,
+            @Body PatientHealthMetrics healthMetrics,
+            @Path("patient_id") int patient_id
+    );
+
+    @GET("/doctor/patient/{patient_id}/health-metrics")
+    Call<PatientHealthMetrics> getHealthMetrics(
+            @Header("Authorization") String token,
+            @Path("patient_id") int patient_id
+    );
 }

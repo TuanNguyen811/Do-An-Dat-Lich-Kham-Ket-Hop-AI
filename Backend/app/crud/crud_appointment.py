@@ -5,6 +5,7 @@ import schemas
 import crud
 
 from typing import Optional, Dict, Any, List
+from datetime import datetime
 
 
 # Appointment CRUD operations
@@ -14,25 +15,73 @@ def get_appointment(db: Session, appointment_id: int):
     return result
 
 
-def get_appointments(db: Session, skip: int = 0, limit: int = 100) -> List[dict]:
-    query = text("SELECT * FROM Appointments LIMIT :limit OFFSET :skip")
-    result = db.execute(query, {"skip": skip, "limit": limit}).fetchall()
+
+def get_appointments(db: Session, doctor_id: int, appointment_date: Optional[str] = None, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
+    # Default to the current date if appointment_date is not provided
+    if not appointment_date:
+        appointment_date = datetime.now().strftime('%Y-%m-%d')
+
+        query = text("""
+            SELECT a.appointment_id, a.patient_id, pu.full_name AS patient_name, pu.phone AS patient_phone, 
+                   pu.gender AS patient_gender, pu.date_of_birth AS patient_date_of_birth, 
+                   a.doctor_id, du.full_name AS doctor_name, du.avatar_url AS doctor_avatar_url, 
+                   a.department_id, dep.name AS department_name, a.appointment_date, a.shift, 
+                   a.description, a.status, a.created_at
+            FROM Appointments a
+            JOIN Patients p ON a.patient_id = p.patient_id
+            JOIN Users pu ON p.patient_id = pu.user_id
+            JOIN Doctors d ON a.doctor_id = d.doctor_id
+            JOIN Users du ON d.doctor_id = du.user_id
+            JOIN Departments dep ON a.department_id = dep.department_id
+            WHERE a.doctor_id = :doctor_id AND a.appointment_date >= :appointment_date
+            LIMIT :limit OFFSET :skip
+        """)
+    else:
+        query = text("""
+            SELECT a.appointment_id, a.patient_id, pu.full_name AS patient_name, pu.phone AS patient_phone, 
+                   pu.gender AS patient_gender, pu.date_of_birth AS patient_date_of_birth, 
+                   a.doctor_id, du.full_name AS doctor_name, du.avatar_url AS doctor_avatar_url, 
+                   a.department_id, dep.name AS department_name, a.appointment_date, a.shift, 
+                   a.description, a.status, a.created_at
+            FROM Appointments a
+            JOIN Patients p ON a.patient_id = p.patient_id
+            JOIN Users pu ON p.patient_id = pu.user_id
+            JOIN Doctors d ON a.doctor_id = d.doctor_id
+            JOIN Users du ON d.doctor_id = du.user_id
+            JOIN Departments dep ON a.department_id = dep.department_id
+            WHERE a.doctor_id = :doctor_id AND a.appointment_date = :appointment_date
+            LIMIT :limit OFFSET :skip
+        """)
+    # Execute the query with parameters
+
+    result = db.execute(query, {
+        "doctor_id": doctor_id,
+        "appointment_date": appointment_date,
+        "skip": skip,
+        "limit": limit
+    }).fetchall()
 
     appointments = [
         {
             "appointment_id": row[0],
             "patient_id": row[1],
-            "doctor_id": row[2],
-            "department_id": row[3],
-            "appointment_date": row[4],
-            "shift": row[5],
-            "description": row[6],
-            "status": row[7],
-            "created_at": row[8]
+            "patient_name": row[2],
+            "patient_phone": row[3],
+            "patient_gender": row[4],
+            "patient_date_of_birth": row[5],
+            "doctor_id": row[6],
+            "doctor_name": row[7],
+            "doctor_avatar_url": row[8],
+            "department_id": row[9],
+            "department_name": row[10],
+            "appointment_date": row[11],
+            "shift": row[12],
+            "description": row[13],
+            "status": row[14],
+            "created_at": row[15]
         } for row in result
     ]
     return appointments
-
 
 def get_appointments_by_patient(db: Session, patient_id: int, status: str, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
     query = text("""
@@ -74,7 +123,7 @@ def get_appointments_by_patient(db: Session, patient_id: int, status: str, skip:
     ]
     return appointments
 
-def get_appointments_by_doctor(db: Session, doctor_id: int, status: str, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
+def get_appointments_by_doctor(db: Session, doctor_id: int, appointment_date: str, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
     query = text("""
         SELECT a.appointment_id, a.patient_id, pu.full_name AS patient_name, a.doctor_id, du.full_name AS doctor_name,
                a.department_id, dep.name AS department_name, a.appointment_date, a.shift, a.description, a.status, a.created_at
@@ -84,10 +133,10 @@ def get_appointments_by_doctor(db: Session, doctor_id: int, status: str, skip: i
         JOIN Doctors d ON a.doctor_id = d.doctor_id
         JOIN Users du ON d.doctor_id = du.user_id
         JOIN Departments dep ON a.department_id = dep.department_id
-        WHERE a.doctor_id = :doctor_id AND a.status = :status
+        WHERE a.doctor_id = :doctor_id AND a.appointment_date = :appointment_date
         LIMIT :limit OFFSET :skip
     """)
-    result = db.execute(query, {"doctor_id": doctor_id, "status": status, "skip": skip, "limit": limit}).fetchall()
+    result = db.execute(query, {"doctor_id": doctor_id, "appointment_date": appointment_date, "skip": skip, "limit": limit}).fetchall()
 
     appointments = [
         {

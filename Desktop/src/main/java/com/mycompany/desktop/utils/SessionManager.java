@@ -3,18 +3,16 @@ package com.mycompany.desktop.utils;
 import java.util.prefs.Preferences;
 
 public class SessionManager {
-    private static final String PREF_NAME = "com.example.app.utils";
-    private static final String KEY_TOKEN = "token";
-    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
-
     private static SessionManager instance;
     private Preferences preferences;
+    private int currentUserId = 0;
+
+    private static final String PREF_NAME = "com.mycompany.desktop.utils";
 
     public SessionManager() {
         preferences = Preferences.userRoot().node(PREF_NAME);
     }
 
-    // Singleton - đảm bảo chỉ có một instance được dùng
     public static SessionManager getInstance() {
         if (instance == null) {
             instance = new SessionManager();
@@ -22,21 +20,31 @@ public class SessionManager {
         return instance;
     }
 
-    public void saveToken(String token) {
-        preferences.put(KEY_TOKEN, token);
-        preferences.putBoolean(KEY_IS_LOGGED_IN, true);
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
+    }
+
+    public int getCurrentUserId() {
+        return this.currentUserId;
+    }
+
+    public void saveToken(int userId, String token) {
+        preferences.put(userId + "_token", token);
+        preferences.putBoolean(userId + "_isLoggedIn", true);
     }
 
     public String getToken() {
-        return preferences.get(KEY_TOKEN, null);
+        if (currentUserId == 0) return null;
+        return preferences.get(currentUserId + "_token", null);
     }
 
     public boolean isLoggedIn() {
-        return preferences.getBoolean(KEY_IS_LOGGED_IN, false);
+        if (currentUserId == 0) return false;
+        return preferences.getBoolean(currentUserId + "_isLoggedIn", false);
     }
 
-    public void clearSession() {
-        preferences.remove(KEY_TOKEN);
-        preferences.remove(KEY_IS_LOGGED_IN);
+    public void clearSession(int userId) {
+        preferences.remove(userId + "_token");
+        preferences.remove(userId + "_isLoggedIn");
     }
 }

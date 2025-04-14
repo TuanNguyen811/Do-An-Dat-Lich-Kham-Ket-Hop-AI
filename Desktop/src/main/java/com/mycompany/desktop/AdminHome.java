@@ -26,6 +26,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.google.gson.Gson;
+import com.mycompany.desktop.utils.DateUtils;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -59,14 +60,22 @@ public class AdminHome extends javax.swing.JFrame {
     private List<Department> listDepartments;
     private List<Doctor> listDoctors;
     private List<DoctorSchedule> listDoctorSchedules;
+    private List<Appointment> listAppointments;
+    private Admin admin;
+    private int user_id;
 
     /**
      * Creates new form AdminHome
      */
-    public AdminHome() {
+    public AdminHome(int user_id) {
         initComponents();
+
+        this.user_id = user_id;
+        SessionManager.getInstance().setCurrentUserId(user_id);
+
         authService = APIClient.getAuthService();
         loadAdminProfile();
+
         loadListDepartments();
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -151,7 +160,7 @@ public class AdminHome extends javax.swing.JFrame {
         jButton12 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jScrollPane7 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        jTable_Appointments = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
         jPanel_admin = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -490,7 +499,7 @@ public class AdminHome extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jLabel14)
                                 .addComponent(jTextField_bacsi_department_id)))))
-                .addContainerGap(362, Short.MAX_VALUE))
+                .addContainerGap(274, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -625,7 +634,7 @@ public class AdminHome extends javax.swing.JFrame {
                         .addComponent(jButton12))
                     .addComponent(jLabel18)
                     .addComponent(jLabel_ngayhientai))
-                .addContainerGap(94, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -646,7 +655,7 @@ public class AdminHome extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Lịch làm việc", jPanel6);
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_Appointments.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -654,10 +663,16 @@ public class AdminHome extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Tên bệnh nhân", "Gmail", "Ngày", "Thời gian"
             }
         ));
-        jScrollPane7.setViewportView(jTable2);
+        jScrollPane7.setViewportView(jTable_Appointments);
+        if (jTable_Appointments.getColumnModel().getColumnCount() > 0) {
+            jTable_Appointments.getColumnModel().getColumn(0).setResizable(false);
+            jTable_Appointments.getColumnModel().getColumn(1).setResizable(false);
+            jTable_Appointments.getColumnModel().getColumn(2).setResizable(false);
+            jTable_Appointments.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -665,8 +680,8 @@ public class AdminHome extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 657, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(91, Short.MAX_VALUE))
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -684,7 +699,8 @@ public class AdminHome extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane2))
+                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 666, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(88, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -785,14 +801,13 @@ public class AdminHome extends javax.swing.JFrame {
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel_admin_name)
-                        .addComponent(jLabel_admin_email)
-                        .addComponent(jButton7))
+                .addGap(15, 15, 15)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_admin_name)
+                    .addComponent(jLabel_admin_email)
+                    .addComponent(jButton7)
                     .addComponent(jLabel16))
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -866,7 +881,7 @@ public class AdminHome extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 14, Short.MAX_VALUE)
+                        .addGap(13, 13, 13)
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -881,7 +896,7 @@ public class AdminHome extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        SessionManager.getInstance().clearSession();
+        SessionManager.getInstance().clearSession(admin.getUser_id());
 
         new Login().setVisible(true);
         AdminHome.this.dispose();
@@ -960,6 +975,7 @@ public class AdminHome extends javax.swing.JFrame {
             Doctor doctorResponse = listDoctors.get(row);
             setDoctor_toUI(doctorResponse);
             loadListDoctorSchedul(doctorResponse.getUser_id());
+            loadListAppointments("", doctorResponse.getUser_id());
         }
     }//GEN-LAST:event_jTable_doctorMouseClicked
 
@@ -1008,12 +1024,13 @@ public class AdminHome extends javax.swing.JFrame {
                 if (response.isSuccessful() && response.body() != null) {
                     jLabel_admin_name.setText(response.body().getFull_name());
                     jLabel_admin_email.setText(response.body().getEmail());
+                    admin = response.body();
+                    SessionManager.getInstance().setCurrentUserId(admin.getUser_id());
                 } else {
                     // Handle error
                     if (response.code() == 401) {
                         // Token expired or invalid
                         JOptionPane.showMessageDialog(null, "Session expired. Please login again.");
-                        SessionManager.getInstance().clearSession();
                         new Login().setVisible(true);
                         AdminHome.this.dispose();
 
@@ -1045,7 +1062,7 @@ public class AdminHome extends javax.swing.JFrame {
             public void onResponse(Call<List<Department>> call, Response<List<Department>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listDepartments = response.body();
-                    loadTableDepartment(listDepartments);
+                    setTableDepartment(listDepartments);
                 } else {
                     try {
                         String errorMsg = response.errorBody().string();
@@ -1072,7 +1089,7 @@ public class AdminHome extends javax.swing.JFrame {
             public void onResponse(Call<List<Doctor>> call, Response<List<Doctor>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listDoctors = response.body();
-                    loadTableDoctor(listDoctors);
+                    setTableDoctor(listDoctors);
                 } else {
                     try {
                         String errorMsg = response.errorBody().string();
@@ -1099,7 +1116,7 @@ public class AdminHome extends javax.swing.JFrame {
             public void onResponse(Call<List<DoctorSchedule>> call, Response<List<DoctorSchedule>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listDoctorSchedules = response.body();
-                    loadTableDoctorSchedules(listDoctorSchedules);
+                    setTableDoctorSchedules(listDoctorSchedules);
 
                 } else {
                     try {
@@ -1118,7 +1135,58 @@ public class AdminHome extends javax.swing.JFrame {
         });
     }
 
-    private void loadTableDoctorSchedules(List<DoctorSchedule> doctorSchedules) {
+    private void loadListAppointments(String appointmentDate, int doctorId) {
+        listAppointments = new ArrayList<>();
+        String token = SessionManager.getInstance().getToken();
+        authService.getAppointments(token, doctorId, appointmentDate).enqueue(new Callback<List<Appointment>>() {
+            @Override
+            public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listAppointments = response.body();
+                    setTableAppointments(listAppointments);
+                } else {
+                    setTableAppointments(listAppointments);
+//                    try {
+//                        String errorMsg = response.errorBody().string();
+//                        JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg);
+//                    } catch (IOException e) {
+//                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+//                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Appointment>> call, Throwable thrwbl) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        });
+    }
+
+    private void setTableAppointments(List<Appointment> appointments) {
+        DefaultTableModel model = (DefaultTableModel) jTable_Appointments.getModel();
+        model.setRowCount(0);
+
+        for (Appointment appointment : appointments) {
+            String shift = "00";
+            if (appointment.getShiftName().equals("Shift 1")) {
+                shift = "7h-9h";
+            } else if (appointment.getShiftName().equals("Shift 2")) {
+                shift = "9h-11h";
+            } else if (appointment.getShiftName().equals("Shift 3")) {
+                shift = "13h-15h";
+            } else if (appointment.getShiftName().equals("Shift 4")) {
+                shift = "15h-17h";
+            }
+            model.addRow(new Object[]{
+                appointment.getPatientName(),
+                appointment.getPatientPhone(),
+                DateUtils.formatDate(appointment.getAppointmentDate()),
+                shift
+            });
+        }
+    }
+
+    private void setTableDoctorSchedules(List<DoctorSchedule> doctorSchedules) {
         DefaultTableModel model = (DefaultTableModel) jTable_DoctorSchedul.getModel();
         model.setRowCount(0);
 
@@ -1137,9 +1205,8 @@ public class AdminHome extends javax.swing.JFrame {
     }
 
     //tai xonh
-    
     // load 
-    private void loadTableDoctor(List<Doctor> doctors) {
+    private void setTableDoctor(List<Doctor> doctors) {
         DefaultTableModel model = (DefaultTableModel) jTable_doctor.getModel();
         model.setRowCount(0);
 
@@ -1148,7 +1215,7 @@ public class AdminHome extends javax.swing.JFrame {
         }
     }
 
-    private void loadTableDepartment(List<Department> departments) {
+    private void setTableDepartment(List<Department> departments) {
         DefaultTableModel model = (DefaultTableModel) jTable_departments.getModel();
         model.setRowCount(0);
 
@@ -1747,7 +1814,6 @@ public class AdminHome extends javax.swing.JFrame {
         }
     }
 
-
     /**
      * @param args the command line arguments
      */
@@ -1778,7 +1844,7 @@ public class AdminHome extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AdminHome().setVisible(true);
+                new AdminHome(123).setVisible(true);
             }
         });
     }
@@ -1847,7 +1913,7 @@ public class AdminHome extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable_Appointments;
     private javax.swing.JTable jTable_DoctorSchedul;
     private javax.swing.JTable jTable_departments;
     private javax.swing.JTable jTable_doctor;

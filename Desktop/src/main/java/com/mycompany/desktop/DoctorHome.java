@@ -4,17 +4,34 @@
  */
 package com.mycompany.desktop;
 
+import com.mycompany.desktop.API.APIClient;
+import com.mycompany.desktop.API.AuthService;
+import com.mycompany.desktop.models.Admin;
+import com.mycompany.desktop.models.Doctor;
+import com.mycompany.desktop.utils.SessionManager;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  *
  * @author admin
  */
 public class DoctorHome extends javax.swing.JFrame {
 
-    /**
-     * Creates new form DoctorHome
-     */
-    public DoctorHome() {
+    private AuthService authService;
+    private Doctor doctor;
+    private int user_id;
+    
+    public DoctorHome(int user_id) {
         initComponents();
+        this.user_id = user_id;
+        SessionManager.getInstance().setCurrentUserId(user_id);
+
+        authService = APIClient.getAuthService();
+        loadDoctorProfile();
     }
 
     /**
@@ -103,8 +120,8 @@ public class DoctorHome extends javax.swing.JFrame {
         jTable_DoctorSchedul1 = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
         jLabel18 = new javax.swing.JLabel();
-        jLabel_admin_name1 = new javax.swing.JLabel();
-        jLabel_admin_email1 = new javax.swing.JLabel();
+        jLabel_doctor_name = new javax.swing.JLabel();
+        jLabel_doctor_email = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
         jPanel9 = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
@@ -387,7 +404,7 @@ public class DoctorHome extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(129, Short.MAX_VALUE))
+                .addContainerGap(172, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -430,15 +447,15 @@ public class DoctorHome extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 739, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(131, Short.MAX_VALUE))
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 896, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 494, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(237, Short.MAX_VALUE))
+                .addGap(56, 56, 56)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(171, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("", jPanel2);
@@ -651,9 +668,9 @@ public class DoctorHome extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(451, Short.MAX_VALUE))
+                .addContainerGap(508, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -694,11 +711,11 @@ public class DoctorHome extends javax.swing.JFrame {
         jLabel18.setForeground(new java.awt.Color(255, 255, 255));
         jLabel18.setText("TRANG BÁC SĨ LÀM VIỆC");
 
-        jLabel_admin_name1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_admin_name1.setText("Tên:");
+        jLabel_doctor_name.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_doctor_name.setText("Tên:");
 
-        jLabel_admin_email1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_admin_email1.setText("Gmail:");
+        jLabel_doctor_email.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_doctor_email.setText("Gmail:");
 
         jButton11.setText("Đăng xuất");
         jButton11.addActionListener(new java.awt.event.ActionListener() {
@@ -715,9 +732,9 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel_admin_name1)
+                .addComponent(jLabel_doctor_name)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_admin_email1)
+                .addComponent(jLabel_doctor_email)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton11)
                 .addGap(14, 14, 14))
@@ -725,14 +742,13 @@ public class DoctorHome extends javax.swing.JFrame {
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel_admin_name1)
-                        .addComponent(jLabel_admin_email1)
-                        .addComponent(jButton11))
+                .addGap(15, 15, 15)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_doctor_name)
+                    .addComponent(jLabel_doctor_email)
+                    .addComponent(jButton11)
                     .addComponent(jLabel18))
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -798,8 +814,7 @@ public class DoctorHome extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 876, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40))
+                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 916, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -815,6 +830,42 @@ public class DoctorHome extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void loadDoctorProfile() {
+        String token = SessionManager.getInstance().getToken();
+        authService.getDoctorProfile(token).enqueue(new Callback<Doctor>() {
+            @Override
+            public void onResponse(Call<Doctor> call, Response<Doctor> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    jLabel_doctor_name.setText(response.body().getFull_name());
+                    jLabel_doctor_email.setText(response.body().getEmail());
+                    doctor = response.body();
+
+                    SessionManager.getInstance().setCurrentUserId(doctor.getUser_id());
+                } else {
+                    // Handle error
+                    if (response.code() == 401) {
+                        // Token expired or invalid
+                        JOptionPane.showMessageDialog(null, "Session expired. Please login again.");
+                        new Login().setVisible(true);
+                        DoctorHome.this.dispose();
+                    } else {
+                        try {
+                            String errorMsg = response.errorBody().string();
+                            JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg + user_id);
+                        } catch (IOException e) {
+                            JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Doctor> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error");
+            }
+        });
+    }
     private void jTextField_bacsi_phone1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_bacsi_phone1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField_bacsi_phone1ActionPerformed
@@ -838,12 +889,13 @@ public class DoctorHome extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jLabel_avatar1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_avatar1MouseClicked
-      
+
     }//GEN-LAST:event_jLabel_avatar1MouseClicked
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-
-     
+        SessionManager.getInstance().clearSession(doctor.getUser_id());
+        new Login().setVisible(true);
+        DoctorHome.this.dispose();
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jLabel_avatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_avatarMouseClicked
@@ -900,7 +952,7 @@ public class DoctorHome extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DoctorHome().setVisible(true);
+                new DoctorHome(123).setVisible(true);
             }
         });
     }
@@ -941,12 +993,12 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel jLabel_admin_email1;
-    private javax.swing.JLabel jLabel_admin_name1;
     private javax.swing.JLabel jLabel_avatar;
     private javax.swing.JLabel jLabel_avatar1;
     private javax.swing.JLabel jLabel_bacsi_loi;
     private javax.swing.JLabel jLabel_bacsi_loi1;
+    private javax.swing.JLabel jLabel_doctor_email;
+    private javax.swing.JLabel jLabel_doctor_name;
     private javax.swing.JLabel jLabel_thongTinBacSi;
     private javax.swing.JLabel jLabel_thongTinBacSi1;
     private javax.swing.JLabel jLable_bacsi_avatar_url1;

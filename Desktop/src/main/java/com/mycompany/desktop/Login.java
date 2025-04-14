@@ -22,16 +22,18 @@ public class Login extends javax.swing.JFrame {
 
     private AuthService authService;
     private SessionManager sessionManager;
+
     /**
      * Creates new form RegisterDoctor
      */
     public Login() {
         initComponents();
         jLabel_thongBao.setVisible(true);
-        authService = APIClient.getAuthService();
-        sessionManager = new SessionManager();
-        jLabel_thongBao.setText("");
         
+        authService = APIClient.getAuthService();
+        jLabel_thongBao.setText("");
+        sessionManager = new SessionManager();
+
         jTextField_login_gmail.requestFocus();
 
         //check if user is already logged in
@@ -179,10 +181,9 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_loginActionPerformed
         String email = jTextField_login_gmail.getText().trim();
-      
+
         char[] passChars = jPasswordField_login_password.getPassword();
         String password = new String(passChars);
-
 
         // Validate inputs
         if (!ValidationUtils.isValidEmail(email)) {
@@ -203,10 +204,12 @@ public class Login extends javax.swing.JFrame {
                 public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         TokenResponse tokenResponse = response.body();
-                        SessionManager.getInstance().saveToken(tokenResponse.getFullToken());
+
+                        SessionManager.getInstance().setCurrentUserId(tokenResponse.getUser_id());
+                        SessionManager.getInstance().saveToken(tokenResponse.getUser_id(), tokenResponse.getFullToken());
                         jLabel_thongBao.setText("Login successful!");
                         // chuyen sang trang admin
-                        new AdminHome().setVisible(true);
+                        new AdminHome(tokenResponse.getUser_id()).setVisible(true);
                         Login.this.dispose();
                     } else {
                         jLabel_thongBao.setText("Login failed. Please check your credentials.");
@@ -228,10 +231,11 @@ public class Login extends javax.swing.JFrame {
                 public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         TokenResponse tokenResponse = response.body();
-                        SessionManager.getInstance().saveToken(tokenResponse.getFullToken());
+                        SessionManager.getInstance().setCurrentUserId(tokenResponse.getUser_id());
+                        SessionManager.getInstance().saveToken(tokenResponse.getUser_id(), tokenResponse.getFullToken());
                         jLabel_thongBao.setText("Login successful!");
                         // chuyen sang trang admin
-                        new DoctorHome().setVisible(true);
+                        new DoctorHome(tokenResponse.getUser_id()).setVisible(true);
                         Login.this.dispose();
                     } else {
                         jLabel_thongBao.setText("Login failed. Please check your credentials.");

@@ -19,6 +19,7 @@ def get_admin(db: Session, admin_id: int):
     result = db.execute(query, {"admin_id": admin_id}).first()
     return result
 
+
 def get_admins(db: Session, skip: int = 0, limit: int = 100) -> List[dict]:
     query = text("""
         SELECT u.* 

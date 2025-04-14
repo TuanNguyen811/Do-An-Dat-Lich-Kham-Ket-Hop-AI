@@ -130,4 +130,12 @@ public interface AuthService {
             @Header("Authorization") String token,
             @Path("schedule_id") int schedule_Id
     );
+    
+    @GET("appointments")
+    Call<List<Appointment>> getAppointments(
+            @Header("Authorization") String token,
+            @Query("doctor_id") int doctor_id,
+            @Query("appointment_date") String appointment_date
+    );
+    
 }

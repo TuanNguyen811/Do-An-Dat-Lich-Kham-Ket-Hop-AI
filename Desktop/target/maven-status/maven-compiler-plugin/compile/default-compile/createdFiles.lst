@@ -33,6 +33,7 @@ com\mycompany\desktop\models\Department.class
 com\mycompany\desktop\AdminHome$12.class
 com\mycompany\desktop\AdminHome$32.class
 com\mycompany\desktop\AdminHome$6.class
+com\mycompany\desktop\hello$1.class
 com\mycompany\desktop\AdminHome$27.class
 com\mycompany\desktop\DoctorHome$7.class
 com\mycompany\desktop\AdminHome$26.class
@@ -42,6 +43,7 @@ com\mycompany\desktop\utils\ValidationUtils.class
 com\mycompany\desktop\API\AuthService.class
 com\mycompany\desktop\Login$1.class
 com\mycompany\desktop\DoctorHome$13.class
+com\mycompany\desktop\hello.class
 com\mycompany\desktop\AdminHome$8.class
 com\mycompany\desktop\AdminHome$23.class
 com\mycompany\desktop\Login$4.class
@@ -51,7 +53,6 @@ com\mycompany\desktop\models\Admin.class
 com\mycompany\desktop\DoctorHome$3.class
 com\mycompany\desktop\Desktop.class
 com\mycompany\desktop\DoctorHome$10.class
-com\mycompany\desktop\DoctorHome$20.class
 com\mycompany\desktop\AdminHome$13.class
 com\mycompany\desktop\AdminHome$33.class
 com\mycompany\desktop\models\Doctor.class
@@ -75,4 +76,3 @@ com\mycompany\desktop\Login$3.class
 com\mycompany\desktop\AdminHome$22.class
 com\mycompany\desktop\AdminHome$34.class
 com\mycompany\desktop\models\User.class
-com\mycompany\desktop\DoctorHome$19.class

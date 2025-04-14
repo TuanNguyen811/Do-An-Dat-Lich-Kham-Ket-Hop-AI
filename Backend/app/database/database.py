@@ -5,7 +5,7 @@ import pydantic
 import codecs
 
 
-DATABASE_URL = "mysql+pymysql://root:1q2w3e4R5613!@localhost/medicalscheduling"
+DATABASE_URL = "mysql+pymysql://root:root@localhost/medicalscheduling"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

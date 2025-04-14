@@ -19,6 +19,7 @@ class DoctorInDB(UserInDB, DoctorBase):
     doctor_id: int
 
 class DoctorResponse(UserResponse, DoctorBase):
+    department_name: str
     doctor_id: int
 
     class Config:

@@ -22,16 +22,18 @@ public class Login extends javax.swing.JFrame {
 
     private AuthService authService;
     private SessionManager sessionManager;
+
     /**
      * Creates new form RegisterDoctor
      */
     public Login() {
         initComponents();
         jLabel_thongBao.setVisible(true);
-        authService = APIClient.getAuthService();
-        sessionManager = new SessionManager();
-        jLabel_thongBao.setText("");
         
+        authService = APIClient.getAuthService();
+        jLabel_thongBao.setText("");
+        sessionManager = new SessionManager();
+
         jTextField_login_gmail.requestFocus();
 
         //check if user is already logged in
@@ -64,15 +66,14 @@ public class Login extends javax.swing.JFrame {
         jPasswordField_login_password = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Login");
+        setTitle("Đăng nhập");
         setAlwaysOnTop(true);
-        getContentPane().setLayout(new java.awt.FlowLayout());
 
         jLabel_thongBao.setText("Thoong");
         jLabel_thongBao.setToolTipText("");
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel1.setText("Bệnh Viện Đa Khoa T");
+        jLabel1.setText("Bệnh Viện Đa Khoa Bưu ĐIện");
 
         jButton_login.setText("Đăng nhập");
         jButton_login.addActionListener(new java.awt.event.ActionListener() {
@@ -114,18 +115,17 @@ public class Login extends javax.swing.JFrame {
                 .addGap(57, 57, 57)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel_thongBao)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addComponent(jLabel2)
-                        .addComponent(jButton_login, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jRadioButton_bacSi)
-                            .addGap(18, 18, 18)
-                            .addComponent(jRadioButton_admin))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPasswordField_login_password, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField_login_gmail, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jRadioButton_bacSi)
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButton_admin))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jTextField_login_gmail, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPasswordField_login_password, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jButton_login, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)))
                 .addContainerGap(63, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -151,7 +151,22 @@ public class Login extends javax.swing.JFrame {
                 .addGap(39, 39, 39))
         );
 
-        getContentPane().add(jPanel1);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 466, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(7, 7, 7))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(111, 111, 111)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(131, Short.MAX_VALUE))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -166,10 +181,9 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton_loginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_loginActionPerformed
         String email = jTextField_login_gmail.getText().trim();
-      
+
         char[] passChars = jPasswordField_login_password.getPassword();
         String password = new String(passChars);
-
 
         // Validate inputs
         if (!ValidationUtils.isValidEmail(email)) {
@@ -190,10 +204,12 @@ public class Login extends javax.swing.JFrame {
                 public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         TokenResponse tokenResponse = response.body();
-                        SessionManager.getInstance().saveToken(tokenResponse.getFullToken());
+
+                        SessionManager.getInstance().setCurrentUserId(tokenResponse.getUser_id());
+                        SessionManager.getInstance().saveToken(tokenResponse.getUser_id(), tokenResponse.getFullToken());
                         jLabel_thongBao.setText("Login successful!");
                         // chuyen sang trang admin
-                        new AdminHome().setVisible(true);
+                        new AdminHome(tokenResponse.getUser_id()).setVisible(true);
                         Login.this.dispose();
                     } else {
                         jLabel_thongBao.setText("Login failed. Please check your credentials.");
@@ -215,10 +231,11 @@ public class Login extends javax.swing.JFrame {
                 public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         TokenResponse tokenResponse = response.body();
-                        SessionManager.getInstance().saveToken(tokenResponse.getFullToken());
+                        SessionManager.getInstance().setCurrentUserId(tokenResponse.getUser_id());
+                        SessionManager.getInstance().saveToken(tokenResponse.getUser_id(), tokenResponse.getFullToken());
                         jLabel_thongBao.setText("Login successful!");
                         // chuyen sang trang admin
-                        new DoctorHome().setVisible(true);
+                        new DoctorHome(tokenResponse.getUser_id()).setVisible(true);
                         Login.this.dispose();
                     } else {
                         jLabel_thongBao.setText("Login failed. Please check your credentials.");

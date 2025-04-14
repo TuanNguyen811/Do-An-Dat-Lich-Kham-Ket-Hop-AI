@@ -29,9 +29,13 @@ def get_schedules(
         skip: int = 0,
         limit: int = 100,
         doctor_id: int = None,
+        current_user=Depends(deps.get_current_user),
         db: Session = Depends(deps.get_db)
 ):
-    schedules = crud_DoctorSchedule.get_doctor_schedules(db, skip=skip, limit=limit, doctor_id=doctor_id)
+    if current_user["role"] == "Admin":
+        schedules = crud_DoctorSchedule.get_doctor_schedules(db, skip=skip, limit=limit, doctor_id=doctor_id)
+    else:
+        schedules = crud_DoctorSchedule.get_doctor_schedules(db, doctor_id=current_user["user_id"], skip=skip, limit=limit)
     return schedules
 
 

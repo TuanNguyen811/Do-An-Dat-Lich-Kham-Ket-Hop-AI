@@ -35,7 +35,6 @@ def get_chat_session(user_id: int, model_input: genai.GenerativeModel):
     logger.info(f"Đã tạo phiên bản chat cho user_id {user_id}")
     return chat_sessions[user_id]
 
-
 #Rảnh quá không có gì chơi viết chơi chơi
 def get_time_utc() -> datetime:
     return datetime.now(timezone.utc)
@@ -66,7 +65,6 @@ def send_user_message_to_gemini(user_id: int, message: str, model_input: genai.G
             "error": str(e),
             "time": get_time_vn(get_time_utc()).isoformat()
         }
-
 
 def get_chat_history(user_id: int, model_input: genai.GenerativeModel) -> List[Dict[str, str]]:
     try:

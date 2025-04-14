@@ -4,17 +4,72 @@
  */
 package com.mycompany.desktop;
 
+import com.mycompany.desktop.API.APIClient;
+import com.mycompany.desktop.API.AuthService;
+import static com.mycompany.desktop.AdminHome.compressImage;
+import com.mycompany.desktop.models.Admin;
+import com.mycompany.desktop.models.Appointment;
+import com.mycompany.desktop.models.AvatarResponse;
+import com.mycompany.desktop.models.Doctor;
+import com.mycompany.desktop.models.DoctorSchedule;
+import com.mycompany.desktop.models.Patient;
+import com.mycompany.desktop.models.PatientHealthMetrics;
+import com.mycompany.desktop.utils.DateUtils;
+import com.mycompany.desktop.utils.SessionManager;
+import com.mycompany.desktop.utils.ValidationUtils;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+
 /**
  *
  * @author admin
  */
 public class DoctorHome extends javax.swing.JFrame {
 
-    /**
-     * Creates new form DoctorHome
-     */
-    public DoctorHome() {
+    private AuthService authService;
+    private Doctor doctor;
+    private int user_id;
+    private List<DoctorSchedule> listDoctorSchedules;
+    private List<Appointment> listAppointments;
+
+    public DoctorHome(int user_id) {
         initComponents();
+        this.user_id = user_id;
+        SessionManager.getInstance().setCurrentUserId(user_id);
+
+        authService = APIClient.getAuthService();
+        loadDoctorProfile();
+        loadListDoctorSchedul(user_id);
+        loadListAppointments("");
     }
 
     /**
@@ -26,148 +81,407 @@ public class DoctorHome extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel_khoa = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-        jButton5 = new javax.swing.JButton();
-        jPanel_admin = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
+        jTabbedPane = new javax.swing.JTabbedPane();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable_Appointments = new javax.swing.JTable();
+        jTabbedPane2 = new javax.swing.JTabbedPane();
+        jPanel4 = new javax.swing.JPanel();
+        jTextField_patient__name = new javax.swing.JTextField();
+        jTextField_patient_phone = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jButton6 = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jPanel2 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jTextField_patient_brithdate = new javax.swing.JTextField();
+        jLabel_bacsi_loi = new javax.swing.JLabel();
+        jTextField_patient_email = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField_patient_address = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jButton7 = new javax.swing.JButton();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jTextField_insurance_id = new javax.swing.JTextField();
+        jTextField_patient_gender = new javax.swing.JTextField();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable_HealthMetrics = new javax.swing.JTable();
+        jLabel_updateMetrics_date = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
+        textArea_OtherMetrics = new java.awt.TextArea();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel7 = new javax.swing.JPanel();
+        textArea1 = new java.awt.TextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel1 = new javax.swing.JPanel();
         jButton10 = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTextPane2 = new javax.swing.JTextPane();
-        jSpinner1 = new javax.swing.JSpinner();
+        jLabel23 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        jTable_DoctorSchedul = new javax.swing.JTable();
+        jLabel_ngayhientai = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel_thongTinBacSi1 = new javax.swing.JLabel();
+        jTextField_doctor_name = new javax.swing.JTextField();
+        jTextField_doctor_phone = new javax.swing.JTextField();
+        jButton13 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jTextField_doctor_brithdate = new javax.swing.JTextField();
+        jPasswordField_doctor_pass = new javax.swing.JPasswordField();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel_doctor_loi = new javax.swing.JLabel();
+        jTextField_doctor_emai = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jRadioButton_doctor_nam = new javax.swing.JRadioButton();
+        jRadioButton_doctor_nu = new javax.swing.JRadioButton();
+        jTextField_doctor_address = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jTextField_doctor_department_id = new javax.swing.JTextField();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTextArea_doctor_description = new javax.swing.JTextArea();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel_doctor_avatar = new javax.swing.JLabel();
+        jLable_doctor_avatar_url = new javax.swing.JLabel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        jTable_DoctorSchedul1 = new javax.swing.JTable();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel_doctor_name = new javax.swing.JLabel();
+        jLabel_doctor_email = new javax.swing.JLabel();
+        jButton11 = new javax.swing.JButton();
+        jPanel9 = new javax.swing.JPanel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton2.setText("Thêm");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jTable_Appointments.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Tên", "Ngày đặt", "Thời gian"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable_Appointments.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable_AppointmentsMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable_Appointments);
+        if (jTable_Appointments.getColumnModel().getColumnCount() > 0) {
+            jTable_Appointments.getColumnModel().getColumn(0).setResizable(false);
+            jTable_Appointments.getColumnModel().getColumn(1).setResizable(false);
+            jTable_Appointments.getColumnModel().getColumn(2).setResizable(false);
+        }
+
+        jTextField_patient_phone.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jTextField_patient_phoneActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Sửa");
+        jLabel3.setText("Name");
 
-        jButton4.setText("Xóa");
+        jLabel4.setText("Phone");
+
+        jLabel8.setText("BirthDate     YYYY-MM-DD");
+
+        jTextField_patient_email.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_patient_emailActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Email");
+
+        jLabel9.setText("Gender");
+
+        jLabel11.setText("Address");
+
+        jLabel12.setText("Insurance_id");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel9))
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel_bacsi_loi)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jTextField_insurance_id, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
+                        .addComponent(jTextField_patient__name, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField_patient_email, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField_patient_phone, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jTextField_patient_address, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                            .addComponent(jTextField_patient_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jTextField_patient_gender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(104, 104, 104))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addGap(5, 5, 5)
+                .addComponent(jTextField_patient__name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_patient_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_patient_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel9))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField_patient_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField_patient_gender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_patient_address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel12)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_insurance_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_bacsi_loi)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        jTabbedPane2.addTab("Thông tin bệnh nhân", jPanel4);
+
+        jTable_HealthMetrics.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"1", ""},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {"123", null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {"123", null}
+            },
+            new String [] {
+                "Loại", "Chỉ số"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable_HealthMetrics);
+
+        jLabel_updateMetrics_date.setText("Cập nhật ngày");
+
+        jButton4.setText("Cập nhật");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel5.setText("Quản Lý Khoa Khám");
+        jLabel1.setText("Other Metrics:");
 
-        jLabel6.setText("Tên Khoa:");
-
-        jLabel7.setText("Mô tả:");
-
-        jScrollPane2.setViewportView(jTextPane1);
-
-        jButton5.setText("Chế độ");
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel1.setText("Trang ADMIN");
-
-        jButton1.setText("Đăng xuất");
-
-        jLabel2.setText("Tên:");
-
-        jLabel3.setText("Gmail:");
-
-        jButton6.setText("Đổi mật khẩu");
-
-        javax.swing.GroupLayout jPanel_adminLayout = new javax.swing.GroupLayout(jPanel_admin);
-        jPanel_admin.setLayout(jPanel_adminLayout);
-        jPanel_adminLayout.setHorizontalGroup(
-            jPanel_adminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_adminLayout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addGroup(jPanel_adminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_adminLayout.createSequentialGroup()
-                        .addComponent(jButton6)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1))
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addContainerGap(25, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(textArea_OtherMetrics, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                        .addGroup(jPanel6Layout.createSequentialGroup()
+                            .addComponent(jButton4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jLabel_updateMetrics_date))))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
-        jPanel_adminLayout.setVerticalGroup(
-            jPanel_adminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_adminLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_updateMetrics_date)
+                    .addComponent(jButton4))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel_adminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6)
-                    .addComponent(jButton1))
-                .addGap(17, 17, 17))
+                .addComponent(textArea_OtherMetrics, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28))
         );
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        jTabbedPane2.addTab("Chỉ số sức khỏe", jPanel6);
+
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nội dung", "Ngày nhắc"
             }
         ));
-        jScrollPane3.setViewportView(jTable2);
+        jScrollPane3.setViewportView(jTable3);
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel9.setText("Thông tin bác sĩ");
+        jLabel24.setText("Chuẩn đoán bệnh:");
 
-        jTextField2.setText("jTextField2");
+        jLabel25.setText("Tạo lời nhắn");
 
-        jTextField3.setText("jTextField3");
+        jButton8.setText("Hủy khám");
 
-        jTextField4.setText("jTextField4");
+        jButton9.setText("Khám xong");
 
-        jButton7.setText("Thêm");
+        jButton10.setText("Tạo");
 
-        jButton8.setText("Sửa");
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(textArea1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel24)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jLabel25)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton10))
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 111, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel24)
+                .addGap(1, 1, 1)
+                .addComponent(textArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(jButton10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton8)
+                    .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
-        jButton9.setText("Xóa");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
+        jTabbedPane2.addTab("Khám bệnh", jPanel7);
+
+        jLabel23.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel23.setText("Lịch khám hôm nay");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel23)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(172, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(jLabel23)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane.addTab("", jPanel1);
+
+        jTable_DoctorSchedul.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, "10-10-10-10", null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "Tuần", "T2", "T3", "T4", "T5", "T6", "T7", "CN"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
             }
         });
+        jScrollPane9.setViewportView(jTable_DoctorSchedul);
+
+        jLabel_ngayhientai.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -176,248 +490,981 @@ public class DoctorHome extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2)
-                    .addComponent(jTextField3)
-                    .addComponent(jTextField4)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jButton7)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton8)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton9))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addComponent(jLabel9)))
-                        .addGap(0, 18, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 896, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_ngayhientai))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21)
-                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton7)
-                    .addComponent(jButton8)
-                    .addComponent(jButton9))
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addComponent(jLabel_ngayhientai)
+                .addGap(34, 34, 34)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(165, Short.MAX_VALUE))
+        );
+
+        jTabbedPane.addTab("", jPanel2);
+
+        jLabel_thongTinBacSi1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel_thongTinBacSi1.setText("T");
+
+        jTextField_doctor_phone.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_doctor_phoneActionPerformed(evt);
+            }
+        });
+
+        jButton13.setText("Cập nhật");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText("Name");
+
+        jLabel6.setText("Phone");
+
+        jLabel15.setText("BirthDate     YYYY-MM-DD");
+
+        jPasswordField_doctor_pass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField_doctor_passActionPerformed(evt);
+            }
+        });
+
+        jLabel16.setText("Password");
+
+        jTextField_doctor_emai.setEnabled(false);
+        jTextField_doctor_emai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField_doctor_emaiActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setText("Email");
+
+        jRadioButton_doctor_nam.setText("Male");
+
+        jRadioButton_doctor_nu.setText("Female");
+
+        jLabel17.setText("Gender");
+
+        jLabel19.setText("Address");
+
+        jLabel20.setText("Description");
+
+        jLabel21.setText("Department");
+
+        jTextField_doctor_department_id.setEnabled(false);
+
+        jTextArea_doctor_description.setColumns(20);
+        jTextArea_doctor_description.setRows(3);
+        jScrollPane5.setViewportView(jTextArea_doctor_description);
+
+        jLabel22.setText("Avatar_url");
+
+        jLabel_doctor_avatar.setText("avatar");
+        jLabel_doctor_avatar.setToolTipText("");
+        jLabel_doctor_avatar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel_doctor_avatarMouseClicked(evt);
+            }
+        });
+
+        jLable_doctor_avatar_url.setText("file");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_doctor_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane5)
+                        .addComponent(jTextField_doctor_emai)
+                        .addComponent(jTextField_doctor_phone)
+                        .addComponent(jTextField_doctor_address)
+                        .addComponent(jPasswordField_doctor_pass)
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel5)
+                                .addComponent(jTextField_doctor_name, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel21)
+                                .addComponent(jTextField_doctor_department_id, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)))
+                        .addGroup(jPanel5Layout.createSequentialGroup()
+                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jButton13)
+                                .addComponent(jLabel19)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jLabel22)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLable_doctor_avatar_url))
+                                .addComponent(jLabel20)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                        .addComponent(jLabel_thongTinBacSi1)
+                                        .addGap(252, 252, 252))
+                                    .addComponent(jLabel15)
+                                    .addComponent(jLabel6))
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel_doctor_loi)
+                                .addComponent(jLabel7)
+                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                    .addComponent(jTextField_doctor_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                            .addComponent(jRadioButton_doctor_nam)
+                                            .addGap(32, 32, 32)
+                                            .addComponent(jRadioButton_doctor_nu))
+                                        .addComponent(jLabel17))))
+                            .addGap(0, 0, Short.MAX_VALUE))))
+                .addContainerGap(10, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel_thongTinBacSi1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_doctor_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(5, 5, 5)
+                        .addComponent(jTextField_doctor_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel21)
+                        .addGap(4, 4, 4)
+                        .addComponent(jTextField_doctor_department_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_doctor_emai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jTextField_doctor_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)
+                        .addComponent(jLabel15)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField_doctor_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addGap(0, 0, 0)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jRadioButton_doctor_nam)
+                            .addComponent(jRadioButton_doctor_nu))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField_doctor_address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(jLable_doctor_avatar_url))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel20)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel16)
+                .addGap(7, 7, 7)
+                .addComponent(jPasswordField_doctor_pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_doctor_loi)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton13)
+                .addGap(0, 134, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(508, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout jPanel_khoaLayout = new javax.swing.GroupLayout(jPanel_khoa);
-        jPanel_khoa.setLayout(jPanel_khoaLayout);
-        jPanel_khoaLayout.setHorizontalGroup(
-            jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(25, 25, 25)
-                        .addComponent(jScrollPane2))
-                    .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                        .addGroup(jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                                .addComponent(jButton2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton4)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton5))
-                            .addComponent(jLabel5))
-                        .addGroup(jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 369, Short.MAX_VALUE)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(124, 124, 124))
-                            .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                                .addGap(48, 48, 48)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_khoaLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jPanel_admin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(jTextField1))))
-                .addContainerGap())
-        );
-        jPanel_khoaLayout.setVerticalGroup(
-            jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_khoaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel_admin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel_khoaLayout.createSequentialGroup()
-                        .addGroup(jPanel_khoaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton2)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4)
-                            .addComponent(jButton5))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5)))
-                .addGap(71, 71, 71))
-        );
+        jTabbedPane.addTab("", jPanel3);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_DoctorSchedul1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, "10-10-10-10", null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "id", "Tên Khoa", "Mô Tả"
+                "Tuần", "T2", "T3", "T4", "T5", "T6", "T7", "CN"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+        });
+        jScrollPane8.setViewportView(jTable_DoctorSchedul1);
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        jTabbedPane.addTab("", jScrollPane8);
+
+        jPanel8.setBackground(new java.awt.Color(0, 102, 204));
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel18.setText("TRANG BÁC SĨ LÀM VIỆC");
+
+        jLabel_doctor_name.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_doctor_name.setText("Tên:");
+
+        jLabel_doctor_email.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_doctor_email.setText("Gmail:");
+
+        jButton11.setText("Đăng xuất");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
             }
         });
-        jScrollPane1.setViewportView(jTable1);
 
-        jButton10.setText("jButton10");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(97, 97, 97)
-                .addComponent(jButton10)
-                .addContainerGap(148, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel_doctor_name)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_doctor_email)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton11)
+                .addGap(14, 14, 14))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(97, 97, 97)
-                .addComponent(jButton10)
-                .addContainerGap(181, Short.MAX_VALUE))
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_doctor_name)
+                    .addComponent(jLabel_doctor_email)
+                    .addComponent(jButton11)
+                    .addComponent(jLabel18))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("tab1", jPanel1);
+        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        jScrollPane4.setViewportView(jTextPane2);
+        jButton1.setText("Lịch Hẹn Khám");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(153, Short.MAX_VALUE)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(109, 109, 109))
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(76, 76, 76)
-                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        jButton2.setText("Thông Tin Bác Sĩ");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Đăng Xuất");
+
+        jButton5.setText("Lịch Làm Việc");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator1)
+            .addGroup(jPanel9Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(174, Short.MAX_VALUE))
-        );
-
-        jTabbedPane1.addTab("tab2", jPanel4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(87, 87, 87)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
-                .addComponent(jPanel_khoa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)
-                .addGap(37, 37, 37))
+                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 916, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel_khoa, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTabbedPane)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(44, 44, 44)
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    //load
+
+    private void loadDoctorProfile() {
+        String token = SessionManager.getInstance().getToken();
+        authService.getDoctorProfile(token).enqueue(new Callback<Doctor>() {
+            @Override
+            public void onResponse(Call<Doctor> call, Response<Doctor> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    jLabel_doctor_name.setText(response.body().getFull_name());
+                    jLabel_doctor_email.setText(response.body().getEmail());
+                    doctor = response.body();
+
+                    SessionManager.getInstance().setCurrentUserId(doctor.getUser_id());
+                } else {
+                    // Handle error
+                    if (response.code() == 401) {
+                        // Token expired or invalid
+                        JOptionPane.showMessageDialog(null, "Session expired. Please login again.");
+                        new Login().setVisible(true);
+                        DoctorHome.this.dispose();
+                    } else {
+                        try {
+                            String errorMsg = response.errorBody().string();
+                            JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg + user_id);
+                        } catch (IOException e) {
+                            JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Doctor> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error");
+            }
+        });
+    }
+
+    private void updateDoctor() {
+        String token = SessionManager.getInstance().getToken();
+        Doctor getDoctor = getDoctorFromUI();
+
+        authService.updateDoctor(token, getDoctor, user_id).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    JOptionPane.showMessageDialog(DoctorHome.this, "Thành công");
+                    loadDoctorProfile();
+                } else {
+                    JOptionPane.showMessageDialog(DoctorHome.this, "Thất bại: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(DoctorHome.this, "Loi");
+            }
+        });
+    }
+
+    private void loadListDoctorSchedul(int doctor_id) {
+        String token = SessionManager.getInstance().getToken();
+        listDoctorSchedules = new ArrayList<>();
+        authService.getSchedule(token, doctor_id).enqueue(new Callback<List<DoctorSchedule>>() {
+            @Override
+            public void onResponse(Call<List<DoctorSchedule>> call, Response<List<DoctorSchedule>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listDoctorSchedules = response.body();
+                    setTableDoctorSchedules(listDoctorSchedules);
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DoctorSchedule>> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+            }
+        });
+    }
+
+    private void loadPatientById(int patientId) {
+        String token = SessionManager.getInstance().getToken();
+        authService.getPatient(token, patientId).enqueue(new Callback<Patient>() {
+            @Override
+            public void onResponse(Call<Patient> call, Response<Patient> response) {
+                if (response.isSuccessful()) {
+                    setPatientToForm(response.body());
+
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Patient> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+            }
+        });
+
+    }
+
+    private void loadListAppointments(String appointmentDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = formatter.format(new Date());
+
+        Calendar calendar = Calendar.getInstance();
+        int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+
+        jLabel_ngayhientai.setText("Ngày hôm nay: " + formattedDate + " - Tuần: " + weekOfYear);
+
+        listAppointments = new ArrayList<>();
+        String token = SessionManager.getInstance().getToken();
+        authService.getAppointmentsByDoctor(token, appointmentDate).enqueue(new Callback<List<Appointment>>() {
+            @Override
+            public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listAppointments = response.body();
+                    setTableAppointments(listAppointments);
+                } else {
+                    setTableAppointments(listAppointments);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Appointment>> call, Throwable thrwbl) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        });
+    }
+
+    private void loadHealthMetrics(int patirnId) {
+        String token = SessionManager.getInstance().getToken();
+        authService.getHealthMetrics(token, patirnId).enqueue(new Callback<PatientHealthMetrics>() {
+            @Override
+            public void onResponse(Call<PatientHealthMetrics> call, Response<PatientHealthMetrics> response) {
+                if (response.isSuccessful()) {
+                    setTableHealthMetrics(response.body());
+
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PatientHealthMetrics> call, Throwable thrwbl) {
+
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+
+            }
+        });
+    }
+
+    private void updateHealthMetrics(int patientId) {
+        String token = SessionManager.getInstance().getToken();
+        PatientHealthMetrics metrics = new PatientHealthMetrics();
+        metrics = getPatientFromTable(jTable_HealthMetrics);
+
+        authService.createHealthMetric(token, metrics, patientId).enqueue(new Callback<PatientHealthMetrics>() {
+            @Override
+            public void onResponse(Call<PatientHealthMetrics> call, Response<PatientHealthMetrics> response) {
+                if (response.isSuccessful()) {
+                    setTableHealthMetrics(response.body());
+
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PatientHealthMetrics> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+            }
+        });
+    }
+
+    //set table
+    private void setTableAppointments(List<Appointment> appointments) {
+        DefaultTableModel model = (DefaultTableModel) jTable_Appointments.getModel();
+        model.setRowCount(0);
+
+        for (Appointment appointment : appointments) {
+            String shift = "00";
+            if (appointment.getShiftName().equals("Shift 1")) {
+                shift = "7h-9h";
+            } else if (appointment.getShiftName().equals("Shift 2")) {
+                shift = "9h-11h";
+            } else if (appointment.getShiftName().equals("Shift 3")) {
+                shift = "13h-15h";
+            } else if (appointment.getShiftName().equals("Shift 4")) {
+                shift = "15h-17h";
+            }
+            model.addRow(new Object[]{
+                appointment.getPatientName(),
+                DateUtils.formatDate(appointment.getAppointmentDate()),
+                shift
+            });
+        }
+    }
+
+    private void setTableDoctorSchedules(List<DoctorSchedule> doctorSchedules) {
+        DefaultTableModel model = (DefaultTableModel) jTable_DoctorSchedul.getModel();
+        model.setRowCount(0);
+
+        for (DoctorSchedule doctorSchedule : doctorSchedules) {
+            model.addRow(new Object[]{
+                doctorSchedule.getWeek(),
+                doctorSchedule.getMonday(),
+                doctorSchedule.getTuesday(),
+                doctorSchedule.getWednesday(),
+                doctorSchedule.getThursday(),
+                doctorSchedule.getFriday(),
+                doctorSchedule.getSaturday(),
+                doctorSchedule.getSunday()
+            });
+        }
+    }
+
+    private void setTableHealthMetrics(PatientHealthMetrics patientHealthMetrics) {
+        DefaultTableModel model = (DefaultTableModel) jTable_HealthMetrics.getModel();
+        model.setRowCount(0);
+        jLabel_updateMetrics_date.setText("Patient ID: " + patientHealthMetrics.getPatient_id()
+                + "\nUpdate At: " + patientHealthMetrics.getRecorded_at());
+        textArea_OtherMetrics.setText(patientHealthMetrics.getOther_metrics());
+        Object[][] data = {
+            {"Systolic BP", patientHealthMetrics.getSystolic_bp()},
+            {"Diastolic BP", patientHealthMetrics.getDiastolic_bp()},
+            {"Heart Rate", patientHealthMetrics.getHeart_rate()},
+            {"Body Temperature", patientHealthMetrics.getBody_temperature()},
+            {"Respiratory Rate", patientHealthMetrics.getRespiratory_rate()},
+            {"Weight (kg)", patientHealthMetrics.getWeight_kg()},
+            {"Height (cm)", patientHealthMetrics.getHeight_cm()},
+            {"BMI", patientHealthMetrics.getBmi()},
+            {"Blood Glucose", patientHealthMetrics.getBlood_glucose()},
+            {"Cholesterol Total", patientHealthMetrics.getCholesterol_total()},
+            {"LDL", patientHealthMetrics.getLdl()},
+            {"HDL", patientHealthMetrics.getHdl()},
+            {"Triglycerides", patientHealthMetrics.getTriglycerides()},
+            {"Hemoglobin", patientHealthMetrics.getHemoglobin()},
+            {"ID", patientHealthMetrics.getId()},};
+
+        for (Object[] row : data) {
+            model.addRow(row); // row là Object[]{ "Tên chỉ số", giá trị }
+        }
+    }
+
+    public PatientHealthMetrics getPatientFromTable(JTable table) {
+        PatientHealthMetrics patient = new PatientHealthMetrics();
+
+        for (int i = 0; i < table.getRowCount(); i++) {
+            Object fieldObj = table.getValueAt(i, 0);
+            Object valueObj = table.getValueAt(i, 1);
+
+            if (fieldObj == null || valueObj == null) {
+                continue;
+            }
+
+            String field = fieldObj.toString().trim();
+            String valueStr = valueObj.toString().trim();
+
+            try {
+                switch (field) {
+                    case "Systolic BP" ->
+                        patient.setSystolic_bp(Integer.parseInt(valueStr));
+                    case "Diastolic BP" ->
+                        patient.setDiastolic_bp(Integer.parseInt(valueStr));
+                    case "Heart Rate" ->
+                        patient.setHeart_rate(Integer.parseInt(valueStr));
+                    case "Body Temperature" ->
+                        patient.setBody_temperature(Double.parseDouble(valueStr));
+                    case "Respiratory Rate" ->
+                        patient.setRespiratory_rate(Integer.parseInt(valueStr));
+                    case "Weight (kg)" ->
+                        patient.setWeight_kg(Double.parseDouble(valueStr));
+                    case "Height (cm)" ->
+                        patient.setHeight_cm(Double.parseDouble(valueStr));
+                    case "BMI" ->
+                        patient.setBmi(Double.parseDouble(valueStr));
+                    case "Blood Glucose" ->
+                        patient.setBlood_glucose(Double.parseDouble(valueStr));
+                    case "Cholesterol Total" ->
+                        patient.setCholesterol_total(Double.parseDouble(valueStr));
+                    case "LDL" ->
+                        patient.setLdl(Double.parseDouble(valueStr));
+                    case "HDL" ->
+                        patient.setHdl(Double.parseDouble(valueStr));
+                    case "Triglycerides" ->
+                        patient.setTriglycerides(Double.parseDouble(valueStr));
+                    case "Hemoglobin" ->
+                        patient.setHemoglobin(Double.parseDouble(valueStr));
+                    case "Other Metrics" ->
+                        patient.setOther_metrics(valueStr);
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Lỗi khi parse giá trị ở dòng " + i + ": " + valueStr);
+            }
+        }
+        patient.setOther_metrics(textArea_OtherMetrics.getText());
+        return patient;
+    }
+
+    private void setDoctor_toUI(Doctor doctorResponse) {
+        jTextField_doctor_name.setText(doctorResponse.getFull_name());
+        jTextField_doctor_emai.setText(doctorResponse.getEmail());
+        jTextField_doctor_phone.setText(doctorResponse.getPhone());
+        jTextField_doctor_brithdate.setText(doctorResponse.getDate_of_birth());
+        String gender = doctorResponse.getGender();
+        if (gender.equals("Male")) {
+            jRadioButton_doctor_nam.setSelected(true);
+        } else if (gender.equals("Female")) {
+            jRadioButton_doctor_nu.setSelected(true);
+        }
+        jLable_doctor_avatar_url.setText(doctorResponse.getAvatar_url());
+        downloadAvatar();
+
+        jTextArea_doctor_description.setText(doctorResponse.getDescription());
+        jTextArea_doctor_description.setLineWrap(true);
+        jTextArea_doctor_description.setWrapStyleWord(true);
+        jTextField_doctor_address.setText(doctorResponse.getAddress());
+
+        jTextField_doctor_department_id.setText(doctorResponse.getDepartment_name());
+        jPasswordField_doctor_pass.setText("");
+    }
+
+    private Doctor getDoctorFromUI() {
+        Doctor getDoctor = new Doctor();
+        char[] passChars = jPasswordField_doctor_pass.getPassword();
+        String password = new String(passChars);
+
+        // Kiểm tra dữ liệu nhập vào
+        getDoctor.setFull_name(jTextField_doctor_name.getText().trim());
+        getDoctor.setEmail(jTextField_doctor_emai.getText().trim());
+        getDoctor.setPhone(jTextField_doctor_phone.getText().trim());
+        getDoctor.setDate_of_birth(jTextField_doctor_brithdate.getText().trim());
+
+        if (jRadioButton_doctor_nam.isSelected()) {
+            getDoctor.setGender("Male");
+        } else if (jRadioButton_doctor_nu.isSelected()) {
+            getDoctor.setGender("Female");
+        }
+
+        if (!password.isEmpty()) {
+            getDoctor.setPassword(password);
+        }
+
+        getDoctor.setAddress(jTextField_doctor_address.getText().trim()); // Nếu có trường địa chỉ
+        getDoctor.setDescription(jTextArea_doctor_description.getText().trim());
+        getDoctor.setDepartment_id(doctor.getDepartment_id());
+
+        return getDoctor;
+    }
+
+    public void setPatientToForm(Patient patient) {
+        jTextField_patient__name.setText(patient.getFull_name());
+        jTextField_patient_address.setText(patient.getAddress());
+        jTextField_patient_brithdate.setText(patient.getDate_of_birth());
+        jTextField_patient_gender.setText(patient.getGender());
+        jTextField_patient_email.setText(patient.getEmail());
+        jTextField_patient_phone.setText(patient.getPhone());
+        jTextField_insurance_id.setText(String.valueOf(patient.getInsurance_id()));
+    }
+
+    //Avatar
+    private void uploadAvatar() {
+        JFileChooser fileChooser = new JFileChooser();
+        if (fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+            JOptionPane.showMessageDialog(this, "bi gi do");
+            return;
+        }
+
+        File file = fileChooser.getSelectedFile();
+        if (!file.exists() || !file.canRead()) {
+            JOptionPane.showMessageDialog(this, "Không thể đọc file được chọn");
+            return;
+        }
+
+        if (file.length() > 5_000_000) {
+            JOptionPane.showMessageDialog(this, "File quá lớn (tối đa 5MB)");
+            return;
+        }
+
+        File inputFile = fileChooser.getSelectedFile();
+        File outputFile = new File("compressed.jpg"); // Ảnh sau khi giảm kích thước
+
+        try {
+            compressImage(inputFile, outputFile, 100 * 1024); // 100KB
+            System.out.println("Image compressed successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), outputFile);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", outputFile.getName(), requestFile);
+
+        String token = SessionManager.getInstance().getToken();
+
+        authService.uploadAvatar(body, token).enqueue(new Callback<AvatarResponse>() {
+            @Override
+            public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
+                if (response.isSuccessful()) {
+                    JOptionPane.showMessageDialog(DoctorHome.this, "Tải ảnh đại diện thành công");
+                    jLabel_doctor_avatar.setText("");
+                    downloadAvatar();
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AvatarResponse> call, Throwable t) {
+                t.printStackTrace();
+                JOptionPane.showMessageDialog(DoctorHome.this, "Lỗi: " + t.getMessage());
+            }
+        });
+
+        // Reset selectedAvatarFile sau khi đã xử lý
+    }
+
+    public static void compressImage(File inputFile, File outputFile, long targetSize) throws IOException {
+        BufferedImage image = ImageIO.read(inputFile);
+
+        float quality = 1.0f; // Bắt đầu với chất lượng cao nhất
+        while (true) {
+            try (FileOutputStream fos = new FileOutputStream(outputFile); ImageOutputStream ios = ImageIO.createImageOutputStream(fos)) {
+
+                Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+                if (!writers.hasNext()) {
+                    throw new IllegalStateException("No writers found");
+                }
+                ImageWriter writer = writers.next();
+                writer.setOutput(ios);
+
+                ImageWriteParam param = writer.getDefaultWriteParam();
+                param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                param.setCompressionQuality(quality);
+
+                writer.write(null, new IIOImage(image, null, null), param);
+                writer.dispose();
+            }
+
+            if (outputFile.length() <= targetSize || quality <= 0.1f) {
+                break;
+            }
+
+            quality -= 0.05f; // Giảm chất lượng dần dần
+        }
+    }
+
+    private void downloadAvatar() {
+        String token = SessionManager.getInstance().getToken();
+
+        authService.getAvatar(token).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try (InputStream inputStream = response.body().byteStream()) {
+                        byte[] bytes = inputStream.readAllBytes();
+
+//                        ImageIcon avatarIcon = new ImageIcon(bytes);
+//                        Image scaledImage = avatarIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+//                        jLabel_avatar.setIcon(new ImageIcon(scaledImage));
+//                        jLabel_avatar.setText("");
+                        ImageIcon avatarIcon = cropAndScaleImage(bytes, 100, 100);
+                        if (avatarIcon != null) {
+                            jLabel_doctor_avatar.setIcon(avatarIcon);
+                            jLabel_doctor_avatar.setText("");
+                        }
+
+                    } catch (IOException e) {
+                        jLabel_doctor_avatar.setText("Không thể tải ảnh đại diện");
+                        jLabel_doctor_avatar.setIcon(null);
+                    }
+                } else {
+                    jLabel_doctor_avatar.setText("Không thể tải ảnh đại diện");
+                    jLabel_doctor_avatar.setIcon(null);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                JOptionPane.showMessageDialog(DoctorHome.this, "Lỗi: " + t.getMessage());
+            }
+        });
+    }
+
+    public ImageIcon cropAndScaleImage(byte[] imageBytes, int targetWidth, int targetHeight) {
+        try {
+            BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+
+            int originalWidth = originalImage.getWidth();
+            int originalHeight = originalImage.getHeight();
+
+            float originalRatio = (float) originalWidth / originalHeight;
+            float targetRatio = (float) targetWidth / targetHeight;
+
+            int cropWidth = originalWidth;
+            int cropHeight = originalHeight;
+
+            // Cắt ảnh theo chiều phù hợp để giữ đúng tỉ lệ
+            if (originalRatio > targetRatio) {
+                // Cắt chiều rộng
+                cropWidth = (int) (originalHeight * targetRatio);
+            } else {
+                // Cắt chiều cao
+                cropHeight = (int) (originalWidth / targetRatio);
+            }
+
+            // Tính tọa độ bắt đầu để crop giữa ảnh
+            int x = (originalWidth - cropWidth) / 2;
+            int y = (originalHeight - cropHeight) / 2;
+
+            // Crop ảnh
+            BufferedImage croppedImage = originalImage.getSubimage(x, y, cropWidth, cropHeight);
+
+            // Scale ảnh đã crop
+            Image scaledImage = croppedImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+
+            return new ImageIcon(scaledImage);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    //Avatar
+    private void jTextField_doctor_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_doctor_phoneActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField_doctor_phoneActionPerformed
+
+    private void jPasswordField_doctor_passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_doctor_passActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordField_doctor_passActionPerformed
+
+    private void jTextField_doctor_emaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_doctor_emaiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField_doctor_emaiActionPerformed
+
+    private void jLabel_doctor_avatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_doctor_avatarMouseClicked
+        uploadAvatar();
+    }//GEN-LAST:event_jLabel_doctor_avatarMouseClicked
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        SessionManager.getInstance().clearSession(doctor.getUser_id());
+        new Login().setVisible(true);
+        DoctorHome.this.dispose();
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jTextField_patient_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_patient_emailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField_patient_emailActionPerformed
+
+    private void jTextField_patient_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_patient_phoneActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField_patient_phoneActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        jTabbedPane.setSelectedIndex(0);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        jTabbedPane.setSelectedIndex(1);
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+        jTabbedPane.setSelectedIndex(2);
+        setDoctor_toUI(doctor);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
+        updateDoctor();
+    }//GEN-LAST:event_jButton13ActionPerformed
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton9ActionPerformed
+    private void jTable_AppointmentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_AppointmentsMouseClicked
+        int row = jTable_Appointments.getSelectedRow();
+
+        if (row != -1) {
+            Appointment a = listAppointments.get(row);
+            loadPatientById(a.getPatient_id());
+            loadHealthMetrics(a.getPatient_id());
+        }
+    }//GEN-LAST:event_jTable_AppointmentsMouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        int row = jTable_Appointments.getSelectedRow();
+
+        if (row != -1) {
+            Appointment a = listAppointments.get(row);
+            updateHealthMetrics(a.getPatient_id());
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -449,7 +1496,7 @@ public class DoctorHome extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DoctorHome().setVisible(true);
+                new DoctorHome(123).setVisible(true);
             }
         });
     }
@@ -457,40 +1504,86 @@ public class DoctorHome extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabel_bacsi_loi;
+    private javax.swing.JLabel jLabel_doctor_avatar;
+    private javax.swing.JLabel jLabel_doctor_email;
+    private javax.swing.JLabel jLabel_doctor_loi;
+    private javax.swing.JLabel jLabel_doctor_name;
+    private javax.swing.JLabel jLabel_ngayhientai;
+    private javax.swing.JLabel jLabel_thongTinBacSi1;
+    private javax.swing.JLabel jLabel_updateMetrics_date;
+    private javax.swing.JLabel jLable_doctor_avatar_url;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel_admin;
-    private javax.swing.JPanel jPanel_khoa;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
+    private javax.swing.JPasswordField jPasswordField_doctor_pass;
+    private javax.swing.JRadioButton jRadioButton_doctor_nam;
+    private javax.swing.JRadioButton jRadioButton_doctor_nu;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextPane jTextPane1;
-    private javax.swing.JTextPane jTextPane2;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTabbedPane jTabbedPane;
+    private javax.swing.JTabbedPane jTabbedPane2;
+    private javax.swing.JTable jTable3;
+    private javax.swing.JTable jTable_Appointments;
+    private javax.swing.JTable jTable_DoctorSchedul;
+    private javax.swing.JTable jTable_DoctorSchedul1;
+    private javax.swing.JTable jTable_HealthMetrics;
+    private javax.swing.JTextArea jTextArea_doctor_description;
+    private javax.swing.JTextField jTextField_doctor_address;
+    private javax.swing.JTextField jTextField_doctor_brithdate;
+    private javax.swing.JTextField jTextField_doctor_department_id;
+    private javax.swing.JTextField jTextField_doctor_emai;
+    private javax.swing.JTextField jTextField_doctor_name;
+    private javax.swing.JTextField jTextField_doctor_phone;
+    private javax.swing.JTextField jTextField_insurance_id;
+    private javax.swing.JTextField jTextField_patient__name;
+    private javax.swing.JTextField jTextField_patient_address;
+    private javax.swing.JTextField jTextField_patient_brithdate;
+    private javax.swing.JTextField jTextField_patient_email;
+    private javax.swing.JTextField jTextField_patient_gender;
+    private javax.swing.JTextField jTextField_patient_phone;
+    private java.awt.TextArea textArea1;
+    private java.awt.TextArea textArea_OtherMetrics;
     // End of variables declaration//GEN-END:variables
 }

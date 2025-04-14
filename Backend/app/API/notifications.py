@@ -45,3 +45,5 @@ def get_notifications(
 
     notifications = crud.get_notifications(db, user_id=user_id, skip=skip, limit=limit)
     return notifications
+
+

@@ -74,8 +74,10 @@ def get_patient(
         current_user: Dict[str, Any] = Depends(deps.get_current_user),
         db: Session = Depends(deps.get_db)
 ):
-    # Check permissions
-    if current_user.get("role") == "Patient" and current_user.get("user_id") != patient_id:
+    if current_user.get("role") in ["Admin", "Doctor"]:
+        # Admins and Doctors can view any patient
+        pass
+    else:
         raise HTTPException(status_code=403, detail="Not authorized to view this patient")
 
     patient = crud.get_patient(db, patient_id=patient_id)

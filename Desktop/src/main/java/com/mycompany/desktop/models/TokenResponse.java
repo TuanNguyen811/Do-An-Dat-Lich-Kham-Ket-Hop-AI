@@ -12,7 +12,10 @@ import com.google.gson.annotations.SerializedName;
 public class TokenResponse {
      @SerializedName("access_token")
     private String accessToken;
-
+     
+    @SerializedName("user_id")
+    private int user_id;
+    
     @SerializedName("token_type")
     private String tokenType;
 
@@ -23,6 +26,11 @@ public class TokenResponse {
     public String getTokenType() {
         return tokenType;
     }
+
+    public int getUser_id() {
+        return user_id;
+    }
+    
 
     public String getFullToken() {
         return tokenType + " " + accessToken;

@@ -51,7 +51,6 @@ def count_and_schedule_appointments(
     # Get week and weekday
     week, weekday = get_week_and_weekday(appointment_date)
 
-
     #dem max
     # Get doctor's schedule for the week
     doctor_schedules = crud_DoctorSchedule.get_doctor_schedules_by_week(db, week, doctor_id=doctor_id)
@@ -73,33 +72,33 @@ def count_and_schedule_appointments(
 def get_appointments(
         skip: int = 0,
         limit: int = 100,
-        patient_id: Optional[int] = None,
         doctor_id: Optional[int] = None,
+        appointment_date: Optional[str] = None,
         current_user: Dict[str, Any] = Depends(deps.get_current_user),
         db: Session = Depends(deps.get_db)
 ):
-    appointments = crud.get_appointments(db, skip=skip, limit=limit)
+    if current_user.get("role") != "Admin":
+        raise HTTPException(status_code=403, detail="Only admins can access this endpoint")
 
-    # Filter by patient_id or doctor_id if provided
-    if patient_id is not None:
-        appointments = [a for a in appointments if a['patient_id'] == patient_id]
-
-    if doctor_id is not None:
-        appointments = [a for a in appointments if a['doctor_id'] == doctor_id]
-
-    # Apply access control
-    user_role = current_user.get("role")
-    user_id = current_user.get("user_id")
-
-    if user_role == "Patient":
-        # Patients can only see their own appointments
-        appointments = [a for a in appointments if a['patient_id'] == user_id]
-    elif user_role == "Doctor":
-        # Doctors can only see appointments they are assigned to
-        appointments = [a for a in appointments if a['doctor_id'] == user_id]
+    appointments = crud_appointment.get_appointments(db, doctor_id, appointment_date, skip, limit)
+    if not appointments:
+        raise HTTPException(status_code=404, detail="No appointments found")
 
     return appointments
 
+@router.get("/appointments/by_doctor", response_model=List[Dict[str, Any]])
+def get_appointments_by_doctor(
+        appointment_date: Optional[str] = None,
+        skip: int = 0,
+        limit: int = 100,
+        current_user: Dict[str, Any] = Depends(deps.get_current_user),
+        db: Session = Depends(deps.get_db)
+):
+    doctor_id = current_user.get("user_id")
+    appointments = crud_appointment.get_appointments(db, doctor_id, appointment_date, skip, limit)
+    if not appointments:
+        raise HTTPException(status_code=404, detail="No appointments found for the given doctor")
+    return appointments
 
 @router.get("/appointments/by_patient", response_model=List[Dict[str, Any]])
 def get_appointments_by_patient(
@@ -114,21 +113,6 @@ def get_appointments_by_patient(
     appointments = crud_appointment.get_appointments_by_patient(db, patient_id, status, skip, limit)
     if not appointments:
         raise HTTPException(status_code=404, detail="No appointments found for the given patient")
-    return appointments
-
-
-@router.get("/appointments/by_doctor", response_model=List[Dict[str, Any]])
-def get_appointments_by_doctor(
-        status: str,
-        skip: int = 0,
-        limit: int = 100,
-        current_user: Dict[str, Any] = Depends(deps.get_current_user),
-        db: Session = Depends(deps.get_db)
-):
-    doctor_id = current_user.get("user_id")
-    appointments = crud_appointment.get_appointments_by_doctor(db, doctor_id, status, skip, limit)
-    if not appointments:
-        raise HTTPException(status_code=404, detail="No appointments found for the given doctor")
     return appointments
 
 @router.get("/appointments/{appointment_id}", response_model=Dict[str, Any])

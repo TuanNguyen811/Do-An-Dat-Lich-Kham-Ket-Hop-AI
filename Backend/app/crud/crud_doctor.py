@@ -6,18 +6,50 @@ import crud
 from typing import Optional, Dict, Any, List
 
 from crud import create_user, update_user
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 
 # Doctor CRUD operations
 def get_doctor(db: Session, doctor_id: int):
     query = text("""
-        SELECT u.*, d.department_id, d.description
+        SELECT d.doctor_id, u.*, d.department_id, d.description
         FROM Doctors d
         JOIN Users u ON d.doctor_id = u.user_id
         WHERE d.doctor_id = :doctor_id
     """)
     result = db.execute(query, {"doctor_id": doctor_id}).first()
     return result
+
+
+def get_doctor2(db: Session, doctor_id: int):
+    query = text("""
+        SELECT u.*, d.department_id, d.description, d.doctor_id, dep.name AS department_name
+        FROM Doctors d
+        JOIN Users u ON d.doctor_id = u.user_id
+        JOIN Departments dep ON d.department_id = dep.department_id
+        WHERE d.doctor_id = :doctor_id
+    """)
+    result = db.execute(query, {"doctor_id": doctor_id}).first()
+
+    if result:
+        return {
+            "user_id": result[0],
+            "email": result[1],
+            # "password_hash": result[2],  # Uncomment if needed
+            "role": result[3],
+            "full_name": result[4],
+            "phone": result[5],
+            "date_of_birth": result[6],
+            "gender": result[7],
+            "address": result[8],
+            "avatar_url": result[9],
+            "department_id": result[10],
+            "description": result[11],
+            "doctor_id": result[12],  # Ensure doctor_id is included
+            "department_name": result[13],  # Add department name
+        }
+    return None
 
 def get_doctors(db: Session, skip: int = 0, limit: int = 100) -> List[dict]:
     query = text("""

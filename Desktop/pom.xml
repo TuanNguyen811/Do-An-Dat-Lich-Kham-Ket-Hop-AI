@@ -30,6 +30,23 @@
             <version>2.10.6</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>com.github.lgooddatepicker</groupId>
+            <artifactId>LGoodDatePicker</artifactId>
+            <version>11.2.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20210307</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.nafg.scalajs-facades</groupId>
+            <artifactId>react-datepicker_3_sjs1_2.12</artifactId>
+            <version>0.14.1</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

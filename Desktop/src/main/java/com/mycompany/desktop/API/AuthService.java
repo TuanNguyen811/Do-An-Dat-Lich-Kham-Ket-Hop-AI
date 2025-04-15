@@ -1,5 +1,6 @@
 package com.mycompany.desktop.API;
 
+import com.google.gson.JsonObject;
 import com.mycompany.desktop.models.*;
 
 import java.util.List;
@@ -170,5 +171,18 @@ public interface AuthService {
     Call<PatientHealthMetrics> getHealthMetrics(
             @Header("Authorization") String token,
             @Path("patient_id") int patient_id
+    );
+
+    @POST("notifications/list")
+    Call<ResponseBody> sendNotificationsToBackend(
+            @Header("Authorization") String token,
+            @Body List<NotificationCreate> notifications
+    );
+
+    @PUT("/appointments/{appointment_id}")
+    Call<JsonObject> updateAppointmentStatus(
+            @Header("Authorization") String token,
+            @Path("appointment_id") int appointmentId,
+            @Body Appointment appointment
     );
 }

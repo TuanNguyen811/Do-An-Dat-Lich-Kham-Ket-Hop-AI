@@ -4,6 +4,7 @@
  */
 package com.mycompany.desktop;
 
+import com.google.gson.JsonObject;
 import com.mycompany.desktop.API.APIClient;
 import com.mycompany.desktop.API.AuthService;
 import static com.mycompany.desktop.AdminHome.compressImage;
@@ -12,6 +13,7 @@ import com.mycompany.desktop.models.Appointment;
 import com.mycompany.desktop.models.AvatarResponse;
 import com.mycompany.desktop.models.Doctor;
 import com.mycompany.desktop.models.DoctorSchedule;
+import com.mycompany.desktop.models.NotificationCreate;
 import com.mycompany.desktop.models.Patient;
 import com.mycompany.desktop.models.PatientHealthMetrics;
 import com.mycompany.desktop.utils.DateUtils;
@@ -25,6 +27,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,6 +52,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -60,6 +65,7 @@ public class DoctorHome extends javax.swing.JFrame {
     private int user_id;
     private List<DoctorSchedule> listDoctorSchedules;
     private List<Appointment> listAppointments;
+    private DefaultTableModel modelNotification;
 
     public DoctorHome(int user_id) {
         initComponents();
@@ -70,6 +76,8 @@ public class DoctorHome extends javax.swing.JFrame {
         loadDoctorProfile();
         loadListDoctorSchedul(user_id);
         loadListAppointments("");
+
+        modelNotification = (DefaultTableModel) jTable_notification.getModel();
     }
 
     /**
@@ -110,14 +118,16 @@ public class DoctorHome extends javax.swing.JFrame {
         textArea_OtherMetrics = new java.awt.TextArea();
         jLabel1 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
-        textArea1 = new java.awt.TextArea();
+        textArea_appointmetnt_description = new java.awt.TextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        jTable_notification = new javax.swing.JTable();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
         jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jLabel23 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane9 = new javax.swing.JScrollPane();
@@ -125,7 +135,6 @@ public class DoctorHome extends javax.swing.JFrame {
         jLabel_ngayhientai = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
-        jLabel_thongTinBacSi1 = new javax.swing.JLabel();
         jTextField_doctor_name = new javax.swing.JTextField();
         jTextField_doctor_phone = new javax.swing.JTextField();
         jButton13 = new javax.swing.JButton();
@@ -334,15 +343,17 @@ public class DoctorHome extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(textArea_OtherMetrics, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
-                        .addGroup(jPanel6Layout.createSequentialGroup()
-                            .addComponent(jButton4)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(jLabel_updateMetrics_date))))
-                .addContainerGap(11, Short.MAX_VALUE))
+                    .addComponent(textArea_OtherMetrics, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jButton4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel_updateMetrics_date)))
+                        .addGap(0, 106, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -362,7 +373,7 @@ public class DoctorHome extends javax.swing.JFrame {
 
         jTabbedPane2.addTab("Chỉ số sức khỏe", jPanel6);
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_notification.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -370,10 +381,10 @@ public class DoctorHome extends javax.swing.JFrame {
                 {null, null}
             },
             new String [] {
-                "Nội dung", "Ngày nhắc"
+                "Ngày nhắc", "Nội dung"
             }
         ));
-        jScrollPane3.setViewportView(jTable3);
+        jScrollPane3.setViewportView(jTable_notification);
 
         jLabel24.setText("Chuẩn đoán bệnh:");
 
@@ -382,8 +393,32 @@ public class DoctorHome extends javax.swing.JFrame {
         jButton8.setText("Hủy khám");
 
         jButton9.setText("Khám xong");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         jButton10.setText("Tạo");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+
+        jButton6.setText("Nhân bản");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        jButton7.setText("Làm mới");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -393,19 +428,23 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(textArea1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(textArea_appointmetnt_description, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel24)
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addComponent(jLabel25)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton10))
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 111, Short.MAX_VALUE)))
+                                .addComponent(jButton10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton7)))
+                        .addGap(0, 126, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -414,11 +453,13 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel24)
                 .addGap(1, 1, 1)
-                .addComponent(textArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(textArea_appointmetnt_description, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel25)
-                    .addComponent(jButton10))
+                    .addComponent(jButton10)
+                    .addComponent(jButton6)
+                    .addComponent(jButton7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -443,13 +484,13 @@ public class DoctorHome extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(172, Short.MAX_VALUE))
+                        .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 485, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(64, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addContainerGap()
                 .addComponent(jLabel23)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -481,6 +522,7 @@ public class DoctorHome extends javax.swing.JFrame {
         });
         jScrollPane9.setViewportView(jTable_DoctorSchedul);
 
+        jLabel_ngayhientai.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel_ngayhientai.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -497,17 +539,14 @@ public class DoctorHome extends javax.swing.JFrame {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addComponent(jLabel_ngayhientai)
-                .addGap(34, 34, 34)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(165, Short.MAX_VALUE))
+                .addContainerGap(196, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("", jPanel2);
-
-        jLabel_thongTinBacSi1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel_thongTinBacSi1.setText("T");
 
         jTextField_doctor_phone.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -606,12 +645,8 @@ public class DoctorHome extends javax.swing.JFrame {
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(jLable_doctor_avatar_url))
                                 .addComponent(jLabel20)
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel_thongTinBacSi1)
-                                        .addGap(252, 252, 252))
-                                    .addComponent(jLabel15)
-                                    .addComponent(jLabel6))
+                                .addComponent(jLabel15)
+                                .addComponent(jLabel6)
                                 .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel_doctor_loi)
                                 .addComponent(jLabel7)
@@ -631,8 +666,6 @@ public class DoctorHome extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel_thongTinBacSi1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel_doctor_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -684,7 +717,7 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addComponent(jLabel_doctor_loi)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton13)
-                .addGap(0, 134, Short.MAX_VALUE))
+                .addGap(0, 15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -701,7 +734,7 @@ public class DoctorHome extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(175, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("", jPanel3);
@@ -1399,7 +1432,95 @@ public class DoctorHome extends javax.swing.JFrame {
         }
     }
 
-    //Avatar
+    public void addNextDayToTable(DefaultTableModel modelNotification) {
+        int rowCount = modelNotification.getRowCount();
+        if (rowCount == 0) {
+            JOptionPane.showMessageDialog(null, "Bảng chưa có dữ liệu để cộng thêm ngày.");
+            return;
+        }
+
+        // Giả sử thời gian đang lưu dưới dạng LocalDateTime (hoặc String định dạng)
+        Object lastRowValue = modelNotification.getValueAt(rowCount - 1, 0);
+        Object loiNhacObj = modelNotification.getValueAt(rowCount - 1, 1);
+        String loiNhac = (loiNhacObj != null) ? loiNhacObj.toString() : "";
+        LocalDateTime lastDateTime;
+
+        if (lastRowValue instanceof LocalDateTime) {
+            lastDateTime = (LocalDateTime) lastRowValue;
+        } else if (lastRowValue instanceof String) {
+            // Nếu lưu ở dạng chuỗi thì cần parse lại
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"); // hoặc "yyyy-MM-dd HH:mm"
+            lastDateTime = LocalDateTime.parse(lastRowValue.toString(), formatter);
+        } else {
+            JOptionPane.showMessageDialog(null, "Không thể chuyển đổi giá trị ở hàng cuối.");
+            return;
+        }
+
+        LocalDateTime newDateTime = lastDateTime.plusDays(1);
+        modelNotification.addRow(new Object[]{newDateTime, loiNhac});
+    }
+
+    private List<NotificationCreate> getJTablNotificationCreate(int patientId) {
+        List<NotificationCreate> list = new ArrayList<>();
+
+        for (int i = 0; i < modelNotification.getRowCount(); i++) {
+            Object timeObj = modelNotification.getValueAt(i, 0);
+            Object messageObj = modelNotification.getValueAt(i, 1);
+
+            if (timeObj instanceof LocalDateTime && messageObj != null) {
+                list.add(new NotificationCreate(patientId, "Medication", messageObj.toString(), (LocalDateTime) timeObj));
+            }
+        }
+        return list;
+    }
+
+    private void uploadNotificationCreate(int patientId) {
+        String toke = SessionManager.getInstance().getToken();
+        List<NotificationCreate> notificationsArray = getJTablNotificationCreate(patientId);
+        authService.sendNotificationsToBackend(toke, notificationsArray).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("Gửi thành công!");
+                    loadListAppointments("");
+                } else {
+                    System.out.println("Lỗi gửi: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable thrwbl) {
+                thrwbl.printStackTrace();
+            }
+        });
+
+    }
+
+    private void updateAppointment(Appointment appointment) {
+        String token = SessionManager.getInstance().getToken();
+
+        authService.updateAppointmentStatus(token, appointment.getAppointment_id(), appointment).enqueue(
+                new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("Gửi thành công!");
+                    uploadNotificationCreate(appointment.getPatient_id());
+
+                } else {
+                    System.out.println("Lỗi gửi: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable thrwbl) {
+                thrwbl.printStackTrace();
+
+            }
+        });
+    }
+
+    //button
     private void jTextField_doctor_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_doctor_phoneActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField_doctor_phoneActionPerformed
@@ -1417,8 +1538,9 @@ public class DoctorHome extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel_doctor_avatarMouseClicked
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        SessionManager.getInstance().clearSession(doctor.getUser_id());
         new Login().setVisible(true);
+        SessionManager.getInstance().clearSession(doctor.getUser_id());
+
         DoctorHome.this.dispose();
     }//GEN-LAST:event_jButton11ActionPerformed
 
@@ -1432,10 +1554,12 @@ public class DoctorHome extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         jTabbedPane.setSelectedIndex(0);
+        loadListAppointments("");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         jTabbedPane.setSelectedIndex(1);
+
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1455,6 +1579,8 @@ public class DoctorHome extends javax.swing.JFrame {
             loadPatientById(a.getPatient_id());
             loadHealthMetrics(a.getPatient_id());
         }
+        textArea_appointmetnt_description.setText("");
+        modelNotification.setRowCount(0);
     }//GEN-LAST:event_jTable_AppointmentsMouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -1465,6 +1591,37 @@ public class DoctorHome extends javax.swing.JFrame {
             updateHealthMetrics(a.getPatient_id());
         }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        SwingUtilities.invokeLater(() -> {
+            LocalDateTime result = DateTimePickerDialog.showDialog(null);
+            if (result != null) {
+                JOptionPane.showMessageDialog(null, "Thời gian bạn chọn là: " + result);
+                modelNotification.addRow(new Object[]{result});
+            } else {
+                JOptionPane.showMessageDialog(null, "Không có thời gian nào được chọn.");
+            }
+        });
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        modelNotification.setRowCount(0);
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        addNextDayToTable(modelNotification);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        int row = jTable_Appointments.getSelectedRow();
+
+        if (row != -1) {
+            Appointment a = listAppointments.get(row);
+            a.setStatus("Completed");
+            a.setNotes(textArea_appointmetnt_description.getText());
+            updateAppointment(a);
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1510,6 +1667,8 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
@@ -1540,7 +1699,6 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel_doctor_loi;
     private javax.swing.JLabel jLabel_doctor_name;
     private javax.swing.JLabel jLabel_ngayhientai;
-    private javax.swing.JLabel jLabel_thongTinBacSi1;
     private javax.swing.JLabel jLabel_updateMetrics_date;
     private javax.swing.JLabel jLable_doctor_avatar_url;
     private javax.swing.JPanel jPanel1;
@@ -1564,11 +1722,11 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane;
     private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTable3;
     private javax.swing.JTable jTable_Appointments;
     private javax.swing.JTable jTable_DoctorSchedul;
     private javax.swing.JTable jTable_DoctorSchedul1;
     private javax.swing.JTable jTable_HealthMetrics;
+    private javax.swing.JTable jTable_notification;
     private javax.swing.JTextArea jTextArea_doctor_description;
     private javax.swing.JTextField jTextField_doctor_address;
     private javax.swing.JTextField jTextField_doctor_brithdate;
@@ -1583,7 +1741,7 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField_patient_email;
     private javax.swing.JTextField jTextField_patient_gender;
     private javax.swing.JTextField jTextField_patient_phone;
-    private java.awt.TextArea textArea1;
     private java.awt.TextArea textArea_OtherMetrics;
+    private java.awt.TextArea textArea_appointmetnt_description;
     // End of variables declaration//GEN-END:variables
 }

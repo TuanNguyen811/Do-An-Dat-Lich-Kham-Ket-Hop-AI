@@ -16,7 +16,7 @@ def get_appointment(db: Session, appointment_id: int):
 
 
 
-def get_appointments(db: Session, doctor_id: int, appointment_date: Optional[str] = None, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
+def get_appointments(db: Session, doctor_id: int, status: str, appointment_date: Optional[str] = None, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
     # Default to the current date if appointment_date is not provided
     if not appointment_date:
         appointment_date = datetime.now().strftime('%Y-%m-%d')
@@ -33,7 +33,7 @@ def get_appointments(db: Session, doctor_id: int, appointment_date: Optional[str
             JOIN Doctors d ON a.doctor_id = d.doctor_id
             JOIN Users du ON d.doctor_id = du.user_id
             JOIN Departments dep ON a.department_id = dep.department_id
-            WHERE a.doctor_id = :doctor_id AND a.appointment_date >= :appointment_date
+            WHERE a.doctor_id = :doctor_id AND a.appointment_date >= :appointment_date AND a.status = :status
             LIMIT :limit OFFSET :skip
         """)
     else:
@@ -49,7 +49,7 @@ def get_appointments(db: Session, doctor_id: int, appointment_date: Optional[str
             JOIN Doctors d ON a.doctor_id = d.doctor_id
             JOIN Users du ON d.doctor_id = du.user_id
             JOIN Departments dep ON a.department_id = dep.department_id
-            WHERE a.doctor_id = :doctor_id AND a.appointment_date = :appointment_date
+            WHERE a.doctor_id = :doctor_id AND a.appointment_date = :appointment_date AND a.status = :status
             LIMIT :limit OFFSET :skip
         """)
     # Execute the query with parameters
@@ -58,7 +58,8 @@ def get_appointments(db: Session, doctor_id: int, appointment_date: Optional[str
         "doctor_id": doctor_id,
         "appointment_date": appointment_date,
         "skip": skip,
-        "limit": limit
+        "limit": limit,
+        "status": status
     }).fetchall()
 
     appointments = [

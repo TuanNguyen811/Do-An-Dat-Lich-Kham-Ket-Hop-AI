@@ -80,7 +80,7 @@ def get_appointments(
     if current_user.get("role") != "Admin":
         raise HTTPException(status_code=403, detail="Only admins can access this endpoint")
 
-    appointments = crud_appointment.get_appointments(db, doctor_id, appointment_date, skip, limit)
+    appointments = crud_appointment.get_appointments(db, doctor_id,"Scheduled", appointment_date, skip, limit)
     if not appointments:
         raise HTTPException(status_code=404, detail="No appointments found")
 
@@ -95,7 +95,7 @@ def get_appointments_by_doctor(
         db: Session = Depends(deps.get_db)
 ):
     doctor_id = current_user.get("user_id")
-    appointments = crud_appointment.get_appointments(db, doctor_id, appointment_date, skip, limit)
+    appointments = crud_appointment.get_appointments(db, doctor_id,"Scheduled", appointment_date, skip, limit)
     if not appointments:
         raise HTTPException(status_code=404, detail="No appointments found for the given doctor")
     return appointments

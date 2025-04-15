@@ -113,8 +113,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileB
 
         buttonLogout.setOnClickListener(v -> {
             // Clear session and navigate to IntroActivity
-            getSharedPreferences("app_prefs", MODE_PRIVATE).edit().putBoolean("intro_shown", false).apply();
-            startActivity(new Intent(ProfileActivity.this, IntroActivity.class));
+            startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
             finish();
             logoutUser();
         });

@@ -42,4 +42,18 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <!-- Login Screen -->
+    <string name="login">Login</string>
+    <string name="welcome_back">Bệnh viện Đa Khoa Bưu Chính 2</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="or">OR</string>
+    <string name="sign_in_with_google">Đăng nhập với Google</string>
+    <string name="sign_in_with_facebook">Đăng nhập với Facebook</string>
+    <string name="sign_in_with_apple">Đăng nhập với Apple</string>
+    <string name="dont_have_account">Chưa có tài khoản? <b>Đăng ký ngay</b></string>
+    <string name="app_logo">Logo ứng dụng</string>
+
+
 </resources>

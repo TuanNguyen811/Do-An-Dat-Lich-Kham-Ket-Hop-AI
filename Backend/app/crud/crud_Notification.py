@@ -40,6 +40,7 @@ def get_notifications(db: Session, user_id: int = None, skip: int = 0, limit: in
     return notifications
 
 
+
 def create_notification(db: Session, notification: schemas.NotificationCreate):
     query = text("""
         INSERT INTO Notifications (user_id, type, message, scheduled_time)

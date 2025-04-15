@@ -1015,6 +1015,18 @@ public class DoctorHome extends javax.swing.JFrame {
             public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listAppointments = response.body();
+
+                    listAppointments.sort((a, b) -> {
+                        String timeA = a.getShiftName();
+                        String timeB = b.getShiftName();
+                        return timeA.compareTo(timeB);
+                    });
+                    listAppointments.sort((a, b) -> {
+                        String dateA = a.getAppointmentDate();
+                        String dateB = b.getAppointmentDate();
+                        return dateA.compareTo(dateB);
+                    });
+
                     setTableAppointments(listAppointments);
                 } else {
                     setTableAppointments(listAppointments);

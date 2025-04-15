@@ -14,12 +14,13 @@ router = APIRouter(prefix="", tags=["authentication"])
 @router.post("/login", response_model=schemas.Token)
 def login_for_access_token(
         form_data: OAuth2PasswordRequestForm = Depends(),
-        role: str = Form(default="Doctor"),  # Cung cấp giá trị mặc định
+        role: str = Form(default="Patient"),  # Cung cấp giá trị mặc định
         db: Session = Depends(deps.get_db)
 ):
     user = crud.authenticate_user(db, email=form_data.username, password=form_data.password)
 
     if not user:
+
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",

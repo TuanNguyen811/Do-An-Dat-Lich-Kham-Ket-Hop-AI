@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +42,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
     private TextView textInfo;
     private Button btnUpdate, btnResearch;
     private Patient patient_user;
-
+    private ImageView imageViewBack;
 
     private SessionManager sessionManager;
     private AuthService apiService;
@@ -76,7 +77,12 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
                 researchHealth());
 
         setupBmiCalculation(editWeightKg, editHeightCm, editBmi);
-
+        imageViewBack = findViewById(R.id.imageView_back);
+        imageViewBack.setOnClickListener(v -> {
+            Intent intent = new Intent(PatientHealthMetricsActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void loadPatientHealthMetrics(){

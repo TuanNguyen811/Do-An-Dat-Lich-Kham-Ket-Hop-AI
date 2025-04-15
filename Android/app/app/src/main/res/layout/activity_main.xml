@@ -266,7 +266,7 @@
                                     android:id="@+id/healthText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Sức khỏe\ncủa bạn"
+                                    android:text="Chuẩn đoán\nsức khỏe"
                                     android:textAlignment="center"
                                     android:textColor="@color/dark_blue"
                                     android:textSize="16sp"
@@ -311,7 +311,7 @@
                                     android:id="@+id/chatBotText"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="ChatBot AI"
+                                    android:text="Trợ lý\nChatBot AI"
                                     android:textAlignment="center"
                                     android:textColor="@color/dark_blue"
                                     android:textSize="16sp"
@@ -385,8 +385,9 @@
                                             android:layout_width="36dp"
                                             android:layout_height="36dp"
                                             android:background="@drawable/background_oval_2"
-                                            android:padding="8dp"
-                                            android:src="@drawable/ic_send"
+                                            android:padding="6dp"
+                                            android:src="@drawable/icons8_health_50"
+                                            android:visibility="gone"
                                             app:tint="@color/white" />
 
                                         <TextView
@@ -424,7 +425,8 @@
                                             android:layout_height="36dp"
                                             android:background="@drawable/background_oval_2"
                                             android:padding="8dp"
-                                            android:src="@drawable/ic_add"
+                                            android:src="@drawable/icons8_blood_pressure_32"
+                                            android:visibility="gone"
                                             app:tint="@color/white" />
 
                                         <TextView
@@ -462,15 +464,16 @@
                                             android:layout_height="36dp"
                                             android:background="@drawable/background_oval_2"
                                             android:padding="8dp"
-                                            android:src="@drawable/ic_edit"
+                                            android:src="@drawable/icons8_glucometer_64"
+                                            android:visibility="gone"
                                             app:tint="@color/white" />
 
                                         <TextView
-                                            android:id="@+id/bmi_value"
+                                            android:id="@+id/blood_glucose_value"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="8dp"
-                                            android:text="22.5"
+                                            android:text="5.6"
                                             android:textColor="@color/dark_blue"
                                             android:textSize="16sp"
                                             android:textStyle="bold" />
@@ -478,7 +481,7 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="BMI"
+                                            android:text="Đường huyết"
                                             android:textColor="#666666"
                                             android:textSize="12sp" />
                                     </LinearLayout>
@@ -560,12 +563,12 @@
                                         android:focusable="true"
                                         android:gravity="center"
                                         android:orientation="vertical">
-
                                         <TextView
-                                            android:id="@+id/blood_glucose_value"
+                                            android:id="@+id/bmi_value"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="5.6"
+                                            android:layout_marginTop="8dp"
+                                            android:text="22.5"
                                             android:textColor="@color/dark_blue"
                                             android:textSize="16sp"
                                             android:textStyle="bold" />
@@ -573,9 +576,10 @@
                                         <TextView
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="Đường huyết"
+                                            android:text="BMI"
                                             android:textColor="#666666"
                                             android:textSize="12sp" />
+
                                     </LinearLayout>
                                 </LinearLayout>
 
@@ -629,7 +633,6 @@
                             android:id="@+id/recyclerView_main_department"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
                             android:clipToPadding="false"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp" />

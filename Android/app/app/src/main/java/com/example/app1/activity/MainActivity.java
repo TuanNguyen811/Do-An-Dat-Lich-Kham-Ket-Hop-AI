@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<Patient> call, Response<Patient> response) {
                 patient_user = response.body();
                 if (response.isSuccessful() && response.body() != null) {
-                    name.setText("Xin chào!, " + response.body().getFull_name());
+                    name.setText("Xin chào! " + response.body().getFull_name());
 
                     Shader shader = new LinearGradient(
                             0, 0, name.getPaint().measureText(name.getText().toString()), 0,

@@ -41,6 +41,6 @@ def send_otp(request: EmailRequest, db: Session = Depends(deps.get_db)):
 
 
     #Luu ma OTP da hash vao truong password_hash
-    update_password_hash_with_email(db, otp_hash=opt_hashed, email=request.email)
+    # update_password_hash_with_email(db, otp_hash=opt_hashed, email=request.email)
 
     return {"message": f"Ma OTP da duoc gui toi email: {request.email}"}

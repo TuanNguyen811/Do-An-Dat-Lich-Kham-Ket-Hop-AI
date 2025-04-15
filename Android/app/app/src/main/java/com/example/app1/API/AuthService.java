@@ -1,5 +1,6 @@
 package com.example.app1.API;
 
+
 import com.example.app1.models.*;
 import com.example.app1.utils.AvatarResponse;
 import com.example.app1.utils.CombinedResultsResponse;
@@ -116,6 +117,11 @@ public interface AuthService {
 
     @GET("/patient/health-metrics")
     Call<PatientHealthMetrics> getHealthMetrics(
+            @Header("Authorization") String token
+    );
+
+    @GET("/notifications")
+    Call<List<Notification>> getNotifications(
             @Header("Authorization") String token
     );
 }

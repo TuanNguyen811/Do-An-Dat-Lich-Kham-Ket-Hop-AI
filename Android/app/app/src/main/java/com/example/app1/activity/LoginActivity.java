@@ -42,12 +42,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Initialize views
-        login_loi = findViewById(R.id.login_loi);
-        editTextEmail = findViewById(R.id.login_editTextEmail);
-        editTextPassword = findViewById(R.id.login_editTextPassword);
-        buttonLogin = findViewById(R.id.buttonLogin);
-        progressBar = findViewById(R.id.login_progressBar);
-        textViewRegister = findViewById(R.id.login_textViewRegister);
+        login_loi = findViewById(R.id.tv_error_message);
+        editTextEmail = findViewById(R.id.et_email);
+        editTextPassword = findViewById(R.id.et_password);
+        buttonLogin = findViewById(R.id.btn_login);
+        progressBar = findViewById(R.id.progress_bar);
+        textViewRegister = findViewById(R.id.tv_register);
 
         // Initialize API client and SessionManager
         authService = ApiClient.getAuthService(this);

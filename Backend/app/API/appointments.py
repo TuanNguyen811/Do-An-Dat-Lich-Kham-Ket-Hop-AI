@@ -6,6 +6,7 @@ from typing import Dict, Any, List, Optional
 
 import crud
 import schemas
+from Email.email_utils import send_otp_utils
 from Oauth import deps
 from crud import crud_appointment, crud_DoctorSchedule
 
@@ -34,6 +35,9 @@ def create_appointment(
     result = crud.create_appointment(db=db, appointment=appointment)
     if not result:
         raise HTTPException(status_code=500, detail="Failed to create appointment")
+
+    send_otp_utils(current_user.get("email"), "Cam on da dat toi")
+
 
     return {"message": "Appointment created successfully", "appointment_id": result[0]}
 

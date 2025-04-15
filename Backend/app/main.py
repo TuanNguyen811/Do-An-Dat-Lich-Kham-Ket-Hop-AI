@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from starlette.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import os
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from API import (
     appointments,
@@ -56,6 +57,18 @@ create_tables()
 AVATAR_DIR = os.path.join(os.getcwd(), "data", "avatars")
 os.makedirs(AVATAR_DIR, exist_ok=True)
 app.mount("/avatars", StaticFiles(directory=AVATAR_DIR), name="avatars")
+
+# Khởi tạo scheduler
+scheduler = BackgroundScheduler()
+scheduler.start()
+
+# Đảm bảo shutdown scheduler khi chương trình kết thúc
+try:
+    # Chạy các logic khác ở đây
+    pass
+finally:
+    scheduler.shutdown()
+
 
 # Root endpoint
 @app.get("/")

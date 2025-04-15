@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 #Cau hinh API key
-check_configure_genai(api_key="")
+check_configure_genai(api_key="AIzaSyAlFABvba19GkYZUWAGh7lgK4pv-6ZTuzM")
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 
@@ -26,7 +26,6 @@ router = APIRouter( prefix="", tags=["CHAT BOT WITH API KEY GEMINI"])
 #Models
 class ChatRequest(BaseModel):
     message: str = Field(..., description="Nội dung của tin nhắn")
-
 
 class HistoryRequest(BaseModel):
     user_id: str

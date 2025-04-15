@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 #hi
 #Tao ma OTP ngau nhien
-def generate_otp(length=6):
+def generate_otp(length=8):
     otp = ""
     for _ in range(length):
         digit = random.randint(0, 9)
@@ -18,8 +18,8 @@ def generate_otp(length=6):
 
 def send_otp_utils(receiver_email, otp_code):
     # Thong tin gmail cua ban
-    email = ""
-    app_password = ""
+    email = "candyhoy36@gmail.com"
+    app_password = "bkgw snsb olkx uhct"
     # Khoi tao yagmail
     yag = yagmail.SMTP(user=email, password=app_password)
 

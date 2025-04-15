@@ -18,6 +18,7 @@ from API import (
 import google.generativeai as genai
 
 from Chatbot import api_chatbot
+from Email import api_email
 
 app = FastAPI()
 #fftfg
@@ -33,6 +34,9 @@ app.include_router(notifications.router)
 app.include_router(doctor_schedule.router)
 app.include_router(health_metrics.router)
 app.include_router(api_chatbot.router)
+
+#Incude route email
+app.include_router(api_email.router)
 
 from database.database import create_tables
 

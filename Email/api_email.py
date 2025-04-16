@@ -18,6 +18,7 @@ class OTPVerifyRequest(BaseModel):
     email: EmailStr
     otp: str
 
+#hi
 router = APIRouter( prefix="", tags=["Chuc nang email"])
 
 #Gui OTP va luu xuong database dang password_hash

@@ -124,4 +124,11 @@ public interface AuthService {
     Call<List<Notification>> getNotifications(
             @Header("Authorization") String token
     );
+
+    @POST("/password-reset/request")
+    Call<JsonObject> sendOtp(@Body EmailRequest emailRequest);
+
+    @POST("/password-reset/verify-otp")
+    Call<TokenResponse> verifyOtp(@Body VerifyOtpRequest verifyOtpRequest);
+
 }

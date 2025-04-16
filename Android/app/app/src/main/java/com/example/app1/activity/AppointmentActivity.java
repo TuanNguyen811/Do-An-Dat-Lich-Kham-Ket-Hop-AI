@@ -166,11 +166,11 @@ public class AppointmentActivity extends AppCompatActivity implements SelectDepa
                     startActivity(intent);
                     finish();
                 } else {
-                    try {
-                        Toast.makeText(AppointmentActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+//                    try {
+//                        //Toast.makeText(AppointmentActivity.this, response.errorBody().string(), Toast.LENGTH_SHORT).show();
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
                     // Chuyển hướng về trang Appointments
                     Intent intent = new Intent(AppointmentActivity.this, AppointmentsActivity.class);
                     startActivity(intent);

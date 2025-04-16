@@ -3,6 +3,7 @@ from typing import Dict, Any
 from fastapi import FastAPI, HTTPException, APIRouter, Depends
 import google.generativeai as genai
 from pydantic import BaseModel, Field #Xac thuc du lieu dau vao
+from Oauth.config import SECRET_KEY
 
 from Oauth import deps
 from .chatService import (
@@ -17,7 +18,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 #Cau hinh API key
-check_configure_genai(api_key="AIzaSyAlFABvba19GkYZUWAGh7lgK4pv-6ZTuzM")
+check_configure_genai(SECRET_KEY)
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 

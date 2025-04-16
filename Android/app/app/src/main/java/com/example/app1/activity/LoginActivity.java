@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText editTextEmail, editTextPassword;
     private Button buttonLogin;
     private ProgressBar progressBar;
-    private TextView textViewRegister, login_loi;
+    private TextView textViewRegister, login_loi, forgetPassword;
     private AuthService authService;
     private SessionManager sessionManager;
 
@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         buttonLogin = findViewById(R.id.btn_login);
         progressBar = findViewById(R.id.progress_bar);
         textViewRegister = findViewById(R.id.tv_register);
-
+        forgetPassword = findViewById(R.id.tv_forgot_password);
         // Initialize API client and SessionManager
         authService = ApiClient.getAuthService(this);
         sessionManager = new SessionManager(this);
@@ -65,6 +65,10 @@ public class LoginActivity extends AppCompatActivity {
         // Set register text click listener
         textViewRegister.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+        forgetPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, ForgetPassswordActivity.class);
             startActivity(intent);
         });
     }

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:backgroundTint="@color/dark_blue"
     android:fitsSystemWindows="true"
-    tools:context=".activity.ChatActivity">
+    tools:context=".activity.ChatbotActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

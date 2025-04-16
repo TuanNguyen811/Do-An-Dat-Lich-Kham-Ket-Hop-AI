@@ -36,6 +36,7 @@ def create_appointment(
     if not result:
         raise HTTPException(status_code=500, detail="Failed to create appointment")
 
+
     send_otp_utils(current_user.get("email"), "Cam on da dat toi")
 
 

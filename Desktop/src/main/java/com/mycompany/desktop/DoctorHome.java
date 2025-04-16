@@ -89,6 +89,7 @@ public class DoctorHome extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField1 = new javax.swing.JTextField();
         jTabbedPane = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -110,6 +111,7 @@ public class DoctorHome extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jTextField_insurance_id = new javax.swing.JTextField();
         jTextField_patient_gender = new javax.swing.JTextField();
+        jLabel_createdAt = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable_HealthMetrics = new javax.swing.JTable();
@@ -174,6 +176,8 @@ public class DoctorHome extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
 
+        jTextField1.setText("jTextField1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTable_Appointments.setModel(new javax.swing.table.DefaultTableModel(
@@ -233,6 +237,8 @@ public class DoctorHome extends javax.swing.JFrame {
 
         jLabel12.setText("Insurance_id");
 
+        jLabel_createdAt.setText("jLabel10");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -260,8 +266,9 @@ public class DoctorHome extends javax.swing.JFrame {
                             .addComponent(jTextField_patient_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(18, 18, 18)
                             .addComponent(jTextField_patient_gender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(104, 104, 104))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(104, 104, 104)))
+                    .addComponent(jLabel_createdAt))
+                .addContainerGap(102, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -296,7 +303,9 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addComponent(jTextField_insurance_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel_bacsi_loi)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_createdAt)
+                .addGap(0, 335, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Thông tin bệnh nhân", jPanel4);
@@ -494,7 +503,7 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addComponent(jLabel23)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
+                    .addComponent(jTabbedPane2)
                     .addComponent(jScrollPane1))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -1016,7 +1025,11 @@ public class DoctorHome extends javax.swing.JFrame {
             public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     listAppointments = response.body();
-
+                    listAppointments.sort((a, b) -> {
+                        String timeA = a.getCreated_at();
+                        String timeB = b.getCreated_at();
+                        return timeA.compareTo(timeB);
+                    });
                     listAppointments.sort((a, b) -> {
                         String timeA = a.getShiftName();
                         String timeB = b.getShiftName();
@@ -1591,6 +1604,7 @@ public class DoctorHome extends javax.swing.JFrame {
             Appointment a = listAppointments.get(row);
             loadPatientById(a.getPatient_id());
             loadHealthMetrics(a.getPatient_id());
+            jLabel_createdAt.setText("Đặt lúc" + a.getCreated_at());
         }
         textArea_appointmetnt_description.setText("");
         modelNotification.setRowCount(0);
@@ -1707,6 +1721,7 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabel_bacsi_loi;
+    private javax.swing.JLabel jLabel_createdAt;
     private javax.swing.JLabel jLabel_doctor_avatar;
     private javax.swing.JLabel jLabel_doctor_email;
     private javax.swing.JLabel jLabel_doctor_loi;
@@ -1741,6 +1756,7 @@ public class DoctorHome extends javax.swing.JFrame {
     private javax.swing.JTable jTable_HealthMetrics;
     private javax.swing.JTable jTable_notification;
     private javax.swing.JTextArea jTextArea_doctor_description;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField_doctor_address;
     private javax.swing.JTextField jTextField_doctor_brithdate;
     private javax.swing.JTextField jTextField_doctor_department_id;

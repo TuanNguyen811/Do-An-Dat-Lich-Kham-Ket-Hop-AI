@@ -14,8 +14,6 @@ def get_appointment(db: Session, appointment_id: int):
     result = db.execute(query, {"appointment_id": appointment_id}).first()
     return result
 
-
-
 def get_appointments(db: Session, doctor_id: int, status: str, appointment_date: Optional[str] = None, skip: int = 0, limit: int = 100) -> List[Dict[str, Any]]:
     # Default to the current date if appointment_date is not provided
     if not appointment_date:

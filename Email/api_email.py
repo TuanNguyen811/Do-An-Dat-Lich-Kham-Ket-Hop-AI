@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, APIRouter, Depends
 from pydantic import BaseModel, EmailStr
 
 import schemas
-from Email.email_utils import generate_otp, send_otp_utils
+from Email.email_utils import generate_otp, send_otp_utils, send_otp_email
 from Email.query_email import update_password_hash_with_email, update_otp_database, get_otp_in_five_minute
 from Oauth import get_password_hash, create_access_token
 from sqlalchemy.orm import Session
@@ -18,39 +18,10 @@ class OTPVerifyRequest(BaseModel):
     email: EmailStr
     otp: str
 
-#hi
-router = APIRouter( prefix="", tags=["Chuc nang email"])
 
-#Gui OTP va luu xuong database dang password_hash
-@router.post("/forgot-password/send-otp")
-def send_otp(request: EmailRequest, db: Session = Depends(deps.get_db)):
-
-    #Lay ket noi database
-    #Thuc hien lenh de kiem tra email co ton tai
-    #Duoi database neu loi quang ra roi
-    result_user = get_user_by_email(db, request.email)
-
-    #Neu email khong ton tai thi bao loi
-    if not result_user: #Khong co email duoi database
-        raise HTTPException(status_code=404, detail="Email khong ton tai.")
-
-    #Ton tai thi tao OTP
-
-    #Tao OTP va ma hoa
-    opt = generate_otp()
-    opt_hashed = get_password_hash(opt)
-
-    #Gui otp qua email
-    send_otp_utils(receiver_email=request.email, otp_code=opt)
+router = APIRouter( prefix="", tags=["Chức năng với email"])
 
 
-    #Luu ma OTP da hash vao truong password_hash
-    update_password_hash_with_email(db, otp_hash=opt_hashed, email=request.email)
-
-    return {"message": f"Ma OTP da duoc gui toi email: {request.email}"}
-
-
-#Viet lai ham tao OTP
 #Chuc nang reset password
 @router.post("/password-reset/request")
 def send_password_reset_otp(request: EmailRequest, db: Session = Depends(deps.get_db)):
@@ -61,6 +32,8 @@ def send_password_reset_otp(request: EmailRequest, db: Session = Depends(deps.ge
 
         user_id = dict(user._mapping).get("user_id")
 
+        #Ten user de gui email
+        full_name = dict(user._mapping).get("full_name")
         # 2. Tạo OTP và hash OTP
         otp = generate_otp()
         #otp_hashed = get_password_hash(otp)
@@ -73,7 +46,7 @@ def send_password_reset_otp(request: EmailRequest, db: Session = Depends(deps.ge
             raise HTTPException(status_code=500, detail=f"Lỗi khi lưu OTP {e}")
 
         # Gửi email với OTP
-        send_otp_utils(receiver_email=request.email, otp_code=otp)
+        send_otp_email(receiver_email=request.email, otp_code=otp, full_name=full_name)
 
 
         return {"message": "Password reset OTP sent to your email"}
@@ -90,7 +63,6 @@ def verify_otp(request: OTPVerifyRequest, db: Session = Depends(deps.get_db)):
     #print(otp_hash)
     #Lấy OTP với email tương ứng dưới database
     result_infor_otp = get_otp_in_five_minute(db=db, email=request.email, otp_hash=request.otp)
-    print(result_infor_otp)
     if not result_infor_otp:
         raise HTTPException(status_code=404, detail="Invalid OTP or OTP has expired. Please check please.")
 

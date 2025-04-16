@@ -33,6 +33,7 @@ def create_department(
     if not result:
         raise HTTPException(status_code=500, detail="Failed to create department")
 
+
     return {"message": "Department created successfully", "department_id": result[0]}
 
 

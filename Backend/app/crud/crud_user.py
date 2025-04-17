@@ -6,7 +6,7 @@ import schemas
 from typing import Dict, Any, List
 
 # User CRUD operations
-def get_user_by_email(db: Session, email: str):
+def get_user_by_email(db: Session, email):
     query = text("SELECT * FROM Users WHERE email = :email")
     result = db.execute(query, {"email": email}).first()
     return result

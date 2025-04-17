@@ -132,3 +132,13 @@ CREATE TABLE IF NOT EXISTS Notifications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
+
+
+-- Thêm bảng userotp dùng chức năng quên mật khẩu
+CREATE TABLE IF NOT EXISTS user_otps (
+    email VARCHAR(255) NOT NULL PRIMARY KEY,
+    user_id INT NOT NULL,
+    otp VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);

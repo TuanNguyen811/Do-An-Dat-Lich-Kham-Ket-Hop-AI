@@ -18,7 +18,7 @@ def login_for_access_token(
         db: Session = Depends(deps.get_db)
 ):
     user = crud.authenticate_user(db, email=form_data.username, password=form_data.password)
-
+    print(user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -28,6 +28,9 @@ def login_for_access_token(
 
     # Extract role from the user dictionary
     user_role = user["role"]
+
+    print("User Role from DB:", user["role"])
+    print("Role from Form:", role)
 
     if user_role != role:
         raise HTTPException(

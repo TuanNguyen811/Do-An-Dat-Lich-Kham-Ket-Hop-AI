@@ -1,17 +1,25 @@
 import yagmail
 import random
-
-
 import logging
 
 from Email.query_email import get_appointment_using_email_dict
 from Email.template_email import get_subject_otp, get_content_template_otp, get_subject_appointment, \
     get_content_appointment
 from sqlalchemy.orm import Session
-#Cau hinh log
+
+
+
+#Ghi lại log dưới backend
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-#hi
+
+
+# Cấu hình tài khoản Gmail (bạn nên đặt vào biến môi trường để bảo mật)
+EMAIL_SENDER = "candyhoy36@gmail.com"
+EMAIL_PASSWORD = "dlvh obes qwbf fjdd"
+
+yag = yagmail.SMTP(user=EMAIL_SENDER, password=EMAIL_PASSWORD)
+
 #Tao ma OTP ngau nhien
 def generate_otp(length=6):
     otp = ""
@@ -22,14 +30,8 @@ def generate_otp(length=6):
 
 #Chức năng tổng quát
 def send_email_utils(receiver_email, content_template_html, subject):
-    # Cấu hình thông tin gửi email tới khách hàng
-    email = ""
-    app_password = ""
-    # Khoi tao yagmail
-    yag = yagmail.SMTP(user=email, password=app_password)
-
-
     yag.send(to=receiver_email, subject=subject, contents=[content_template_html])
+
     logger.info(f"Email đã gửi thành công đến: {receiver_email}")
     logger.info(f"Subject: {subject}")
 
@@ -80,7 +82,8 @@ def send_appointment_email(db: Session, appointment_id):
                                                   department_name= department_name,
                                                   description= description,
                                                   status= status,
-                                                  shift= shift)
+                                                  shift= shift,
+                                                  full_name=full_name_patient)
 
     send_email_utils(receiver_email=receiver_email,
                      subject=subject_appointment,

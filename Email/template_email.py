@@ -35,7 +35,7 @@ def get_content_appointment(appointment_date,
                             doctor_name,
                             department_name,
                             status,
-                            description) -> str:
+                            description, full_name) -> str:
     return f"""
         <div style="font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background-color: #f7f7f7;">
             <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
@@ -49,7 +49,7 @@ def get_content_appointment(appointment_date,
                 
                 <!-- Greeting -->
                 <div style="border-left: 4px solid #c31815; padding-left: 15px; margin-bottom: 25px;">
-                    <p style="margin: 0; font-size: 16px;">Xin chào quý bệnh nhân,</p>
+                    <p style="margin: 0; font-size: 16px;">Xin chào quý bệnh nhân, {full_name}</p>
                     <p style="margin: 10px 0 0 0; font-size: 16px;">Chúng tôi xin thông báo rằng lịch hẹn của bạn đã được <span style="color: #27bd09; font-weight: bold;">đặt thành công</span> với các thông tin sau:</p>
                 </div>
                 

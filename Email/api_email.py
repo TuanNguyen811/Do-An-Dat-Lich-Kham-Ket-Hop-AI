@@ -2,11 +2,11 @@ from fastapi import FastAPI, HTTPException, APIRouter, Depends
 from pydantic import BaseModel, EmailStr
 
 import schemas
-from Email.email_utils import generate_otp, send_otp_utils, send_otp_email
+from Email.email_utils import generate_otp, send_otp_email
 from Email.query_email import update_password_hash_with_email, update_otp_database, get_otp_in_five_minute
 from Oauth import get_password_hash, create_access_token
 from sqlalchemy.orm import Session
-from Oauth import deps #get current user
+from Oauth import deps
 from crud import get_user_by_email
 
 from datetime import timedelta

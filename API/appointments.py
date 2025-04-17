@@ -7,7 +7,6 @@ from typing import Dict, Any, List, Optional
 import crud
 import schemas
 from Email.email_utils import send_appointment_email
-from Email.query_email import get_appointment_using_email
 from Oauth import deps
 from crud import crud_appointment, crud_DoctorSchedule
 

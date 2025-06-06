@@ -54,7 +54,7 @@ def update_department(
     if not updated_department:
         raise HTTPException(status_code=404, detail="Department not found")
 
-    return {"message": "Department updated successfully"}
+    return {"message": "Department updated successfully", "department_id": updated_department.department_id}
 
 
 @router.delete("/departments/{department_id}", response_model=Dict[str, Any])
@@ -71,4 +71,4 @@ def delete_department(
     if not deleted_department:
         raise HTTPException(status_code=404, detail="Department not found")
 
-    return {"message": "Department deleted successfully"}
+    return {"message": "Department deleted successfully", "department_id": deleted_department.department_id}

@@ -24,7 +24,7 @@ import retrofit2.http.Query;
 
 public interface AuthService {
 
-    // Login
+    // USER
     @FormUrlEncoded
     @POST("login")
     Call<TokenResponse> login(
@@ -33,38 +33,6 @@ public interface AuthService {
             @Field("role") String role
     );
 
-    // Register
-    @POST("register/doctor")
-    Call<Doctor> registerDoctor(
-            @Header("Authorization") String token,
-            @Body Doctor doctor
-    );
-
-    // Get profiles
-    @GET("profile/doctor")
-    Call<Doctor> getDoctorProfile(@Header("Authorization") String token);
-
-    @GET("profile/admin")
-    Call<Admin> getAdminProfile(@Header("Authorization") String token);
-
-    // Departments
-    @POST("departments")
-    Call<Department> createDepartment(
-            @Header("Authorization") String token,
-            @Body Department department
-    );
-
-    @GET("departments")
-    Call<List<Department>> getDepartments(@Header("Authorization") String token);
-
-    // Doctors list
-    @GET("doctors")
-    Call<List<Doctor>> getListDoctors(
-            @Header("Authorization") String token,
-            @Query("department_id") Integer departmentId
-    );
-
-    // User Avatar
     @Multipart
     @POST("user/avatar")
     Call<AvatarResponse> uploadAvatar(
@@ -77,14 +45,39 @@ public interface AuthService {
             @Header("Authorization") String token
     );
 
+    //DOCTOR
+    @POST("register/doctor")
+    Call<Doctor> registerDoctor(
+            @Header("Authorization") String token,
+            @Body Doctor doctor
+    );
+
+    @GET("profile/doctor")
+    Call<Doctor> getDoctorProfile(@Header("Authorization") String token);
+
+    @GET("doctors")
+    Call<List<Doctor>> getListDoctors(
+            @Header("Authorization") String token,
+            @Query("department_id") Integer departmentId
+    );
+
     @PUT("profile/doctor/update/{doctor_id}")
-    Call<ResponseBody> updateDoctor(
+    Call<Doctor> updateDoctor(
             @Header("Authorization") String token,
             @Body Doctor doctor,
             @Path("doctor_id") int doctor_id
     );
 
-    // Admin - Set/Get Avatar for User
+    @DELETE("/doctors/{doctor_id}")
+    Call<Doctor> deleteDoctor(
+            @Header("Authorization") String token,
+            @Path("doctor_id") int doctor_id
+    );
+
+    //ADMIN
+    @GET("profile/admin")
+    Call<Admin> getAdminProfile(@Header("Authorization") String token);
+
     @Multipart
     @POST("admin_set_avatar_user")
     Call<AvatarResponse> adminSetAvatarUser(
@@ -99,7 +92,6 @@ public interface AuthService {
             @Query("user_id") String userId
     );
 
-    // Admin - Set/Get Avatar for Department
     @Multipart
     @POST("admin_set_avatar_department")
     Call<AvatarResponse> adminSetAvatarDepartment(
@@ -114,6 +106,30 @@ public interface AuthService {
             @Query("department_id") String departmentId
     );
 
+    // Departments
+    @POST("departments")
+    Call<Department> createDepartment(
+            @Header("Authorization") String token,
+            @Body Department department
+    );
+
+    @GET("departments")
+    Call<List<Department>> getDepartments(@Header("Authorization") String token);
+
+    @PUT("/departments/{department_id}")
+    Call<Department> updateDepartments(
+            @Header("Authorization") String token,
+            @Body Department department,
+            @Path("department_id") int department_id
+    );
+
+    @DELETE("/departments/{department_id}")
+    Call<Department> deleteDepartments(
+            @Header("Authorization") String token,
+            @Path("department_id") int department_id
+    );
+
+    //schedules
     @POST("schedules")
     Call<DoctorSchedule> createSchedule(
             @Header("Authorization") String token,
@@ -139,6 +155,7 @@ public interface AuthService {
             @Path("schedule_id") int schedule_Id
     );
 
+    //appointments
     @GET("appointments")
     Call<List<Appointment>> getAppointments(
             @Header("Authorization") String token,
@@ -150,6 +167,13 @@ public interface AuthService {
     Call<List<Appointment>> getAppointmentsByDoctor(
             @Header("Authorization") String token,
             @Query("appointment_date") String appointment_date
+    );
+
+    @PUT("/appointments/{appointment_id}")
+    Call<JsonObject> updateAppointmentStatus(
+            @Header("Authorization") String token,
+            @Path("appointment_id") int appointmentId,
+            @Body Appointment appointment
     );
 
     //Patient
@@ -179,10 +203,4 @@ public interface AuthService {
             @Body List<NotificationCreate> notifications
     );
 
-    @PUT("/appointments/{appointment_id}")
-    Call<JsonObject> updateAppointmentStatus(
-            @Header("Authorization") String token,
-            @Path("appointment_id") int appointmentId,
-            @Body Appointment appointment
-    );
 }

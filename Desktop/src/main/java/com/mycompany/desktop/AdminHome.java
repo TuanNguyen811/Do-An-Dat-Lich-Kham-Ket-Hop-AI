@@ -4,6 +4,7 @@
  */
 package com.mycompany.desktop;
 
+import com.mycompany.desktop.JPanel.DoctorJPanel;
 import com.mycompany.desktop.API.APIClient;
 import com.mycompany.desktop.API.AuthService;
 import com.mycompany.desktop.models.Admin;
@@ -26,6 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import com.google.gson.Gson;
+import com.mycompany.desktop.JPanel.RegisterDoctorJPanel;
 import com.mycompany.desktop.utils.DateUtils;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -49,6 +51,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import java.util.Calendar;
+import javax.swing.JFrame;
 
 /**
  *
@@ -72,20 +75,11 @@ public class AdminHome extends javax.swing.JFrame {
 
         this.user_id = user_id;
         SessionManager.getInstance().setCurrentUserId(user_id);
-
         authService = APIClient.getAuthService();
+
         loadAdminProfile();
-
         loadListDepartments();
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        String formattedDate = formatter.format(new Date());
-
-        Calendar calendar = Calendar.getInstance();
-        int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
-
-        jLabel_ngayhientai.setText("Ngày hôm nay: " + formattedDate + " - Tuần: " + weekOfYear);
-
+        date();
     }
 
     /**
@@ -110,70 +104,35 @@ public class AdminHome extends javax.swing.JFrame {
         jLabel155 = new javax.swing.JLabel();
         jTextField_department_anhNen = new javax.swing.JTextField();
         jButton_avatar_dep = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jButton_reset_depa = new javax.swing.JButton();
+        jButton_delete_dep = new javax.swing.JButton();
+        jButton_update_dep = new javax.swing.JButton();
+        jButton_add_dep = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable_doctor = new javax.swing.JTable();
         jLabel_dsbs_khoa = new javax.swing.JLabel();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel_thongTinBacSi = new javax.swing.JLabel();
-        jTextField_bacsi_name = new javax.swing.JTextField();
-        jTextField_bacsi_phone = new javax.swing.JTextField();
         jButton_themBacSi = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jTextField_bacsi_brithdate = new javax.swing.JTextField();
-        jPasswordField_bacsi_pass = new javax.swing.JPasswordField();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel_bacsi_loi = new javax.swing.JLabel();
-        jTextField_bacsi_email = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jRadioButton_bacsi_nam = new javax.swing.JRadioButton();
-        jRadioButton_bacsi_nu = new javax.swing.JRadioButton();
-        jTextField_bacsi_address = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jTextField_bacsi_department_id = new javax.swing.JTextField();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTextArea_bacsi_description = new javax.swing.JTextArea();
-        jButton10 = new javax.swing.JButton();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel_avatar = new javax.swing.JLabel();
-        jLable_bacsi_avatar_url = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jTable_DoctorSchedul = new javax.swing.JTable();
-        jLabel_ngayhientai = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jLabel18 = new javax.swing.JLabel();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
-        jPanel7 = new javax.swing.JPanel();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        jTable_Appointments = new javax.swing.JTable();
         jPanel8 = new javax.swing.JPanel();
         jPanel_admin = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton6 = new javax.swing.JButton();
+        jLabel_admin_name1 = new javax.swing.JLabel();
+        jLabel_admin_email1 = new javax.swing.JLabel();
+        jButton8 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel_admin_name = new javax.swing.JLabel();
         jLabel_admin_email = new javax.swing.JLabel();
         jButton7 = new javax.swing.JButton();
+        jLabel_ngayhientai = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_departments = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Trang ADMIN");
@@ -188,7 +147,7 @@ public class AdminHome extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel6.setText("Tên Khoa:");
 
         jTextField_department_name.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -201,33 +160,38 @@ public class AdminHome extends javax.swing.JFrame {
 
         jLabel155.setText("Ảnh nền:");
 
-        jButton_avatar_dep.setText("Cập nhật");
+        jButton_avatar_dep.setText("Tải Ảnh");
         jButton_avatar_dep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_avatar_depActionPerformed(evt);
             }
         });
 
-        jButton5.setText("Làm mới");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        jButton_reset_depa.setText("Làm mới");
+        jButton_reset_depa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                jButton_reset_depaActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Xóa");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        jButton_delete_dep.setText("Xóa khoa");
+        jButton_delete_dep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                jButton_delete_depActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Sửa");
-
-        jButton2.setText("Thêm");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jButton_update_dep.setText("Cập nhật");
+        jButton_update_dep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jButton_update_depActionPerformed(evt);
+            }
+        });
+
+        jButton_add_dep.setText("Thêm");
+        jButton_add_dep.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_add_depActionPerformed(evt);
             }
         });
 
@@ -239,31 +203,29 @@ public class AdminHome extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addComponent(jButton_add_dep)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3)
+                        .addComponent(jButton_update_dep)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4)
+                        .addComponent(jButton_delete_dep)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton5))
+                        .addComponent(jButton_reset_depa))
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7)
                             .addComponent(jLabel155))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addComponent(jTextField_department_anhNen, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton_avatar_dep))
-                            .addComponent(jScrollPane5)
-                            .addComponent(jTextField_department_name))))
-                .addContainerGap(57, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel_avatar_department, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49))
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel_avatar_department, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel9Layout.createSequentialGroup()
+                                    .addComponent(jTextField_department_anhNen, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jButton_avatar_dep))
+                                .addComponent(jScrollPane5)
+                                .addComponent(jTextField_department_name)))))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -285,11 +247,11 @@ public class AdminHome extends javax.swing.JFrame {
                     .addComponent(jButton_avatar_dep))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5))
-                .addContainerGap(23, Short.MAX_VALUE))
+                    .addComponent(jButton_add_dep)
+                    .addComponent(jButton_update_dep)
+                    .addComponent(jButton_delete_dep)
+                    .addComponent(jButton_reset_depa))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -299,14 +261,14 @@ public class AdminHome extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(628, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(234, Short.MAX_VALUE))
+                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Thông tin khoa", jPanel5);
@@ -339,6 +301,13 @@ public class AdminHome extends javax.swing.JFrame {
         jLabel_dsbs_khoa.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel_dsbs_khoa.setText("Danh sách bác sĩ khoa:");
 
+        jButton_themBacSi.setText("Thêm bác sĩ");
+        jButton_themBacSi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_themBacSiActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -347,8 +316,9 @@ public class AdminHome extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel_dsbs_khoa, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton_themBacSi)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 521, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -356,361 +326,25 @@ public class AdminHome extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel_dsbs_khoa)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3)
-                .addContainerGap())
+                .addComponent(jButton_themBacSi)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(250, 250, 250))
         );
-
-        jLabel_thongTinBacSi.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel_thongTinBacSi.setText("T");
-
-        jTextField_bacsi_phone.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_bacsi_phoneActionPerformed(evt);
-            }
-        });
-
-        jButton_themBacSi.setText("Thêm");
-        jButton_themBacSi.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_themBacSiActionPerformed(evt);
-            }
-        });
-
-        jButton8.setText("Sửa");
-
-        jButton9.setText("Xóa");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Name");
-
-        jLabel4.setText("Phone");
-
-        jLabel8.setText("BirthDate     YYYY-MM-DD");
-
-        jPasswordField_bacsi_pass.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField_bacsi_passActionPerformed(evt);
-            }
-        });
-
-        jLabel10.setText("Password");
-
-        jTextField_bacsi_email.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_bacsi_emailActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Email");
-
-        buttonGroup1.add(jRadioButton_bacsi_nam);
-        jRadioButton_bacsi_nam.setText("Male");
-
-        buttonGroup1.add(jRadioButton_bacsi_nu);
-        jRadioButton_bacsi_nu.setText("Female");
-
-        jLabel9.setText("Gender");
-
-        jLabel11.setText("Address");
-
-        jLabel12.setText("Description");
-
-        jLabel14.setText("Department_id");
-
-        jTextArea_bacsi_description.setColumns(20);
-        jTextArea_bacsi_description.setRows(3);
-        jScrollPane4.setViewportView(jTextArea_bacsi_description);
-
-        jButton10.setText("Làm mới");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
-
-        jLabel13.setText("Avatar_url");
-
-        jLabel_avatar.setText("avatar");
-        jLabel_avatar.setToolTipText("");
-        jLabel_avatar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel_avatarMouseClicked(evt);
-            }
-        });
-
-        jLable_bacsi_avatar_url.setText("file");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel11)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jLabel13)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLable_bacsi_avatar_url))
-                        .addComponent(jLabel12)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel_thongTinBacSi)
-                                .addGap(252, 252, 252))
-                            .addComponent(jLabel8)
-                            .addComponent(jLabel4))
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel_bacsi_loi)
-                        .addComponent(jLabel2)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGap(6, 6, 6)
-                            .addComponent(jButton_themBacSi)
-                            .addGap(18, 18, 18)
-                            .addComponent(jButton8)
-                            .addGap(18, 18, 18)
-                            .addComponent(jButton9)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
-                            .addComponent(jButton10))
-                        .addComponent(jScrollPane4)
-                        .addComponent(jTextField_bacsi_email)
-                        .addComponent(jTextField_bacsi_phone)
-                        .addComponent(jTextField_bacsi_address)
-                        .addComponent(jPasswordField_bacsi_pass)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addComponent(jTextField_bacsi_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(jRadioButton_bacsi_nam)
-                                    .addGap(32, 32, 32)
-                                    .addComponent(jRadioButton_bacsi_nu))
-                                .addComponent(jLabel9)))
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel3)
-                                .addComponent(jTextField_bacsi_name, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel14)
-                                .addComponent(jTextField_bacsi_department_id)))))
-                .addContainerGap(274, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel_thongTinBacSi)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(5, 5, 5)
-                        .addComponent(jTextField_bacsi_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel14)
-                        .addGap(4, 4, 4)
-                        .addComponent(jTextField_bacsi_department_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_bacsi_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jTextField_bacsi_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1, 1, 1)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField_bacsi_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addGap(0, 0, 0)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jRadioButton_bacsi_nam)
-                            .addComponent(jRadioButton_bacsi_nu))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_bacsi_address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel13)
-                    .addComponent(jLable_bacsi_avatar_url))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel10)
-                .addGap(7, 7, 7)
-                .addComponent(jPasswordField_bacsi_pass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_bacsi_loi)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton_themBacSi)
-                    .addComponent(jButton8)
-                    .addComponent(jButton9)
-                    .addComponent(jButton10))
-                .addGap(0, 40, Short.MAX_VALUE))
-        );
-
-        jTabbedPane2.addTab("Thông tin bác sĩ:", jPanel2);
-
-        jTable_DoctorSchedul.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, "10-10-10-10", null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "Tuần", "T2", "T3", "T4", "T5", "T6", "T7", "CN"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane6.setViewportView(jTable_DoctorSchedul);
-        if (jTable_DoctorSchedul.getColumnModel().getColumnCount() > 0) {
-            jTable_DoctorSchedul.getColumnModel().getColumn(0).setMinWidth(35);
-            jTable_DoctorSchedul.getColumnModel().getColumn(0).setPreferredWidth(35);
-            jTable_DoctorSchedul.getColumnModel().getColumn(0).setMaxWidth(35);
-        }
-
-        jLabel_ngayhientai.setText("Ngày");
-
-        jButton1.setText("Cập nhật");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jLabel18.setText("Lịch làm việc bác sĩ: - email");
-
-        jButton11.setText("Thêm lịch");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-
-        jButton12.setText("Xóa");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 654, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton12))
-                    .addComponent(jLabel18)
-                    .addComponent(jLabel_ngayhientai))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel18)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_ngayhientai)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton11)
-                    .addComponent(jButton12))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jTabbedPane2.addTab("Lịch làm việc", jPanel6);
-
-        jTable_Appointments.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Tên bệnh nhân", "Gmail", "Ngày", "Thời gian"
-            }
-        ));
-        jScrollPane7.setViewportView(jTable_Appointments);
-        if (jTable_Appointments.getColumnModel().getColumnCount() > 0) {
-            jTable_Appointments.getColumnModel().getColumn(0).setResizable(false);
-            jTable_Appointments.getColumnModel().getColumn(1).setResizable(false);
-            jTable_Appointments.getColumnModel().getColumn(2).setResizable(false);
-            jTable_Appointments.getColumnModel().getColumn(3).setResizable(false);
-        }
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 654, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jTabbedPane2.addTab("Lịch hẹn khám", jPanel7);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 666, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 25, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 653, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 5, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Quản Lý Bác Sĩ", jPanel3);
@@ -725,6 +359,17 @@ public class AdminHome extends javax.swing.JFrame {
             }
         });
 
+        jLabel_admin_name1.setText("Tên:");
+
+        jLabel_admin_email1.setText("Gmail:");
+
+        jButton8.setText("Đăng xuất");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel_adminLayout = new javax.swing.GroupLayout(jPanel_admin);
         jPanel_admin.setLayout(jPanel_adminLayout);
         jPanel_adminLayout.setHorizontalGroup(
@@ -732,17 +377,28 @@ public class AdminHome extends javax.swing.JFrame {
             .addGroup(jPanel_adminLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel_adminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton6)
+                    .addComponent(jLabel_admin_email1)
+                    .addComponent(jLabel_admin_name1)
+                    .addGroup(jPanel_adminLayout.createSequentialGroup()
+                        .addComponent(jButton6)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton8))
                     .addComponent(jLabel1))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
         jPanel_adminLayout.setVerticalGroup(
             jPanel_adminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_adminLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
-                .addComponent(jButton6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_admin_name1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel_admin_email1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel_adminLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton6)
+                    .addComponent(jButton8))
                 .addGap(17, 17, 17))
         );
 
@@ -753,13 +409,13 @@ public class AdminHome extends javax.swing.JFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel_admin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(998, Short.MAX_VALUE))
+                .addContainerGap(268, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addComponent(jPanel_admin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 554, Short.MAX_VALUE))
+                .addGap(0, 295, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Thông tin Admin", jPanel8);
@@ -783,35 +439,46 @@ public class AdminHome extends javax.swing.JFrame {
             }
         });
 
+        jLabel_ngayhientai.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_ngayhientai.setText("jLabel2");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel16)
+                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_ngayhientai)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel_admin_name)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_admin_email)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_admin_name)
+                    .addComponent(jLabel_admin_email))
+                .addGap(27, 27, 27)
                 .addComponent(jButton7)
-                .addGap(14, 14, 14))
+                .addGap(27, 27, 27))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel_admin_name)
-                    .addComponent(jLabel_admin_email)
-                    .addComponent(jButton7)
-                    .addComponent(jLabel16))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton7)
+                            .addComponent(jLabel16)
+                            .addComponent(jLabel_ngayhientai)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel_admin_name)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel_admin_email)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel15.setText("Chức năng:");
+        jLabel15.setText("Chức năng");
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -859,19 +526,39 @@ public class AdminHome extends javax.swing.JFrame {
             jTable_departments.getColumnModel().getColumn(0).setMaxWidth(35);
         }
 
+        jButton1.setText("Thêm khoa");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Thoát");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel15)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(56, Short.MAX_VALUE))
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -881,20 +568,28 @@ public class AdminHome extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
+                        .addGap(0, 0, 0)
                         .addComponent(jLabel15)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSeparator1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jButton1)
+                                    .addComponent(jButton2))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //button
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         SessionManager.getInstance().clearSession(admin.getUser_id());
 
@@ -906,77 +601,38 @@ public class AdminHome extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        delete_DoctorSchedules();
-    }//GEN-LAST:event_jButton12ActionPerformed
-
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        int row = jTable_doctor.getSelectedRow();
-
-        if (row != -1) { // Kiểm tra nếu có dòng nào đó được chọn
-            Doctor doctorResponse = listDoctors.get(row);
-            setDoctor_toUI(doctorResponse);
-            if (listDoctorSchedules.isEmpty()) {
-                Calendar calendar = Calendar.getInstance();
-                int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
-                create_DoctorSchedules(doctorResponse.getUser_id(), weekOfYear);
-            } else {
-                DoctorSchedule doctorSchedule = listDoctorSchedules.getLast();
-                int weekLast = doctorSchedule.getWeek();
-                create_DoctorSchedules(doctorResponse.getUser_id(), weekLast + 1);
-            }
-
-        }
-    }//GEN-LAST:event_jButton11ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        int row = jTable_doctor.getSelectedRow();
-        if (row == -1) {
-            return;
-        }
-        Doctor doctor = listDoctors.get(row);
-        update_DoctorSchedules();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jLabel_avatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_avatarMouseClicked
-        int row = jTable_doctor.getSelectedRow();
-        uploadAvatar(listDoctors.get(row).getUser_id() + "");
-    }//GEN-LAST:event_jLabel_avatarMouseClicked
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        clearDoctorUI();
-    }//GEN-LAST:event_jButton10ActionPerformed
-
-    private void jTextField_bacsi_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_bacsi_emailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_bacsi_emailActionPerformed
-
-    private void jPasswordField_bacsi_passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_bacsi_passActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField_bacsi_passActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton9ActionPerformed
-
     private void jButton_themBacSiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_themBacSiActionPerformed
-        registerDoctor();
-    }//GEN-LAST:event_jButton_themBacSiActionPerformed
+        int row = jTable_departments.getSelectedRow();
 
-    private void jTextField_bacsi_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_bacsi_phoneActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_bacsi_phoneActionPerformed
+        if (row != -1) {
+            int id_department = (int) jTable_departments.getValueAt(row, 0);
+            RegisterDoctorJPanel panel = new RegisterDoctorJPanel(id_department);
+            JFrame frame = new JFrame("Thêm bác sĩ");
+            frame.setContentPane(panel);
+            frame.pack(); // tự động điều chỉnh kích thước
+            frame.setLocationRelativeTo(null); // giữa màn hình
+            frame.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "Chưa chọn khoa");
+
+        }
+    }//GEN-LAST:event_jButton_themBacSiActionPerformed
 
     private void jTable_doctorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_doctorMouseClicked
         int row = jTable_doctor.getSelectedRow();
-
+        
         if (row != -1) { // Kiểm tra nếu có dòng nào đó được chọn
             Doctor doctorResponse = listDoctors.get(row);
-            setDoctor_toUI(doctorResponse);
-            loadListDoctorSchedul(doctorResponse.getUser_id());
-            loadListAppointments("", doctorResponse.getUser_id());
+
+            DoctorJPanel panel = new DoctorJPanel(doctorResponse);
+
+            JFrame frame = new JFrame("Thông tin bác sĩ");
+            frame.setContentPane(panel);
+            frame.pack(); // tự động điều chỉnh kích thước
+            frame.setLocationRelativeTo(null); // giữa màn hình
+            frame.setVisible(true);
         }
+
     }//GEN-LAST:event_jTable_doctorMouseClicked
 
     private void jTable_departmentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_departmentsMouseClicked
@@ -986,24 +642,39 @@ public class AdminHome extends javax.swing.JFrame {
             Department department = listDepartments.get(row);
             setDeparment_toUI(department);
         }
-        jTextField_bacsi_department_id.setText(jTable_departments.getValueAt(row, 0) + "");
     }//GEN-LAST:event_jTable_departmentsMouseClicked
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton_add_depActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_add_depActionPerformed
         create_department();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_jButton_add_depActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void jButton_delete_depActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_delete_depActionPerformed
+        int result = JOptionPane.showConfirmDialog(
+                null,
+                "Bạn có chắc chắn muốn xóa?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if (result == JOptionPane.YES_OPTION) {
+            int row = jTable_departments.getSelectedRow();
+
+            if (row != -1) {
+                deleteDepartment((int) jTable_departments.getValueAt(row, 0));
+            }
+        } else {
+            System.out.println("Đã hủy xóa");
+        }
+    }//GEN-LAST:event_jButton_delete_depActionPerformed
+
+    private void jButton_reset_depaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_reset_depaActionPerformed
         jTextField_department_name.setText("");
         jTextArea_department_description.setText("");
         clearDepartmentUI();
 
         loadListDepartments();
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_jButton_reset_depaActionPerformed
 
     private void jButton_avatar_depActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_avatar_depActionPerformed
         int row = jTable_departments.getSelectedRow();
@@ -1011,11 +682,44 @@ public class AdminHome extends javax.swing.JFrame {
         uploadAvatarDepartment(listDepartments.get(row).getId() + "");
     }//GEN-LAST:event_jButton_avatar_depActionPerformed
 
+
     private void jLabel_avatar_departmentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_avatar_departmentMouseClicked
         int row = jTable_departments.getSelectedRow();
         uploadAvatarDepartment(listDepartments.get(row).getId() + "");
     }//GEN-LAST:event_jLabel_avatar_departmentMouseClicked
 
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        SessionManager.getInstance().clearSession(admin.getUser_id());
+
+        new Login().setVisible(true);
+        AdminHome.this.dispose();
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        jTabbedPane1.setSelectedIndex(0);
+        clearDepartmentUI();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        SessionManager.getInstance().clearSession(admin.getUser_id());
+
+        new Login().setVisible(true);
+        AdminHome.this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+
+    private void jButton_update_depActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_update_depActionPerformed
+        int row = jTable_departments.getSelectedRow();
+
+        if (row != -1) {
+            Department department = getDepartmentFromUI();
+            department.setId((int) jTable_departments.getValueAt(row, 0));
+            updateDepartment(department);
+        }
+    }//GEN-LAST:event_jButton_update_depActionPerformed
+
+    //admin
     private void loadAdminProfile() {
         String token = SessionManager.getInstance().getToken();
         authService.getAdminProfile(token).enqueue(new Callback<Admin>() {
@@ -1024,8 +728,10 @@ public class AdminHome extends javax.swing.JFrame {
                 if (response.isSuccessful() && response.body() != null) {
                     jLabel_admin_name.setText(response.body().getFull_name());
                     jLabel_admin_email.setText(response.body().getEmail());
-                    admin = response.body();
-                    SessionManager.getInstance().setCurrentUserId(admin.getUser_id());
+                    jLabel_admin_name1.setText(response.body().getFull_name());
+                    jLabel_admin_email1.setText(response.body().getEmail());
+
+                    SessionManager.getInstance().setCurrentUserId(response.body().getUser_id());
                 } else {
                     // Handle error
                     if (response.code() == 401) {
@@ -1053,6 +759,7 @@ public class AdminHome extends javax.swing.JFrame {
         });
     }
 
+    //load list
     private void loadListDepartments() {
         String token = SessionManager.getInstance().getToken();
         listDepartments = new ArrayList<>();
@@ -1080,6 +787,7 @@ public class AdminHome extends javax.swing.JFrame {
         });
     }
 
+    //doctor
     private void loadListDoctors(int department_id) {
         String token = SessionManager.getInstance().getToken();
         listDoctors = new ArrayList<>();
@@ -1108,116 +816,6 @@ public class AdminHome extends javax.swing.JFrame {
 
     }
 
-    private void loadListDoctorSchedul(int doctor_id) {
-        String token = SessionManager.getInstance().getToken();
-        listDoctorSchedules = new ArrayList<>();
-        authService.getSchedule(token, doctor_id).enqueue(new Callback<List<DoctorSchedule>>() {
-            @Override
-            public void onResponse(Call<List<DoctorSchedule>> call, Response<List<DoctorSchedule>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listDoctorSchedules = response.body();
-                    setTableDoctorSchedules(listDoctorSchedules);
-
-                } else {
-                    try {
-                        String errorMsg = response.errorBody().string();
-                        JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<DoctorSchedule>> call, Throwable thrwbl) {
-                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
-            }
-        });
-    }
-
-    private void loadListAppointments(String appointmentDate, int doctorId) {
-        listAppointments = new ArrayList<>();
-        String token = SessionManager.getInstance().getToken();
-        authService.getAppointments(token, doctorId, appointmentDate).enqueue(new Callback<List<Appointment>>() {
-            @Override
-            public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listAppointments = response.body();
-
-                    listAppointments.sort((a, b) -> {
-                        String timeA = a.getShiftName();
-                        String timeB = b.getShiftName();
-                        return timeA.compareTo(timeB);
-                    });
-                    listAppointments.sort((a, b) -> {
-                        String dateA = a.getAppointmentDate();
-                        String dateB = b.getAppointmentDate();
-                        return dateA.compareTo(dateB);
-                    });
-                    setTableAppointments(listAppointments);
-                } else {
-                    setTableAppointments(listAppointments);
-
-//                    try {
-//                        String errorMsg = response.errorBody().string();
-//                        JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg);
-//                    } catch (IOException e) {
-//                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
-//                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Appointment>> call, Throwable thrwbl) {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        });
-    }
-
-    private void setTableAppointments(List<Appointment> appointments) {
-        DefaultTableModel model = (DefaultTableModel) jTable_Appointments.getModel();
-        model.setRowCount(0);
-
-        for (Appointment appointment : appointments) {
-            String shift = "00";
-            if (appointment.getShiftName().equals("Shift 1")) {
-                shift = "7h-9h";
-            } else if (appointment.getShiftName().equals("Shift 2")) {
-                shift = "9h-11h";
-            } else if (appointment.getShiftName().equals("Shift 3")) {
-                shift = "13h-15h";
-            } else if (appointment.getShiftName().equals("Shift 4")) {
-                shift = "15h-17h";
-            }
-            model.addRow(new Object[]{
-                appointment.getPatientName(),
-                appointment.getPatientPhone(),
-                DateUtils.formatDate(appointment.getAppointmentDate()),
-                shift
-            });
-        }
-    }
-
-    private void setTableDoctorSchedules(List<DoctorSchedule> doctorSchedules) {
-        DefaultTableModel model = (DefaultTableModel) jTable_DoctorSchedul.getModel();
-        model.setRowCount(0);
-
-        for (DoctorSchedule doctorSchedule : doctorSchedules) {
-            model.addRow(new Object[]{
-                doctorSchedule.getWeek(),
-                doctorSchedule.getMonday(),
-                doctorSchedule.getTuesday(),
-                doctorSchedule.getWednesday(),
-                doctorSchedule.getThursday(),
-                doctorSchedule.getFriday(),
-                doctorSchedule.getSaturday(),
-                doctorSchedule.getSunday()
-            });
-        }
-    }
-
-    //tai xonh
-    // load 
     private void setTableDoctor(List<Doctor> doctors) {
         DefaultTableModel model = (DefaultTableModel) jTable_doctor.getModel();
         model.setRowCount(0);
@@ -1227,6 +825,7 @@ public class AdminHome extends javax.swing.JFrame {
         }
     }
 
+    //Department
     private void setTableDepartment(List<Department> departments) {
         DefaultTableModel model = (DefaultTableModel) jTable_departments.getModel();
         model.setRowCount(0);
@@ -1235,112 +834,6 @@ public class AdminHome extends javax.swing.JFrame {
             model.addRow(new Object[]{dept.getId(), dept.getName(), dept.getDescription()});
         }
 
-    }
-
-    private void create_DoctorSchedules(int doctor_id, int week) {
-        DoctorSchedule doctorSchedule = new DoctorSchedule(doctor_id, week,
-                "10-10-10-10", "10-10-10-10", "10-10-10-10", "10-10-10-10", "10-10-10-10", "0-0-0-0", "0-0-0-0");
-
-        String toke = SessionManager.getInstance().getToken();
-
-        authService.createSchedule(toke, doctorSchedule).enqueue(new Callback<DoctorSchedule>() {
-            @Override
-            public void onResponse(Call<DoctorSchedule> call, Response<DoctorSchedule> response) {
-                if (response.isSuccessful()) {
-                    JOptionPane.showMessageDialog(null, "Registration successful! Please login.");
-                    loadListDoctorSchedul(doctor_id);
-
-                } else {
-                    try {
-                        String errorMsg = response.errorBody().string();
-                        JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DoctorSchedule> call, Throwable thrwbl) {
-                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
-            }
-        });
-
-    }
-
-    private void delete_DoctorSchedules() {
-        int row = jTable_DoctorSchedul.getSelectedRow();
-        if (row == -1) {
-            return;
-        }
-
-        DoctorSchedule doctorSchedule = listDoctorSchedules.get(row);
-        String token = SessionManager.getInstance().getToken();
-
-        authService.deleteSchedule(token, doctorSchedule.getSchedule_id()).enqueue(new Callback<DoctorSchedule>() {
-            @Override
-            public void onResponse(Call<DoctorSchedule> call, Response<DoctorSchedule> response) {
-                if (response.isSuccessful()) {
-                    JOptionPane.showMessageDialog(null, "Delete successful.");
-                    loadListDoctorSchedul(doctorSchedule.getDoctorId());
-
-                } else {
-                    try {
-                        String errorMsg = response.errorBody().string();
-                        JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DoctorSchedule> call, Throwable thrwbl) {
-                JOptionPane.showMessageDialog(null, "Failed to read error message!");
-            }
-        });
-    }
-
-    private void registerDoctor() {
-        // Lấy khoa đã chọn
-        int row = jTable_departments.getSelectedRow();
-        if (row == -1) {
-            jLabel_bacsi_loi.setText("Please select a department");
-            return;
-        }
-        Doctor doctorRequest = getDoctorFromUI();
-
-        if (doctorRequest == null) {
-            return;
-        }
-        int id_department = (int) jTable_departments.getValueAt(row, 0);
-
-        // Chuyển đổi birthDate sang Date
-        // Tạo request object
-        System.out.println("Doctor Data: " + new Gson().toJson(doctorRequest));
-        String token = SessionManager.getInstance().getToken();
-
-        authService.registerDoctor(token, doctorRequest).enqueue(new Callback<Doctor>() {
-            @Override
-            public void onResponse(Call<Doctor> call, Response<Doctor> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    JOptionPane.showMessageDialog(null, "Registration successful! Please login.");
-                } else {
-                    try {
-                        String errorMsg = response.errorBody().string();
-                        JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Doctor> call, Throwable thrwbl) {
-                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
-
-            }
-        });
     }
 
     private void create_department() {
@@ -1379,37 +872,28 @@ public class AdminHome extends javax.swing.JFrame {
         });
     }
 
-    private void update_DoctorSchedules() {
-        int row = jTable_DoctorSchedul.getSelectedRow();
-        if (row == -1) {
-            return;
-        }
-
-        DoctorSchedule doctorSchedule = listDoctorSchedules.get(row);
-
-        DoctorSchedule schedule
-                = new DoctorSchedule(doctorSchedule.getDoctorId(), doctorSchedule.getWeek(),
-                        jTable_DoctorSchedul.getValueAt(row, 1).toString(),
-                        jTable_DoctorSchedul.getValueAt(row, 2).toString(),
-                        jTable_DoctorSchedul.getValueAt(row, 3).toString(),
-                        jTable_DoctorSchedul.getValueAt(row, 4).toString(),
-                        jTable_DoctorSchedul.getValueAt(row, 5).toString(),
-                        jTable_DoctorSchedul.getValueAt(row, 6).toString(),
-                        jTable_DoctorSchedul.getValueAt(row, 7).toString());
-
+    private void updateDepartment(Department department) {
         String token = SessionManager.getInstance().getToken();
 
-        authService.updateSchedule(token, doctorSchedule.getSchedule_id(), schedule).enqueue(new Callback<DoctorSchedule>() {
+        authService.updateDepartments(token, department, department.getId()).enqueue(new Callback<Department>() {
             @Override
-            public void onResponse(Call<DoctorSchedule> call, Response<DoctorSchedule> response) {
-                if (response.isSuccessful()) {
-                    JOptionPane.showMessageDialog(null, "Update successful! Please login.");
-                    loadListDoctorSchedul(doctorSchedule.getDoctorId());
+            public void onResponse(Call<Department> call, Response<Department> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    //thu thoi nhhng chac loi
+                    JOptionPane.showMessageDialog(null, "Update successful!" + response.body().getDepartment_id());
+
+                    for (int i = 0; i < listDepartments.size(); i++) {
+                        if (listDepartments.get(i).getId() == department.getId()) {
+                            listDepartments.set(i, department); // Cập nhật phần tử
+                            break;
+                        }
+                    }
+                    setTableDepartment(listDepartments);
 
                 } else {
                     try {
                         String errorMsg = response.errorBody().string();
-                        JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg);
+                        JOptionPane.showMessageDialog(null, "Failed to Update!\nError: " + errorMsg);
                     } catch (IOException e) {
                         JOptionPane.showMessageDialog(null, "Failed to read error message!");
                     }
@@ -1417,66 +901,45 @@ public class AdminHome extends javax.swing.JFrame {
             }
 
             @Override
-            public void onFailure(Call<DoctorSchedule> call, Throwable thrwbl) {
-                JOptionPane.showMessageDialog(null, "Failed to read error message!");
+            public void onFailure(Call<Department> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
             }
         });
     }
 
-    private Doctor getDoctorFromUI() {
-        Doctor doctor = new Doctor();
-        char[] passChars = jPasswordField_bacsi_pass.getPassword();
-        String password = new String(passChars);
+    private void deleteDepartment(int department_id) {
+        String token = SessionManager.getInstance().getToken();
 
-        // Kiểm tra dữ liệu nhập vào
-        if (!ValidationUtils.isValidName(jTextField_bacsi_name.getText())) {
-            jLabel_bacsi_loi.setText("Please enter your name");
-            jTextField_bacsi_name.requestFocus();
-            return null;
-        }
+        authService.deleteDepartments(token, department_id).enqueue(new Callback<Department>() {
+            @Override
+            public void onResponse(Call<Department> call, Response<Department> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    //thu thoi nhhng chac loi
+                    JOptionPane.showMessageDialog(null, "Delete successful!" + response.body().getDepartment_id());
+                    clearDepartmentUI();
 
-        if (!ValidationUtils.isValidEmail(jTextField_bacsi_email.getText())) {
-            jLabel_bacsi_loi.setText("Please enter a valid email");
-            jTextField_bacsi_email.requestFocus();
-            return null;
-        }
+                    for (int i = 0; i < listDepartments.size(); i++) {
+                        if (listDepartments.get(i).getId() == department_id) {
+                            listDepartments.remove(i);
+                            break;
+                        }
+                    }
 
-        if (!ValidationUtils.isValidPassword(password)) {
-            jLabel_bacsi_loi.setText("Password must be at least 8 characters");
-            jPasswordField_bacsi_pass.requestFocus();
-            return null;
-        }
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed to Delete!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
 
-        if (!jTextField_bacsi_phone.getText().isEmpty() && !ValidationUtils.isValidPhone(jTextField_bacsi_phone.getText())) {
-            jLabel_bacsi_loi.setText("Please enter a valid phone number");
-            jTextField_bacsi_phone.requestFocus();
-            return null;
-        }
-
-        doctor.setFull_name(jTextField_bacsi_name.getText().trim());
-        doctor.setEmail(jTextField_bacsi_email.getText().trim());
-        doctor.setPhone(jTextField_bacsi_phone.getText().trim());
-        doctor.setDate_of_birth(jTextField_bacsi_brithdate.getText().trim());
-
-        if (jRadioButton_bacsi_nam.isSelected()) {
-            doctor.setGender("Male");
-        } else if (jRadioButton_bacsi_nu.isSelected()) {
-            doctor.setGender("Female");
-        }
-
-        doctor.setPassword(password);
-        doctor.setAddress(jTextField_bacsi_address.getText().trim()); // Nếu có trường địa chỉ
-        doctor.setDescription(jTextArea_bacsi_description.getText().trim());
-
-        doctor.setAvatar_url(jLable_bacsi_avatar_url.getText().trim());
-
-        try {
-            doctor.setDepartment_id(Integer.parseInt(jTextField_bacsi_department_id.getText().trim()));
-        } catch (NumberFormatException e) {
-            doctor.setDepartment_id(0); // Giá trị mặc định nếu không hợp lệ
-        }
-
-        return doctor;
+            @Override
+            public void onFailure(Call<Department> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+            }
+        });
     }
 
     private Department getDepartmentFromUI() {
@@ -1502,31 +965,6 @@ public class AdminHome extends javax.swing.JFrame {
         return department;
     }
 
-    private void setDoctor_toUI(Doctor doctorResponse) {
-        jLabel_thongTinBacSi.setText("Thông tin bác sĩ: " + doctorResponse.getFull_name());
-
-        jTextField_bacsi_name.setText(doctorResponse.getFull_name());
-        jTextField_bacsi_email.setText(doctorResponse.getEmail());
-        jTextField_bacsi_phone.setText(doctorResponse.getPhone());
-        jTextField_bacsi_brithdate.setText(doctorResponse.getDate_of_birth());
-        String gender = doctorResponse.getGender();
-        if (gender.equals("Male")) {
-            jRadioButton_bacsi_nam.setSelected(true);
-        } else if (gender.equals("Female")) {
-            jRadioButton_bacsi_nu.setSelected(true);
-        }
-        jLable_bacsi_avatar_url.setText(doctorResponse.getAvatar_url());
-        downloadAvatar(doctorResponse.getUser_id() + "");
-
-        jTextArea_bacsi_description.setText(doctorResponse.getDescription());
-        jTextArea_bacsi_description.setLineWrap(true);
-        jTextArea_bacsi_description.setWrapStyleWord(true);
-        jTextField_bacsi_address.setText(doctorResponse.getAddress());
-
-        jTextField_bacsi_department_id.setText(doctorResponse.getDepartment_id() + "");
-        jPasswordField_bacsi_pass.setText("");
-    }
-
     private void setDeparment_toUI(Department department) {
         jTextField_department_name.setText(department.getName());
         jTextArea_department_description.setText(department.getDescription());
@@ -1539,19 +977,6 @@ public class AdminHome extends javax.swing.JFrame {
         jLabel_dsbs_khoa.setText("Danh sách bác sĩ khoa: " + department.getName());
     }
 
-    private void clearDoctorUI() {
-        jLabel_thongTinBacSi.setText("Thông tin bác sĩ ");
-        jTextField_bacsi_name.setText("");
-        jTextField_bacsi_email.setText("");
-        jTextField_bacsi_phone.setText("");
-        jTextField_bacsi_brithdate.setText("");
-        jPasswordField_bacsi_pass.setText("");
-        jTextArea_bacsi_description.setText("");
-        jTextField_bacsi_address.setText("");
-        jLabel_avatar.setIcon(null);
-        //jTextField_bacsi_department_id.setText("");
-    }
-
     private void clearDepartmentUI() {
         jTextField_department_name.setText("");
         jTextArea_department_description.setText("");
@@ -1561,100 +986,6 @@ public class AdminHome extends javax.swing.JFrame {
         jLabel_avatar_department.setIcon(null);
         jLabel_avatar_department.setText("");
     }
-
-    //Avatar
-    private void uploadAvatar(String user_id) {
-        JFileChooser fileChooser = new JFileChooser();
-        if (fileChooser.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
-            JOptionPane.showMessageDialog(this, "bi gi do");
-            return;
-        }
-
-        File file = fileChooser.getSelectedFile();
-        if (!file.exists() || !file.canRead()) {
-            JOptionPane.showMessageDialog(this, "Không thể đọc file được chọn");
-            return;
-        }
-
-        if (file.length() > 5_000_000) {
-            JOptionPane.showMessageDialog(this, "File quá lớn (tối đa 5MB)");
-            return;
-        }
-
-        File inputFile = fileChooser.getSelectedFile();
-        File outputFile = new File("compressed.jpg"); // Ảnh sau khi giảm kích thước
-
-        try {
-            compressImage(inputFile, outputFile, 100 * 1024); // 100KB
-            System.out.println("Image compressed successfully!");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        RequestBody requestFile = RequestBody.create(MediaType.parse("image/*"), outputFile);
-        MultipartBody.Part body = MultipartBody.Part.createFormData("file", outputFile.getName(), requestFile);
-
-        String token = SessionManager.getInstance().getToken();
-
-        authService.adminSetAvatarUser(body, token, user_id).enqueue(new Callback<AvatarResponse>() {
-            @Override
-            public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
-                if (response.isSuccessful()) {
-                    JOptionPane.showMessageDialog(AdminHome.this, "Tải ảnh đại diện thành công");
-                    jLabel_avatar.setText("");
-
-                } else {
-                    showError(response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AvatarResponse> call, Throwable t) {
-                t.printStackTrace();
-                JOptionPane.showMessageDialog(AdminHome.this, "Lỗi: " + t.getMessage());
-            }
-        });
-
-        // Reset selectedAvatarFile sau khi đã xử lý
-    }
-
-    private void downloadAvatar(String user_id) {
-        String token = SessionManager.getInstance().getToken();
-
-        authService.adminGetAvatarUser(token, user_id).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try (InputStream inputStream = response.body().byteStream()) {
-                        byte[] bytes = inputStream.readAllBytes();
-
-//                        ImageIcon avatarIcon = new ImageIcon(bytes);
-//                        Image scaledImage = avatarIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-//                        jLabel_avatar.setIcon(new ImageIcon(scaledImage));
-//                        jLabel_avatar.setText("");
-                        ImageIcon avatarIcon = cropAndScaleImage(bytes, 100, 100);
-                        if (avatarIcon != null) {
-                            jLabel_avatar.setIcon(avatarIcon);
-                            jLabel_avatar.setText("");
-                        }
-
-                    } catch (IOException e) {
-                        jLabel_avatar.setText("Không thể tải ảnh đại diện");
-                        jLabel_avatar.setIcon(null);
-                    }
-                } else {
-                    jLabel_avatar.setText("Không thể tải ảnh đại diện");
-                    jLabel_avatar.setIcon(null);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                JOptionPane.showMessageDialog(AdminHome.this, "Lỗi: " + t.getMessage());
-            }
-        });
-    }
-    //Avatar
 
     private void uploadAvatarDepartment(String department_id) {
         JFileChooser fileChooser = new JFileChooser();
@@ -1707,36 +1038,6 @@ public class AdminHome extends javax.swing.JFrame {
         });
     }
 
-    public static void compressImage(File inputFile, File outputFile, long targetSize) throws IOException {
-        BufferedImage image = ImageIO.read(inputFile);
-
-        float quality = 1.0f; // Bắt đầu với chất lượng cao nhất
-        while (true) {
-            try (FileOutputStream fos = new FileOutputStream(outputFile); ImageOutputStream ios = ImageIO.createImageOutputStream(fos)) {
-
-                Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-                if (!writers.hasNext()) {
-                    throw new IllegalStateException("No writers found");
-                }
-                ImageWriter writer = writers.next();
-                writer.setOutput(ios);
-
-                ImageWriteParam param = writer.getDefaultWriteParam();
-                param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                param.setCompressionQuality(quality);
-
-                writer.write(null, new IIOImage(image, null, null), param);
-                writer.dispose();
-            }
-
-            if (outputFile.length() <= targetSize || quality <= 0.1f) {
-                break;
-            }
-
-            quality -= 0.05f; // Giảm chất lượng dần dần
-        }
-    }
-
     private void downloadAvatarDepartment(String department_id) {
         String token = SessionManager.getInstance().getToken();
 
@@ -1776,13 +1077,34 @@ public class AdminHome extends javax.swing.JFrame {
         });
     }
 
-    private void showError(Response<?> response) {
-        try {
-            String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-            System.out.println("Upload error: " + errorBody);
-            JOptionPane.showMessageDialog(this, "Tải ảnh thất bại: " + errorBody);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Tải ảnh thất bại: " + response.code());
+    //Image, other
+    public static void compressImage(File inputFile, File outputFile, long targetSize) throws IOException {
+        BufferedImage image = ImageIO.read(inputFile);
+
+        float quality = 1.0f; // Bắt đầu với chất lượng cao nhất
+        while (true) {
+            try (FileOutputStream fos = new FileOutputStream(outputFile); ImageOutputStream ios = ImageIO.createImageOutputStream(fos)) {
+
+                Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+                if (!writers.hasNext()) {
+                    throw new IllegalStateException("No writers found");
+                }
+                ImageWriter writer = writers.next();
+                writer.setOutput(ios);
+
+                ImageWriteParam param = writer.getDefaultWriteParam();
+                param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                param.setCompressionQuality(quality);
+
+                writer.write(null, new IIOImage(image, null, null), param);
+                writer.dispose();
+            }
+
+            if (outputFile.length() <= targetSize || quality <= 0.1f) {
+                break;
+            }
+
+            quality -= 0.05f; // Giảm chất lượng dần dần
         }
     }
 
@@ -1826,6 +1148,26 @@ public class AdminHome extends javax.swing.JFrame {
         }
     }
 
+    private void showError(Response<?> response) {
+        try {
+            String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+            System.out.println("Upload error: " + errorBody);
+            JOptionPane.showMessageDialog(this, "Tải ảnh thất bại: " + errorBody);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Tải ảnh thất bại: " + response.code());
+        }
+    }
+
+    private void date() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = formatter.format(new Date());
+
+        Calendar calendar = Calendar.getInstance();
+        int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+
+        jLabel_ngayhientai.setText("Ngày hôm nay: " + formattedDate + " - Tuần: " + weekOfYear);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -1864,79 +1206,44 @@ public class AdminHome extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
+    private javax.swing.JButton jButton_add_dep;
     private javax.swing.JButton jButton_avatar_dep;
+    private javax.swing.JButton jButton_delete_dep;
+    private javax.swing.JButton jButton_reset_depa;
     private javax.swing.JButton jButton_themBacSi;
+    private javax.swing.JButton jButton_update_dep;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel155;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabel_admin_email;
+    private javax.swing.JLabel jLabel_admin_email1;
     private javax.swing.JLabel jLabel_admin_name;
-    private javax.swing.JLabel jLabel_avatar;
+    private javax.swing.JLabel jLabel_admin_name1;
     private javax.swing.JLabel jLabel_avatar_department;
-    private javax.swing.JLabel jLabel_bacsi_loi;
     private javax.swing.JLabel jLabel_dsbs_khoa;
     private javax.swing.JLabel jLabel_ngayhientai;
-    private javax.swing.JLabel jLabel_thongTinBacSi;
-    private javax.swing.JLabel jLable_bacsi_avatar_url;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JPanel jPanel_admin;
-    private javax.swing.JPasswordField jPasswordField_bacsi_pass;
-    private javax.swing.JRadioButton jRadioButton_bacsi_nam;
-    private javax.swing.JRadioButton jRadioButton_bacsi_nu;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTable_Appointments;
-    private javax.swing.JTable jTable_DoctorSchedul;
     private javax.swing.JTable jTable_departments;
     private javax.swing.JTable jTable_doctor;
-    private javax.swing.JTextArea jTextArea_bacsi_description;
     private javax.swing.JTextArea jTextArea_department_description;
-    private javax.swing.JTextField jTextField_bacsi_address;
-    private javax.swing.JTextField jTextField_bacsi_brithdate;
-    private javax.swing.JTextField jTextField_bacsi_department_id;
-    private javax.swing.JTextField jTextField_bacsi_email;
-    private javax.swing.JTextField jTextField_bacsi_name;
-    private javax.swing.JTextField jTextField_bacsi_phone;
     private javax.swing.JTextField jTextField_department_anhNen;
     private javax.swing.JTextField jTextField_department_name;
     // End of variables declaration//GEN-END:variables

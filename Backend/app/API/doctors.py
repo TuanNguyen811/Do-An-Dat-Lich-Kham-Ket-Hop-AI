@@ -120,6 +120,21 @@ def update_doctor_me(
     if not updated_doctor:
         raise HTTPException(status_code=404, detail="Doctor not found")
 
-    return {"message": "Doctor updated successfully"}
+    return {"message": "Doctor updated successfully", "doctor_id": updated_doctor["doctor_id"]}
 
 
+
+@router.delete("/doctors/{doctor_id}", response_model=dict)
+def delete_doctor(
+    doctor_id: int,
+    db: Session = Depends(deps.get_db),
+    current_user=Depends(deps.get_current_user)
+):
+    if current_user["role"] != "Admin":
+        raise HTTPException(status_code=403, detail="Not an admin account")
+
+    deleted_doctor = crud_doctor.delete_doctor(db, doctor_id)
+    if not deleted_doctor:
+        raise HTTPException(status_code=404, detail="Doctor not found")
+
+    return {"message": "Doctor deleted successfully", "doctor_id": doctor_id}

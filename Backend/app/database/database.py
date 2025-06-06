@@ -32,4 +32,4 @@ def create_tables():
         for statement in statements:
             if statement.strip():
                 conn.execute(text(statement))
-        conn.commit()
+    #   conn.commit()

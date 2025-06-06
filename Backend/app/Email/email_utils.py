@@ -1,7 +1,8 @@
 import yagmail
 import random
-from Oauth.config import EMAIL_ADDRESS, EMAIL_PASSWORD
-
+from dotenv import load_dotenv
+import os
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", "config", "config.env"))
 
 import logging
 #Cau hinh log
@@ -19,8 +20,8 @@ def generate_otp(length=6):
 
 def send_otp_utils(receiver_email, otp_code):
     # Thong tin gmail cua ban
-    email = EMAIL_ADDRESS
-    app_password = EMAIL_PASSWORD
+    email = os.getenv("GMAIL")
+    app_password = os.getenv("PASSWORD")
 
     # Khoi tao yagmail
     yag = yagmail.SMTP(user=email, password=app_password)
@@ -40,10 +41,3 @@ def send_otp_utils(receiver_email, otp_code):
     yag.send(to=receiver_email, subject=subject, contents=content)
     logger.info(f"Email đã gửi thành công đến: {receiver_email}")
 
-
-# def send_with_otp(receiver_email: str):
-#     otp = generate_otp()
-#     send_otp(receiver_email=receiver_email, otp_code=otp)
-#
-#
-# send_with_otp(receiver_email=to)

@@ -1604,7 +1604,7 @@ public class DoctorHome extends javax.swing.JFrame {
             Appointment a = listAppointments.get(row);
             loadPatientById(a.getPatient_id());
             loadHealthMetrics(a.getPatient_id());
-            jLabel_createdAt.setText("Đặt lúc" + a.getCreated_at());
+            jLabel_createdAt.setText("Đặt lúc: " + a.getCreated_at());
         }
         textArea_appointmetnt_description.setText("");
         modelNotification.setRowCount(0);

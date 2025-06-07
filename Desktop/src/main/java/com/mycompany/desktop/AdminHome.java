@@ -79,7 +79,9 @@ public class AdminHome extends javax.swing.JFrame {
 
         loadAdminProfile();
         loadListDepartments();
+
         date();
+
     }
 
     /**
@@ -451,12 +453,12 @@ public class AdminHome extends javax.swing.JFrame {
                 .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel_ngayhientai)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 361, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel_admin_name)
                     .addComponent(jLabel_admin_email))
-                .addGap(27, 27, 27)
-                .addComponent(jButton7)
+                .addGap(18, 18, 18)
+                .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27))
         );
         jPanel4Layout.setVerticalGroup(
@@ -556,9 +558,9 @@ public class AdminHome extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel15)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(56, Short.MAX_VALUE))
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -590,9 +592,9 @@ public class AdminHome extends javax.swing.JFrame {
 
     //button
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        new Login().setVisible(true);
         SessionManager.getInstance().clearSession(admin.getUser_id());
 
-        new Login().setVisible(true);
         AdminHome.this.dispose();
     }//GEN-LAST:event_jButton7ActionPerformed
 
@@ -619,7 +621,7 @@ public class AdminHome extends javax.swing.JFrame {
 
     private void jTable_doctorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_doctorMouseClicked
         int row = jTable_doctor.getSelectedRow();
-        
+
         if (row != -1) { // Kiểm tra nếu có dòng nào đó được chọn
             Doctor doctorResponse = listDoctors.get(row);
 
@@ -725,6 +727,7 @@ public class AdminHome extends javax.swing.JFrame {
             @Override
             public void onResponse(Call<Admin> call, Response<Admin> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    admin = response.body();
                     jLabel_admin_name.setText(response.body().getFull_name());
                     jLabel_admin_email.setText(response.body().getEmail());
                     jLabel_admin_name1.setText(response.body().getFull_name());
@@ -769,6 +772,7 @@ public class AdminHome extends javax.swing.JFrame {
                 if (response.isSuccessful() && response.body() != null) {
                     listDepartments = response.body();
                     setTableDepartment(listDepartments);
+                    setDeparment_toUI(listDepartments.get(0));
                 } else {
                     try {
                         String errorMsg = response.errorBody().string();
@@ -850,9 +854,10 @@ public class AdminHome extends javax.swing.JFrame {
             public void onResponse(Call<Department> call, Response<Department> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     //thu thoi nhhng chac loi
-                    JOptionPane.showMessageDialog(null, "Registration successful! Please login." + response.body().getDepartment_id());
+                    JOptionPane.showMessageDialog(null, "Registration successful!" + response.body().getDepartment_id());
                     clearDepartmentUI();
                     loadListDepartments();
+
                 } else {
                     try {
                         String errorMsg = response.errorBody().string();

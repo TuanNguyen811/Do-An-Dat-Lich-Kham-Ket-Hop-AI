@@ -10,6 +10,19 @@ import com.mycompany.desktop.API.AuthService;
 import com.mycompany.desktop.models.TokenResponse;
 import com.mycompany.desktop.utils.SessionManager;
 import com.mycompany.desktop.utils.ValidationUtils;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,14 +35,24 @@ public class Login extends javax.swing.JFrame {
 
     private AuthService authService;
     private SessionManager sessionManager;
+    private String ip;
 
     /**
      * Creates new form RegisterDoctor
      */
     public Login() {
         initComponents();
+        try {
+            // Đọc lại khi mở
+            ip = Files.readAllLines(Paths.get("config.txt")).get(0);
+        } catch (IOException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        APIClient.setBaseUrl(ip);
+        jLabel_conn.setText("Server: " + ip);
+
         jLabel_thongBao.setVisible(true);
-        
         authService = APIClient.getAuthService();
         jLabel_thongBao.setText("");
         sessionManager = new SessionManager();
@@ -65,6 +88,8 @@ public class Login extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jPasswordField_login_password = new javax.swing.JPasswordField();
         jLabel4 = new javax.swing.JLabel();
+        jButton_ip = new javax.swing.JButton();
+        jLabel_conn = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Đăng nhập");
@@ -159,6 +184,15 @@ public class Login extends javax.swing.JFrame {
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/mycompany/desktop/Bach-Mai1.jpg"))); // NOI18N
         jLabel4.setText("jLabel4");
 
+        jButton_ip.setText("Cấu hình IP");
+        jButton_ip.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ipActionPerformed(evt);
+            }
+        });
+
+        jLabel_conn.setText("server");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -166,8 +200,13 @@ public class Login extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 499, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton_ip)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel_conn)))
                 .addGap(7, 7, 7))
         );
         layout.setVerticalGroup(
@@ -178,7 +217,10 @@ public class Login extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(111, 111, 111)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 125, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton_ip)
+                            .addComponent(jLabel_conn))))
                 .addContainerGap())
         );
 
@@ -272,6 +314,49 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton_loginKeyPressed
 
+    private void jButton_ipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ipActionPerformed
+        showIPInputDialog(this); // this là JFrame hiện tại
+        try {
+            // Đọc lại IP sau khi chỉnh
+            ip = Files.readAllLines(Paths.get("config.txt")).get(0);
+            jLabel_conn.setText("Server : " + ip);
+        } catch (IOException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        APIClient.setBaseUrl(ip);
+        authService = APIClient.getAuthService();
+    }//GEN-LAST:event_jButton_ipActionPerformed
+    public static void showIPInputDialog(JFrame parentFrame) {
+        JTextField ipField = new JTextField(15);
+
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.add(new JLabel("Nhập địa chỉ IP server:"));
+        panel.add(ipField);
+
+        int result = JOptionPane.showConfirmDialog(
+                parentFrame,
+                panel,
+                "Cấu hình địa chỉ IP",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
+        );
+
+        if (result == JOptionPane.OK_OPTION) {
+            String ip = ipField.getText().trim();
+            if (!ip.isEmpty()) {
+                try {
+                    Files.write(Paths.get("config.txt"), ip.getBytes());
+                    JOptionPane.showMessageDialog(parentFrame, "Đã lưu IP: " + ip);
+                } catch (IOException ex) {
+                    Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                JOptionPane.showMessageDialog(parentFrame, "IP không được để trống.");
+            }
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -310,11 +395,13 @@ public class Login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton jButton_ip;
     private javax.swing.JButton jButton_login;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel_conn;
     private javax.swing.JLabel jLabel_thongBao;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordField_login_password;

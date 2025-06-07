@@ -385,7 +385,7 @@ public class RegisterDoctorJPanel extends javax.swing.JPanel {
             @Override
             public void onResponse(Call<Doctor> call, Response<Doctor> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    JOptionPane.showMessageDialog(null, "Registration successful! Please login.");
+                    JOptionPane.showMessageDialog(null, "Registration successful!.");
                     SwingUtilities.getWindowAncestor(RegisterDoctorJPanel.this).dispose();
                 } else {
                     try {

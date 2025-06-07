@@ -16,18 +16,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIClient {
 
-    private static final String BASE_URL = "http://localhost:8000";
+    public static String BASE_URL = "";
     private static Retrofit retrofit = null;
+
+    public static void setBaseUrl(String ip) {
+        BASE_URL = "http://" + ip + ":8000";
+        System.out.println("BASE_URL updated to: " + BASE_URL);
+        retrofit = null; // Bắt buộc reset lại retrofit
+    }
+
+    public static void init(String ip) {
+        BASE_URL = ip;
+    }
 
     public static Retrofit getClient() {
         Gson gson = new GsonBuilder()
-        .registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
-            @Override
-            public JsonElement serialize(LocalDateTime src, java.lang.reflect.Type typeOfSrc, JsonSerializationContext context) {
-                return new JsonPrimitive(src.toString()); // ISO-8601 format: "2025-04-15T10:20"
-            }
-        })
-        .create();
+                .registerTypeAdapter(LocalDateTime.class, new JsonSerializer<LocalDateTime>() {
+                    @Override
+                    public JsonElement serialize(LocalDateTime src, java.lang.reflect.Type typeOfSrc, JsonSerializationContext context) {
+                        return new JsonPrimitive(src.toString()); // ISO-8601 format: "2025-04-15T10:20"
+                    }
+                })
+                .create();
         if (retrofit == null) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

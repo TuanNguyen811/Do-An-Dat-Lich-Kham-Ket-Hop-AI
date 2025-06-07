@@ -1,5 +1,6 @@
 package com.mycompany.desktop.API;
 
+import com.mycompany.desktop.models.CombinedResultWrapper;
 import com.google.gson.JsonObject;
 import com.mycompany.desktop.models.*;
 
@@ -147,6 +148,14 @@ public interface AuthService {
             @Header("Authorization") String token,
             @Path("schedule_id") int schedule_Id,
             @Body DoctorSchedule schedule
+    );
+
+    @FormUrlEncoded
+    @POST("/appointments/weekly_count_and_schedule")
+    Call<List<CombinedResultWrapper>> getWeeklyCombinedResults(
+            @Header("Authorization") String token,
+            @Field("doctor_id") int doctorId,
+            @Field("start_date") String startDate
     );
 
     @DELETE("schedules/{schedule_id}")

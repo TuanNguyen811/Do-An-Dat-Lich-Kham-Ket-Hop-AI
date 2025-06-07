@@ -9,9 +9,14 @@ import com.google.gson.JsonObject;
 import com.mycompany.desktop.API.APIClient;
 import com.mycompany.desktop.API.AuthService;
 import static com.mycompany.desktop.AdminHome.compressImage;
+import com.mycompany.desktop.JPanel.DoctorJPanel;
+import com.mycompany.desktop.JPanel.PatientJPanel;
+import com.mycompany.desktop.JPanel.PatientJPanel.PatientUpdateListener;
 import com.mycompany.desktop.models.Admin;
 import com.mycompany.desktop.models.Appointment;
 import com.mycompany.desktop.models.AvatarResponse;
+import com.mycompany.desktop.models.CombinedResultWrapper;
+import com.mycompany.desktop.models.Department;
 import com.mycompany.desktop.models.Doctor;
 import com.mycompany.desktop.models.DoctorSchedule;
 import com.mycompany.desktop.models.NotificationCreate;
@@ -42,6 +47,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import okhttp3.MediaType;
@@ -66,19 +72,29 @@ public class DoctorHome extends javax.swing.JFrame {
     private int user_id;
     private List<DoctorSchedule> listDoctorSchedules;
     private List<Appointment> listAppointments;
-    private DefaultTableModel modelNotification;
+    private List<Department> listDepartments;
+
+    private Calendar calendar;
+    private int weekSchedules;
 
     public DoctorHome(int user_id) {
         initComponents();
         this.user_id = user_id;
         SessionManager.getInstance().setCurrentUserId(user_id);
+        calendar = Calendar.getInstance();
 
         authService = APIClient.getAuthService();
         loadDoctorProfile();
         loadListDoctorSchedul(user_id);
-        loadListAppointments("");
 
-        modelNotification = (DefaultTableModel) jTable_notification.getModel();
+        // Lấy đối tượng Date
+        Date date = calendar.getTime();
+        // Định dạng thành chuỗi yyyy-MM-dd
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(date);
+        loadListAppointments(formattedDate);
+
+        date();
     }
 
     /**
@@ -91,58 +107,37 @@ public class DoctorHome extends javax.swing.JFrame {
     private void initComponents() {
 
         jTextField1 = new javax.swing.JTextField();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel_doctor_name = new javax.swing.JLabel();
+        jLabel_doctor_email = new javax.swing.JLabel();
+        jButton11 = new javax.swing.JButton();
+        jLabel_ngayhientai = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jTabbedPane = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable_Appointments = new javax.swing.JTable();
-        jTabbedPane2 = new javax.swing.JTabbedPane();
-        jPanel4 = new javax.swing.JPanel();
-        jTextField_patient__name = new javax.swing.JTextField();
-        jTextField_patient_phone = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jTextField_patient_brithdate = new javax.swing.JTextField();
-        jLabel_bacsi_loi = new javax.swing.JLabel();
-        jTextField_patient_email = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField_patient_address = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jTextField_insurance_id = new javax.swing.JTextField();
-        jTextField_patient_gender = new javax.swing.JTextField();
-        jLabel_createdAt = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable_HealthMetrics = new javax.swing.JTable();
-        jLabel_updateMetrics_date = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
-        textArea_OtherMetrics = new java.awt.TextArea();
-        jLabel1 = new javax.swing.JLabel();
-        jPanel7 = new javax.swing.JPanel();
-        textArea_appointmetnt_description = new java.awt.TextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTable_notification = new javax.swing.JTable();
-        jLabel24 = new javax.swing.JLabel();
-        jLabel25 = new javax.swing.JLabel();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jLabel23 = new javax.swing.JLabel();
+        jLabel_date_appointment = new javax.swing.JLabel();
         jButton15 = new javax.swing.JButton();
+        jButton16 = new javax.swing.JButton();
+        jButton17 = new javax.swing.JButton();
+        jButton18 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jLabel_ngayhientai = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable_WeekSchedul = new javax.swing.JTable();
         jScrollPane9 = new javax.swing.JScrollPane();
         jTable_DoctorSchedul = new javax.swing.JTable();
         jLabel10 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
+        jLable_WeekSchedul = new javax.swing.JLabel();
         jButton12 = new javax.swing.JButton();
         jButton14 = new javax.swing.JButton();
+        jLabel27 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jTextField_doctor_name = new javax.swing.JTextField();
@@ -170,342 +165,189 @@ public class DoctorHome extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         jLabel_doctor_avatar = new javax.swing.JLabel();
         jLable_doctor_avatar_url = new javax.swing.JLabel();
-        jScrollPane8 = new javax.swing.JScrollPane();
-        jTable_DoctorSchedul1 = new javax.swing.JTable();
-        jPanel8 = new javax.swing.JPanel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel_doctor_name = new javax.swing.JLabel();
-        jLabel_doctor_email = new javax.swing.JLabel();
-        jButton11 = new javax.swing.JButton();
-        jPanel9 = new javax.swing.JPanel();
-        jSeparator1 = new javax.swing.JSeparator();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        jLabel_id_user = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel10 = new javax.swing.JPanel();
+        jLabel_avatar_department = new javax.swing.JLabel();
+        jTextField_department_name = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTextArea_department_description = new javax.swing.JTextArea();
+        jTextField_department_name1 = new javax.swing.JLabel();
+        jButton7 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable_departments = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
 
         jTextField1.setText("jTextField1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel8.setBackground(new java.awt.Color(0, 102, 204));
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel18.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel18.setText("TRANG BÁC SĨ LÀM VIỆC");
+
+        jLabel_doctor_name.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_doctor_name.setText("Tên:");
+
+        jLabel_doctor_email.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_doctor_email.setText("Gmail:");
+
+        jButton11.setText("Đăng xuất");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
+        jLabel_ngayhientai.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_ngayhientai.setText("jLabel1");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel_ngayhientai)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel_doctor_name)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_doctor_email)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton11)
+                .addGap(14, 14, 14))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_doctor_name)
+                    .addComponent(jLabel_doctor_email)
+                    .addComponent(jButton11)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel_ngayhientai))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        jButton1.setText("Lịch Hẹn Khám");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Thông Tin Bác Sĩ");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Đăng Xuất");
+
+        jButton5.setText("Lịch Làm Việc");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jTabbedPane.setEnabled(false);
+        jTabbedPane.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPaneMouseClicked(evt);
+            }
+        });
+
+        jTable_Appointments.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTable_Appointments.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Tên", "Ngày đặt", "Thời gian"
+                "Tên", "Ngày đặt", "Thời gian", "Đặt lúc"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true
+                false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
+        jTable_Appointments.setRowHeight(40);
         jTable_Appointments.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable_AppointmentsMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                jTable_AppointmentsMouseEntered(evt);
             }
         });
         jScrollPane1.setViewportView(jTable_Appointments);
         if (jTable_Appointments.getColumnModel().getColumnCount() > 0) {
             jTable_Appointments.getColumnModel().getColumn(0).setResizable(false);
-            jTable_Appointments.getColumnModel().getColumn(1).setResizable(false);
-            jTable_Appointments.getColumnModel().getColumn(2).setResizable(false);
+            jTable_Appointments.getColumnModel().getColumn(2).setPreferredWidth(30);
         }
 
-        jTextField_patient_phone.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_patient_phoneActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setText("Name");
-
-        jLabel4.setText("Phone");
-
-        jLabel8.setText("BirthDate     YYYY-MM-DD");
-
-        jTextField_patient_email.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField_patient_emailActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setText("Email");
-
-        jLabel9.setText("Gender");
-
-        jLabel11.setText("Address");
-
-        jLabel12.setText("Insurance_id");
-
-        jLabel_createdAt.setText("jLabel10");
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel9))
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel11)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel_bacsi_loi)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3)
-                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jTextField_insurance_id, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-                        .addComponent(jTextField_patient__name, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField_patient_email, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField_patient_phone, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jTextField_patient_address, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                            .addComponent(jTextField_patient_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(18, 18, 18)
-                            .addComponent(jTextField_patient_gender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(104, 104, 104)))
-                    .addComponent(jLabel_createdAt))
-                .addContainerGap(102, Short.MAX_VALUE))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addGap(5, 5, 5)
-                .addComponent(jTextField_patient__name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_patient_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_patient_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel9))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField_patient_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField_patient_gender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel11)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_patient_address, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField_insurance_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_bacsi_loi)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_createdAt)
-                .addGap(0, 335, Short.MAX_VALUE))
-        );
-
-        jTabbedPane2.addTab("Thông tin bệnh nhân", jPanel4);
-
-        jTable_HealthMetrics.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"1", ""},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {"123", null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null},
-                {"123", null}
-            },
-            new String [] {
-                "Loại", "Chỉ số"
-            }
-        ));
-        jScrollPane2.setViewportView(jTable_HealthMetrics);
-
-        jLabel_updateMetrics_date.setText("Cập nhật ngày");
-
-        jButton4.setText("Cập nhật");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("Other Metrics:");
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textArea_OtherMetrics, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel6Layout.createSequentialGroup()
-                                .addComponent(jButton4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel_updateMetrics_date)))
-                        .addGap(0, 106, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel_updateMetrics_date)
-                    .addComponent(jButton4))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(textArea_OtherMetrics, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28))
-        );
-
-        jTabbedPane2.addTab("Chỉ số sức khỏe", jPanel6);
-
-        jTable_notification.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
-            },
-            new String [] {
-                "Ngày nhắc", "Nội dung"
-            }
-        ));
-        jScrollPane3.setViewportView(jTable_notification);
-
-        jLabel24.setText("Chuẩn đoán bệnh:");
-
-        jLabel25.setText("Tạo lời nhắn");
-
-        jButton8.setText("Hủy khám");
-
-        jButton9.setText("Khám xong");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-
-        jButton10.setText("Tạo");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
-
-        jButton6.setText("Nhân bản");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
-        jButton7.setText("Làm mới");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(textArea_appointmetnt_description, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel24)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel25)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton7)))
-                        .addGap(0, 126, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel24)
-                .addGap(1, 1, 1)
-                .addComponent(textArea_appointmetnt_description, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel25)
-                    .addComponent(jButton10)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton8)
-                    .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jTabbedPane2.addTab("Khám bệnh", jPanel7);
-
-        jLabel23.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel23.setText("Lịch khám hôm nay");
+        jLabel_date_appointment.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel_date_appointment.setText("Lịch khám hôm nay");
 
         jButton15.setText("Xem tất cả");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
+
+        jButton16.setText("Ngày trước");
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
+
+        jButton17.setText("Ngày sau");
+        jButton17.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton17ActionPerformed(evt);
+            }
+        });
+
+        jButton18.setText("Lịch hôm nay");
+        jButton18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton18ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel23)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton15))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 485, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_date_appointment)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 567, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton16, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -513,21 +355,24 @@ public class DoctorHome extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel23)
+                    .addComponent(jLabel_date_appointment)
                     .addComponent(jButton15))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 524, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton16)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton17)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
-        jTabbedPane.addTab("Lịch hẹn", jPanel1);
+        jTabbedPane.addTab("Lịch khám", jPanel1);
 
-        jLabel_ngayhientai.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel_ngayhientai.setText("jLabel1");
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_WeekSchedul.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"7h-9h", null, null, null, null, null, null, null},
                 {"9h-11h", null, null, null, null, null, null, null},
@@ -538,7 +383,13 @@ public class DoctorHome extends javax.swing.JFrame {
                 "Thời gian", "T2", "T3", "T4", "T5", "T6", "T7", "CN"
             }
         ));
-        jScrollPane4.setViewportView(jTable1);
+        jTable_WeekSchedul.setRowHeight(30);
+        jScrollPane4.setViewportView(jTable_WeekSchedul);
+        if (jTable_WeekSchedul.getColumnModel().getColumnCount() > 0) {
+            jTable_WeekSchedul.getColumnModel().getColumn(0).setMinWidth(100);
+            jTable_WeekSchedul.getColumnModel().getColumn(0).setPreferredWidth(100);
+            jTable_WeekSchedul.getColumnModel().getColumn(0).setMaxWidth(100);
+        }
 
         jTable_DoctorSchedul.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -559,15 +410,35 @@ public class DoctorHome extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        jTable_DoctorSchedul.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable_DoctorSchedulMouseClicked(evt);
+            }
+        });
         jScrollPane9.setViewportView(jTable_DoctorSchedul);
 
         jLabel10.setText("Lịch toàn thời gian");
 
-        jLabel13.setText("Lịch tuần - từ ngày");
+        jLable_WeekSchedul.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLable_WeekSchedul.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLable_WeekSchedul.setText("Lịch tuần - từ ngày");
 
         jButton12.setText("Tuần trước");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
 
         jButton14.setText("Tuần sau");
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
+
+        jLabel27.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel27.setText("Lịch làm việc");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -576,41 +447,36 @@ public class DoctorHome extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel10)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(jPanel2Layout.createSequentialGroup()
                             .addComponent(jButton12)
-                            .addGap(147, 147, 147)
-                            .addComponent(jLabel13)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLable_WeekSchedul, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(jButton14))
-                        .addComponent(jLabel_ngayhientai, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jScrollPane9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING)))
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel27))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel_ngayhientai)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel13)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton14)
-                            .addComponent(jButton12))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
+                .addComponent(jLabel27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton14)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton12)
+                        .addComponent(jLable_WeekSchedul)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(44, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Lịch làm việc", jPanel2);
@@ -681,6 +547,9 @@ public class DoctorHome extends javax.swing.JFrame {
 
         jLable_doctor_avatar_url.setText("file");
 
+        jLabel_id_user.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel_id_user.setText("Thông tin cá nhân");
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -688,51 +557,59 @@ public class DoctorHome extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel_doctor_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane5)
-                        .addComponent(jTextField_doctor_emai)
-                        .addComponent(jTextField_doctor_phone)
-                        .addComponent(jTextField_doctor_address)
-                        .addComponent(jPasswordField_doctor_pass)
-                        .addGroup(jPanel5Layout.createSequentialGroup()
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel_doctor_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel5)
-                                .addComponent(jTextField_doctor_name, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel21)
-                                .addComponent(jTextField_doctor_department_id, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)))
-                        .addGroup(jPanel5Layout.createSequentialGroup()
-                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jButton13)
-                                .addComponent(jLabel19)
+                                .addComponent(jScrollPane5)
+                                .addComponent(jTextField_doctor_emai)
+                                .addComponent(jTextField_doctor_phone)
+                                .addComponent(jTextField_doctor_address)
+                                .addComponent(jPasswordField_doctor_pass)
                                 .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jLabel22)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLable_doctor_avatar_url))
-                                .addComponent(jLabel20)
-                                .addComponent(jLabel15)
-                                .addComponent(jLabel6)
-                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel_doctor_loi)
-                                .addComponent(jLabel7)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel5)
+                                        .addComponent(jTextField_doctor_name, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel21)
+                                        .addComponent(jTextField_doctor_department_id, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)))
                                 .addGroup(jPanel5Layout.createSequentialGroup()
-                                    .addComponent(jTextField_doctor_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel19)
                                         .addGroup(jPanel5Layout.createSequentialGroup()
-                                            .addComponent(jRadioButton_doctor_nam)
-                                            .addGap(32, 32, 32)
-                                            .addComponent(jRadioButton_doctor_nu))
-                                        .addComponent(jLabel17))))
-                            .addGap(0, 0, Short.MAX_VALUE))))
-                .addContainerGap(10, Short.MAX_VALUE))
+                                            .addComponent(jLabel22)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jLable_doctor_avatar_url))
+                                        .addComponent(jLabel20)
+                                        .addComponent(jLabel15)
+                                        .addComponent(jLabel6)
+                                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel_doctor_loi)
+                                        .addComponent(jLabel7)
+                                        .addGroup(jPanel5Layout.createSequentialGroup()
+                                            .addComponent(jTextField_doctor_brithdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(18, 18, 18)
+                                            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addGroup(jPanel5Layout.createSequentialGroup()
+                                                    .addComponent(jRadioButton_doctor_nam)
+                                                    .addGap(32, 32, 32)
+                                                    .addComponent(jRadioButton_doctor_nu))
+                                                .addComponent(jLabel17))))
+                                    .addGap(0, 0, Short.MAX_VALUE))))
+                        .addContainerGap(10, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel_id_user)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
+                .addComponent(jLabel_id_user)
+                .addGap(8, 8, 8)
                 .addComponent(jLabel_doctor_avatar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -783,8 +660,8 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel_doctor_loi)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton13)
-                .addGap(0, 15, Short.MAX_VALUE))
+                .addComponent(jButton13, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -797,104 +674,130 @@ public class DoctorHome extends javax.swing.JFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 4, Short.MAX_VALUE)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 68, Short.MAX_VALUE))
         );
 
         jTabbedPane.addTab("Thông tin cá nhân", jPanel3);
 
-        jTable_DoctorSchedul1.setModel(new javax.swing.table.DefaultTableModel(
+        jLabel_avatar_department.setText("jLabel15");
+
+        jTextField_department_name.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jTextField_department_name.setText("Tên Khoa:");
+
+        jTextArea_department_description.setColumns(20);
+        jTextArea_department_description.setRows(3);
+        jScrollPane6.setViewportView(jTextArea_department_description);
+
+        jTextField_department_name1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTextField_department_name1.setText("Các khoa khác:");
+
+        jButton7.setText("Quay lại");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        jTable_departments.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, "10-10-10-10", null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Tuần", "T2", "T3", "T4", "T5", "T6", "T7", "CN"
+                "ID", "Tên khoa"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            boolean[] canEdit = new boolean [] {
+                false, false
             };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
-        jScrollPane8.setViewportView(jTable_DoctorSchedul1);
-
-        jTabbedPane.addTab("", jScrollPane8);
-
-        jPanel8.setBackground(new java.awt.Color(0, 102, 204));
-
-        jLabel18.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel18.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel18.setText("TRANG BÁC SĨ LÀM VIỆC");
-
-        jLabel_doctor_name.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_doctor_name.setText("Tên:");
-
-        jLabel_doctor_email.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel_doctor_email.setText("Gmail:");
-
-        jButton11.setText("Đăng xuất");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
+        jTable_departments.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable_departmentsMouseClicked(evt);
             }
         });
+        jScrollPane3.setViewportView(jTable_departments);
+        if (jTable_departments.getColumnModel().getColumnCount() > 0) {
+            jTable_departments.getColumnModel().getColumn(0).setMinWidth(35);
+            jTable_departments.getColumnModel().getColumn(0).setPreferredWidth(35);
+            jTable_departments.getColumnModel().getColumn(0).setMaxWidth(35);
+            jTable_departments.getColumnModel().getColumn(1).setResizable(false);
+        }
 
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel1.setText("Tên khoa:");
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jTextField_department_name1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton7))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField_department_name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel_avatar_department, javax.swing.GroupLayout.PREFERRED_SIZE, 669, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel18)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel_doctor_name)
+                .addComponent(jLabel_avatar_department, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_doctor_email)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField_department_name)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton11)
-                .addGap(14, 14, 14))
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel_doctor_name)
-                    .addComponent(jLabel_doctor_email)
-                    .addComponent(jButton11)
-                    .addComponent(jLabel18))
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField_department_name1)
+                    .addComponent(jButton7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
-        jButton1.setText("Lịch Hẹn Khám");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jTabbedPane.addTab("Thông tin khoa", jPanel4);
+
+        jButton4.setText("Thông Tin Khoa");
+        jButton4.setMaximumSize(new java.awt.Dimension(119, 23));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Thông Tin Bác Sĩ");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("Đăng Xuất");
-
-        jButton5.setText("Lịch Làm Việc");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                jButton4ActionPerformed(evt);
             }
         });
 
@@ -908,9 +811,12 @@ public class DoctorHome extends javax.swing.JFrame {
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
@@ -918,13 +824,18 @@ public class DoctorHome extends javax.swing.JFrame {
             .addComponent(jSeparator1)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 692, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -932,31 +843,30 @@ public class DoctorHome extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 687, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 601, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 21, Short.MAX_VALUE)))
+                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    //load
 
+    //Doctor
     private void loadDoctorProfile() {
         String token = SessionManager.getInstance().getToken();
+
         authService.getDoctorProfile(token).enqueue(new Callback<Doctor>() {
             @Override
             public void onResponse(Call<Doctor> call, Response<Doctor> response) {
@@ -1014,283 +924,10 @@ public class DoctorHome extends javax.swing.JFrame {
         });
     }
 
-    private void loadListDoctorSchedul(int doctor_id) {
-        String token = SessionManager.getInstance().getToken();
-        listDoctorSchedules = new ArrayList<>();
-        authService.getSchedule(token, doctor_id).enqueue(new Callback<List<DoctorSchedule>>() {
-            @Override
-            public void onResponse(Call<List<DoctorSchedule>> call, Response<List<DoctorSchedule>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listDoctorSchedules = response.body();
-                    setTableDoctorSchedules(listDoctorSchedules);
-                } else {
-                    try {
-                        String errorMsg = response.errorBody().string();
-                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<DoctorSchedule>> call, Throwable thrwbl) {
-                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
-            }
-        });
-    }
-
-    private void loadPatientById(int patientId) {
-        String token = SessionManager.getInstance().getToken();
-        authService.getPatient(token, patientId).enqueue(new Callback<Patient>() {
-            @Override
-            public void onResponse(Call<Patient> call, Response<Patient> response) {
-                if (response.isSuccessful()) {
-                    setPatientToForm(response.body());
-                } else {
-                    try {
-                        String errorMsg = response.errorBody().string();
-                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Patient> call, Throwable thrwbl) {
-                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
-            }
-        });
-
-    }
-
-    private void loadListAppointments(String appointmentDate) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        String formattedDate = formatter.format(new Date());
-
-        Calendar calendar = Calendar.getInstance();
-        int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
-
-        jLabel_ngayhientai.setText("Ngày hôm nay: " + formattedDate + " - Tuần: " + weekOfYear);
-
-        listAppointments = new ArrayList<>();
-        String token = SessionManager.getInstance().getToken();
-        authService.getAppointmentsByDoctor(token, appointmentDate).enqueue(new Callback<List<Appointment>>() {
-            @Override
-            public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    listAppointments = response.body();
-                    listAppointments.sort((a, b) -> {
-                        String timeA = a.getCreated_at();
-                        String timeB = b.getCreated_at();
-                        return timeA.compareTo(timeB);
-                    });
-                    listAppointments.sort((a, b) -> {
-                        String timeA = a.getShiftName();
-                        String timeB = b.getShiftName();
-                        return timeA.compareTo(timeB);
-                    });
-                    listAppointments.sort((a, b) -> {
-                        String dateA = a.getAppointmentDate();
-                        String dateB = b.getAppointmentDate();
-                        return dateA.compareTo(dateB);
-                    });
-
-                    setTableAppointments(listAppointments);
-                } else {
-                    setTableAppointments(listAppointments);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Appointment>> call, Throwable thrwbl) {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        });
-    }
-
-    private void loadHealthMetrics(int patirnId) {
-        String token = SessionManager.getInstance().getToken();
-        authService.getHealthMetrics(token, patirnId).enqueue(new Callback<PatientHealthMetrics>() {
-            @Override
-            public void onResponse(Call<PatientHealthMetrics> call, Response<PatientHealthMetrics> response) {
-                if (response.isSuccessful()) {
-                    setTableHealthMetrics(response.body());
-
-                } else {
-                    try {
-                        String errorMsg = response.errorBody().string();
-                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PatientHealthMetrics> call, Throwable thrwbl) {
-
-                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
-
-            }
-        });
-    }
-
-    private void updateHealthMetrics(int patientId) {
-        String token = SessionManager.getInstance().getToken();
-        PatientHealthMetrics metrics = new PatientHealthMetrics();
-        metrics = getPatientFromTable(jTable_HealthMetrics);
-
-        authService.createHealthMetric(token, metrics, patientId).enqueue(new Callback<PatientHealthMetrics>() {
-            @Override
-            public void onResponse(Call<PatientHealthMetrics> call, Response<PatientHealthMetrics> response) {
-                if (response.isSuccessful()) {
-                    setTableHealthMetrics(response.body());
-
-                } else {
-                    try {
-                        String errorMsg = response.errorBody().string();
-                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
-                    } catch (IOException e) {
-                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PatientHealthMetrics> call, Throwable thrwbl) {
-                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
-            }
-        });
-    }
-
-    //set table
-    private void setTableAppointments(List<Appointment> appointments) {
-        DefaultTableModel model = (DefaultTableModel) jTable_Appointments.getModel();
-        model.setRowCount(0);
-
-        for (Appointment appointment : appointments) {
-            String shift = "00";
-            if (appointment.getShiftName().equals("Shift 1")) {
-                shift = "7h-9h";
-            } else if (appointment.getShiftName().equals("Shift 2")) {
-                shift = "9h-11h";
-            } else if (appointment.getShiftName().equals("Shift 3")) {
-                shift = "13h-15h";
-            } else if (appointment.getShiftName().equals("Shift 4")) {
-                shift = "15h-17h";
-            }
-            model.addRow(new Object[]{
-                appointment.getPatientName(),
-                DateUtils.formatDate(appointment.getAppointmentDate()),
-                shift
-            });
-        }
-    }
-
-    private void setTableDoctorSchedules(List<DoctorSchedule> doctorSchedules) {
-        DefaultTableModel model = (DefaultTableModel) jTable_DoctorSchedul.getModel();
-        model.setRowCount(0);
-
-        for (DoctorSchedule doctorSchedule : doctorSchedules) {
-            model.addRow(new Object[]{
-                doctorSchedule.getWeek(),
-                doctorSchedule.getMonday(),
-                doctorSchedule.getTuesday(),
-                doctorSchedule.getWednesday(),
-                doctorSchedule.getThursday(),
-                doctorSchedule.getFriday(),
-                doctorSchedule.getSaturday(),
-                doctorSchedule.getSunday()
-            });
-        }
-    }
-
-    private void setTableHealthMetrics(PatientHealthMetrics patientHealthMetrics) {
-        DefaultTableModel model = (DefaultTableModel) jTable_HealthMetrics.getModel();
-        model.setRowCount(0);
-        jLabel_updateMetrics_date.setText("Patient ID: " + patientHealthMetrics.getPatient_id()
-                + "\nUpdate At: " + patientHealthMetrics.getRecorded_at());
-        textArea_OtherMetrics.setText(patientHealthMetrics.getOther_metrics());
-        Object[][] data = {
-            {"Systolic BP", patientHealthMetrics.getSystolic_bp()},
-            {"Diastolic BP", patientHealthMetrics.getDiastolic_bp()},
-            {"Heart Rate", patientHealthMetrics.getHeart_rate()},
-            {"Body Temperature", patientHealthMetrics.getBody_temperature()},
-            {"Respiratory Rate", patientHealthMetrics.getRespiratory_rate()},
-            {"Weight (kg)", patientHealthMetrics.getWeight_kg()},
-            {"Height (cm)", patientHealthMetrics.getHeight_cm()},
-            {"BMI", patientHealthMetrics.getBmi()},
-            {"Blood Glucose", patientHealthMetrics.getBlood_glucose()},
-            {"Cholesterol Total", patientHealthMetrics.getCholesterol_total()},
-            {"LDL", patientHealthMetrics.getLdl()},
-            {"HDL", patientHealthMetrics.getHdl()},
-            {"Triglycerides", patientHealthMetrics.getTriglycerides()},
-            {"Hemoglobin", patientHealthMetrics.getHemoglobin()},
-            {"ID", patientHealthMetrics.getId()},};
-
-        for (Object[] row : data) {
-            model.addRow(row); // row là Object[]{ "Tên chỉ số", giá trị }
-        }
-    }
-
-    public PatientHealthMetrics getPatientFromTable(JTable table) {
-        PatientHealthMetrics patient = new PatientHealthMetrics();
-
-        for (int i = 0; i < table.getRowCount(); i++) {
-            Object fieldObj = table.getValueAt(i, 0);
-            Object valueObj = table.getValueAt(i, 1);
-
-            if (fieldObj == null || valueObj == null) {
-                continue;
-            }
-
-            String field = fieldObj.toString().trim();
-            String valueStr = valueObj.toString().trim();
-
-            try {
-                switch (field) {
-                    case "Systolic BP" ->
-                        patient.setSystolic_bp(Integer.parseInt(valueStr));
-                    case "Diastolic BP" ->
-                        patient.setDiastolic_bp(Integer.parseInt(valueStr));
-                    case "Heart Rate" ->
-                        patient.setHeart_rate(Integer.parseInt(valueStr));
-                    case "Body Temperature" ->
-                        patient.setBody_temperature(Double.parseDouble(valueStr));
-                    case "Respiratory Rate" ->
-                        patient.setRespiratory_rate(Integer.parseInt(valueStr));
-                    case "Weight (kg)" ->
-                        patient.setWeight_kg(Double.parseDouble(valueStr));
-                    case "Height (cm)" ->
-                        patient.setHeight_cm(Double.parseDouble(valueStr));
-                    case "BMI" ->
-                        patient.setBmi(Double.parseDouble(valueStr));
-                    case "Blood Glucose" ->
-                        patient.setBlood_glucose(Double.parseDouble(valueStr));
-                    case "Cholesterol Total" ->
-                        patient.setCholesterol_total(Double.parseDouble(valueStr));
-                    case "LDL" ->
-                        patient.setLdl(Double.parseDouble(valueStr));
-                    case "HDL" ->
-                        patient.setHdl(Double.parseDouble(valueStr));
-                    case "Triglycerides" ->
-                        patient.setTriglycerides(Double.parseDouble(valueStr));
-                    case "Hemoglobin" ->
-                        patient.setHemoglobin(Double.parseDouble(valueStr));
-                    case "Other Metrics" ->
-                        patient.setOther_metrics(valueStr);
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("Lỗi khi parse giá trị ở dòng " + i + ": " + valueStr);
-            }
-        }
-        patient.setOther_metrics(textArea_OtherMetrics.getText());
-        return patient;
-    }
-
     private void setDoctor_toUI(Doctor doctorResponse) {
+        
+        jLabel_id_user.setText("Thông tin bác sĩ ID: " + doctorResponse.getUser_id());
+        
         jTextField_doctor_name.setText(doctorResponse.getFull_name());
         jTextField_doctor_emai.setText(doctorResponse.getEmail());
         jTextField_doctor_phone.setText(doctorResponse.getPhone());
@@ -1341,14 +978,185 @@ public class DoctorHome extends javax.swing.JFrame {
         return getDoctor;
     }
 
-    public void setPatientToForm(Patient patient) {
-        jTextField_patient__name.setText(patient.getFull_name());
-        jTextField_patient_address.setText(patient.getAddress());
-        jTextField_patient_brithdate.setText(patient.getDate_of_birth());
-        jTextField_patient_gender.setText(patient.getGender());
-        jTextField_patient_email.setText(patient.getEmail());
-        jTextField_patient_phone.setText(patient.getPhone());
-        jTextField_insurance_id.setText(String.valueOf(patient.getInsurance_id()));
+    //doctorSchedul
+    private void loadListDoctorSchedul(int doctor_id) {
+        String token = SessionManager.getInstance().getToken();
+        listDoctorSchedules = new ArrayList<>();
+        authService.getSchedule(token, doctor_id).enqueue(new Callback<List<DoctorSchedule>>() {
+            @Override
+            public void onResponse(Call<List<DoctorSchedule>> call, Response<List<DoctorSchedule>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listDoctorSchedules = response.body();
+                    setTableDoctorSchedules(listDoctorSchedules);
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DoctorSchedule>> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+            }
+        });
+    }
+
+    private void setTableDoctorSchedules(List<DoctorSchedule> doctorSchedules) {
+        DefaultTableModel model = (DefaultTableModel) jTable_DoctorSchedul.getModel();
+        model.setRowCount(0);
+
+        for (DoctorSchedule doctorSchedule : doctorSchedules) {
+            model.addRow(new Object[]{
+                doctorSchedule.getWeek(),
+                doctorSchedule.getMonday(),
+                doctorSchedule.getTuesday(),
+                doctorSchedule.getWednesday(),
+                doctorSchedule.getThursday(),
+                doctorSchedule.getFriday(),
+                doctorSchedule.getSaturday(),
+                doctorSchedule.getSunday()
+            });
+        }
+    }
+
+    private void setTableWeekSchedules(int inputWeek) {
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        // Tạo calendar với năm hiện tại và set về tuần được chỉ định
+        Calendar cld = Calendar.getInstance();
+        cld.clear(); // Xóa toàn bộ để tránh xung đột thông tin
+        cld.setFirstDayOfWeek(Calendar.MONDAY);
+        cld.set(Calendar.YEAR, currentYear);
+        cld.set(Calendar.WEEK_OF_YEAR, inputWeek);
+        cld.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY); // Bắt đầu từ thứ 2
+
+        // Lấy ngày đầu tuần
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String fromDate = formatter.format(cld.getTime());
+
+        // Lấy ngày cuối tuần (chủ nhật)
+        Calendar endOfWeek = (Calendar) cld.clone();
+        endOfWeek.add(Calendar.DATE, 6); // từ thứ 2 đến chủ nhật là +6 ngày
+        String toDate = formatter.format(endOfWeek.getTime());
+
+        // Xuất kết quả
+        String result = "Tuần: " + inputWeek + " từ ngày " + fromDate + " đến " + toDate;
+        jLable_WeekSchedul.setText(result); // dùng trong GUI
+
+        String token = SessionManager.getInstance().getToken();
+        authService.getWeeklyCombinedResults(token, doctor.getUser_id(), DateUtils.formatDate3(fromDate))
+                .enqueue(new Callback<List<CombinedResultWrapper>>() {
+                    @Override
+                    public void onResponse(Call<List<CombinedResultWrapper>> call, Response<List<CombinedResultWrapper>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            List<CombinedResultWrapper> data = response.body();
+
+                            DefaultTableModel model = (DefaultTableModel) jTable_WeekSchedul.getModel();
+                            model.setRowCount(0);
+
+                            String[] timeSlots = {"7h-9h", "9h-11h", "13h-15h", "15h-17h"};
+
+                            for (int slot = 0; slot < 4; slot++) {
+                                // Tạo một hàng
+                                List<String> row = new ArrayList<>();
+                                row.add("Ca " + (slot + 1) + " (" + timeSlots[slot] + ")");
+
+                                // Duyệt qua từng ngày (7 ngày trong tuần)
+                                for (int day = 0; day < 7; day++) {
+                                    CombinedResultWrapper dayData = data.get(day);
+
+                                    int max = dayData.getMax_appointments().get(slot);
+                                    int count = dayData.getAppointment_counts().get(slot);
+
+                                    row.add("Đặt: " + count + "\\" + max); // VD: 10\0
+                                }
+
+                                // Thêm dòng vào bảng
+                                model.addRow(row.toArray());
+                            }
+                        } else {
+                            try {
+                                JOptionPane.showMessageDialog(null, "Lỗi: " + response.errorBody().string());
+                            } catch (IOException e) {
+                                JOptionPane.showMessageDialog(null, "Không đọc được lỗi!");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<CombinedResultWrapper>> call, Throwable t) {
+                        JOptionPane.showMessageDialog(null, "Lỗi mạng: " + t.getMessage());
+                    }
+                });
+
+    }
+
+    private void loadWeeklyCombinedResults(int doctorId, String startDate) {
+
+    }
+
+    //appointment
+    private void loadListAppointments(String appointmentDate) {
+        listAppointments = new ArrayList<>();
+        String token = SessionManager.getInstance().getToken();
+        authService.getAppointmentsByDoctor(token, appointmentDate).enqueue(new Callback<List<Appointment>>() {
+            @Override
+            public void onResponse(Call<List<Appointment>> call, Response<List<Appointment>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    listAppointments = response.body();
+                    listAppointments.sort((a, b) -> {
+                        String timeA = a.getCreated_at();
+                        String timeB = b.getCreated_at();
+                        return timeA.compareTo(timeB);
+                    });
+                    listAppointments.sort((a, b) -> {
+                        String timeA = a.getShiftName();
+                        String timeB = b.getShiftName();
+                        return timeA.compareTo(timeB);
+                    });
+                    listAppointments.sort((a, b) -> {
+                        String dateA = a.getAppointmentDate();
+                        String dateB = b.getAppointmentDate();
+                        return dateA.compareTo(dateB);
+                    });
+
+                    setTableAppointments(listAppointments);
+                } else {
+                    setTableAppointments(listAppointments);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Appointment>> call, Throwable thrwbl) {
+                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        });
+    }
+
+    private void setTableAppointments(List<Appointment> appointments) {
+        DefaultTableModel model = (DefaultTableModel) jTable_Appointments.getModel();
+        model.setRowCount(0);
+
+        for (Appointment appointment : appointments) {
+            String shift = "00";
+            if (appointment.getShiftName().equals("Shift 1")) {
+                shift = "7h-9h";
+            } else if (appointment.getShiftName().equals("Shift 2")) {
+                shift = "9h-11h";
+            } else if (appointment.getShiftName().equals("Shift 3")) {
+                shift = "13h-15h";
+            } else if (appointment.getShiftName().equals("Shift 4")) {
+                shift = "15h-17h";
+            }
+            model.addRow(new Object[]{
+                appointment.getPatientName(),
+                DateUtils.formatDate(appointment.getAppointmentDate()),
+                shift, appointment.getCreated_at()
+            });
+        }
     }
 
     //Avatar
@@ -1514,111 +1322,109 @@ public class DoctorHome extends javax.swing.JFrame {
         }
     }
 
-    public void addNextDayToTable(DefaultTableModel modelNotification) {
-        int rowCount = modelNotification.getRowCount();
-        if (rowCount == 0) {
-            JOptionPane.showMessageDialog(null, "Bảng chưa có dữ liệu để cộng thêm ngày.");
-            return;
-        }
+    private void date() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = formatter.format(new Date());
 
-        // Giả sử thời gian đang lưu dưới dạng LocalDateTime (hoặc String định dạng)
-        Object lastRowValue = modelNotification.getValueAt(rowCount - 1, 0);
-        Object loiNhacObj = modelNotification.getValueAt(rowCount - 1, 1);
-        String loiNhac = (loiNhacObj != null) ? loiNhacObj.toString() : "";
-        LocalDateTime lastDateTime;
+        Calendar calendar2 = Calendar.getInstance();
+        int weekOfYear = calendar2.get(Calendar.WEEK_OF_YEAR);
 
-        if (lastRowValue instanceof LocalDateTime) {
-            lastDateTime = (LocalDateTime) lastRowValue;
-        } else if (lastRowValue instanceof String) {
-            // Nếu lưu ở dạng chuỗi thì cần parse lại
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"); // hoặc "yyyy-MM-dd HH:mm"
-            lastDateTime = LocalDateTime.parse(lastRowValue.toString(), formatter);
-        } else {
-            JOptionPane.showMessageDialog(null, "Không thể chuyển đổi giá trị ở hàng cuối.");
-            return;
-        }
-
-        LocalDateTime newDateTime = lastDateTime.plusDays(1);
-        modelNotification.addRow(new Object[]{newDateTime, loiNhac});
+        jLabel_ngayhientai.setText("Ngày hôm nay: " + formattedDate + " - Tuần: " + weekOfYear);
     }
 
-    private List<NotificationCreate> getJTablNotificationCreate(int patientId) {
-        List<NotificationCreate> list = new ArrayList<>();
-
-        for (int i = 0; i < modelNotification.getRowCount(); i++) {
-            Object timeObj = modelNotification.getValueAt(i, 0);
-            Object messageObj = modelNotification.getValueAt(i, 1);
-
-            if (timeObj instanceof LocalDateTime && messageObj != null) {
-                list.add(new NotificationCreate(patientId, "Medication", messageObj.toString(), (LocalDateTime) timeObj));
-            }
-        }
-        return list;
-    }
-
-    private void uploadNotificationCreate(int patientId) {
-        String toke = SessionManager.getInstance().getToken();
-        List<NotificationCreate> notificationsArray = getJTablNotificationCreate(patientId);
-        authService.sendNotificationsToBackend(toke, notificationsArray).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    System.out.println("Gửi thành công!");
-                    loadListAppointments("");
-                } else {
-                    System.out.println("Lỗi gửi: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable thrwbl) {
-                thrwbl.printStackTrace();
-            }
-        });
-
-    }
-
-    private void updateAppointment(Appointment appointment) {
+    //Department
+    private void loadListDepartments() {
         String token = SessionManager.getInstance().getToken();
 
-        authService.updateAppointmentStatus(token, appointment.getAppointment_id(), appointment).enqueue(
-                new Callback<JsonObject>() {
+        listDepartments = new ArrayList<>();
+        authService.getDepartments(token).enqueue(new Callback<List<Department>>() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    System.out.println("Gửi thành công!");
-                    uploadNotificationCreate(appointment.getPatient_id());
+            public void onResponse(Call<List<Department>> call, Response<List<Department>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    setTableDepartment(response.body());
+                    listDepartments = response.body();
 
+                    for (Department d : response.body()) {
+                        if (d.getDepartment_id() == doctor.getDepartment_id()) {
+                            setDeparment_toUI(d);
+                            break;
+                        }
+                    }
                 } else {
-                    System.out.println("Lỗi gửi: " + response.code());
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed to register!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable thrwbl) {
-                thrwbl.printStackTrace();
-
+            public void onFailure(Call<List<Department>> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
             }
         });
     }
 
-    //button
-    private void jTextField_doctor_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_doctor_phoneActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_doctor_phoneActionPerformed
+    private void setTableDepartment(List<Department> departments) {
+        DefaultTableModel model = (DefaultTableModel) jTable_departments.getModel();
+        model.setRowCount(0);
 
-    private void jPasswordField_doctor_passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_doctor_passActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField_doctor_passActionPerformed
+        for (Department dept : departments) {
+            model.addRow(new Object[]{dept.getId(), dept.getName(), dept.getDescription()});
+        }
 
-    private void jTextField_doctor_emaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_doctor_emaiActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_doctor_emaiActionPerformed
+    }
 
-    private void jLabel_doctor_avatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_doctor_avatarMouseClicked
-        uploadAvatar();
-    }//GEN-LAST:event_jLabel_doctor_avatarMouseClicked
+    private void setDeparment_toUI(Department department) {
+        jTextField_department_name.setText(department.getName());
+        jTextArea_department_description.setText(department.getDescription());
+        jTextArea_department_description.setLineWrap(true); // Tự động xuống dòng
+        jTextArea_department_description.setWrapStyleWord(true); // Xuống dòng theo từ
+        downloadAvatarDepartment(department.getId() + "");
+    }
 
+    private void downloadAvatarDepartment(String department_id) {
+        String token = SessionManager.getInstance().getToken();
+
+        authService.adminGetAvatarDepartment(token, department_id).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try (InputStream inputStream = response.body().byteStream()) {
+                        byte[] bytes = inputStream.readAllBytes();
+
+//                        ImageIcon avatarIcon = new ImageIcon(bytes);
+//                        Image scaledImage = avatarIcon.getImage().getScaledInstance(482, 172, Image.SCALE_SMOOTH);
+//                        jLabel_avatar_department.setIcon(new ImageIcon(scaledImage));
+//                        jLabel_avatar_department.setText("");
+                        ImageIcon avatarIcon = cropAndScaleImage(bytes, 668, 234);
+                        if (avatarIcon != null) {
+                            jLabel_avatar_department.setIcon(avatarIcon);
+                            jLabel_avatar_department.setText("");
+                        }
+
+                    } catch (IOException e) {
+                        jLabel_avatar_department.setText("Không thể tải ảnh đại diện");
+                        jLabel_avatar_department.setIcon(null);
+
+                    }
+                } else {
+                    jLabel_avatar_department.setText("Không thể tải ảnh đại diện");
+                    jLabel_avatar_department.setIcon(null);
+                    jLabel_avatar_department.setText("Không thể tải ảnh đại diện");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                JOptionPane.showMessageDialog(DoctorHome.this, "Lỗi: " + t.getMessage());
+            }
+        });
+    }
+
+    //BUTTON
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         new Login().setVisible(true);
         SessionManager.getInstance().clearSession(doctor.getUser_id());
@@ -1626,22 +1432,30 @@ public class DoctorHome extends javax.swing.JFrame {
         DoctorHome.this.dispose();
     }//GEN-LAST:event_jButton11ActionPerformed
 
-    private void jTextField_patient_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_patient_emailActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_patient_emailActionPerformed
-
-    private void jTextField_patient_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_patient_phoneActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField_patient_phoneActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         jTabbedPane.setSelectedIndex(0);
-        loadListAppointments("");
+        // Lấy ngày hiện tại
+        calendar = Calendar.getInstance();
+
+        // Lấy đối tượng Date
+        Date date = calendar.getTime();
+
+        // Định dạng thành chuỗi yyyy-MM-dd
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(date);
+
+        jLabel_date_appointment.setText("Lịch khám hôm nay: " + DateUtils.formatDate2(formattedDate));
+
+        loadListAppointments(formattedDate);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         jTabbedPane.setSelectedIndex(1);
 
+        Calendar calendar2 = Calendar.getInstance();
+        weekSchedules = calendar2.get(Calendar.WEEK_OF_YEAR);
+
+        setTableWeekSchedules(weekSchedules);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1649,62 +1463,160 @@ public class DoctorHome extends javax.swing.JFrame {
         setDoctor_toUI(doctor);
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jLabel_doctor_avatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_doctor_avatarMouseClicked
+        uploadAvatar();
+    }//GEN-LAST:event_jLabel_doctor_avatarMouseClicked
+
+    private void jTextField_doctor_emaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_doctor_emaiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField_doctor_emaiActionPerformed
+
+    private void jPasswordField_doctor_passActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField_doctor_passActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordField_doctor_passActionPerformed
+
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         updateDoctor();
     }//GEN-LAST:event_jButton13ActionPerformed
+
+    //button
+    private void jTextField_doctor_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_doctor_phoneActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField_doctor_phoneActionPerformed
+
+    private void jTable_AppointmentsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_AppointmentsMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTable_AppointmentsMouseEntered
 
     private void jTable_AppointmentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_AppointmentsMouseClicked
         int row = jTable_Appointments.getSelectedRow();
 
         if (row != -1) {
             Appointment a = listAppointments.get(row);
-            loadPatientById(a.getPatient_id());
-            loadHealthMetrics(a.getPatient_id());
-            jLabel_createdAt.setText("Đặt lúc: " + a.getCreated_at());
+
+            PatientUpdateListener listener = new PatientUpdateListener() {
+                @Override
+                public void onPatientUpdated(Appointment appointment) {
+                    System.out.println("Bệnh nhân đã được cập nhật: " + appointment.getAppointment_id());
+                    // Ví dụ: làm mới danh sách bệnh nhân
+                    listAppointments.remove(appointment);
+                    setTableAppointments(listAppointments);
+                }
+            };
+
+            PatientJPanel panel = new PatientJPanel(this.doctor, a, listener);
+
+            JFrame frame = new JFrame("Thông tin bệnh nhân");
+            frame.setContentPane(panel);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+
         }
-        textArea_appointmetnt_description.setText("");
-        modelNotification.setRowCount(0);
     }//GEN-LAST:event_jTable_AppointmentsMouseClicked
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        int row = jTable_Appointments.getSelectedRow();
+        jTabbedPane.setSelectedIndex(3);
 
-        if (row != -1) {
-            Appointment a = listAppointments.get(row);
-            updateHealthMetrics(a.getPatient_id());
-        }
+        loadListDepartments();
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        SwingUtilities.invokeLater(() -> {
-            LocalDateTime result = DateTimePickerDialog.showDialog(null);
-            if (result != null) {
-                JOptionPane.showMessageDialog(null, "Thời gian bạn chọn là: " + result);
-                modelNotification.addRow(new Object[]{result});
-            } else {
-                JOptionPane.showMessageDialog(null, "Không có thời gian nào được chọn.");
-            }
-        });
-    }//GEN-LAST:event_jButton10ActionPerformed
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        // Lấy ngày hiện tại
+        calendar = Calendar.getInstance();
+
+        // Lấy đối tượng Date
+        Date date = calendar.getTime();
+
+        // Định dạng thành chuỗi yyyy-MM-dd
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(date);
+
+        jLabel_date_appointment.setText("Tất cả lịch khám từ hôm nay: " + DateUtils.formatDate2(formattedDate));
+        loadListAppointments("");
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+        // Lấy ngày hiện tại
+        calendar = Calendar.getInstance();
+
+        // Lấy đối tượng Date
+        Date date = calendar.getTime();
+
+        // Định dạng thành chuỗi yyyy-MM-dd
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(date);
+
+        jLabel_date_appointment.setText("Lịch khám hôm nay: " + DateUtils.formatDate2(formattedDate));
+
+        loadListAppointments(formattedDate);
+    }//GEN-LAST:event_jButton18ActionPerformed
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        // Trừ 1 ngày
+        calendar.add(Calendar.DATE, -1);  // +1 nếu muốn cộng ngày
+
+        // Lấy đối tượng Date
+        Date date = calendar.getTime();
+
+        // Định dạng thành chuỗi yyyy-MM-dd
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(date);
+
+        jLabel_date_appointment.setText("Lịch khám ngày: " + DateUtils.formatDate2(formattedDate));
+        loadListAppointments(formattedDate);
+    }//GEN-LAST:event_jButton16ActionPerformed
+
+    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
+        calendar.add(Calendar.DATE, 1);  // +1 nếu muốn cộng ngày
+
+        // Lấy đối tượng Date
+        Date date = calendar.getTime();
+
+        // Định dạng thành chuỗi yyyy-MM-dd
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = sdf.format(date);
+
+        jLabel_date_appointment.setText("Lịch khám ngày: " + DateUtils.formatDate2(formattedDate));
+
+        loadListAppointments(formattedDate);
+    }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        modelNotification.setRowCount(0);
+        loadListDepartments();
     }//GEN-LAST:event_jButton7ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        addNextDayToTable(modelNotification);
-    }//GEN-LAST:event_jButton6ActionPerformed
+    private void jTabbedPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPaneMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTabbedPaneMouseClicked
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        int row = jTable_Appointments.getSelectedRow();
+    private void jTable_departmentsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_departmentsMouseClicked
+        int row = jTable_departments.getSelectedRow();
+
+        if (row != -1) { // Kiểm tra nếu có dòng nào đó được chọn
+            Department department = listDepartments.get(row);
+            setDeparment_toUI(department);
+        }
+    }//GEN-LAST:event_jTable_departmentsMouseClicked
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        weekSchedules--;
+        setTableWeekSchedules(weekSchedules);
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        weekSchedules++;
+        setTableWeekSchedules(weekSchedules);
+    }//GEN-LAST:event_jButton14ActionPerformed
+
+    private void jTable_DoctorSchedulMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable_DoctorSchedulMouseClicked
+        int row = jTable_DoctorSchedul.getSelectedRow();
 
         if (row != -1) {
-            Appointment a = listAppointments.get(row);
-            a.setStatus("Completed");
-            a.setNotes(textArea_appointmetnt_description.getText());
-            updateAppointment(a);
+            int week = (int) jTable_DoctorSchedul.getValueAt(row, 0);
+            setTableWeekSchedules(week);
         }
-    }//GEN-LAST:event_jButton9ActionPerformed
+    }//GEN-LAST:event_jTable_DoctorSchedulMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1743,97 +1655,76 @@ public class DoctorHome extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
+    private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton17;
+    private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JLabel jLabel_bacsi_loi;
-    private javax.swing.JLabel jLabel_createdAt;
+    private javax.swing.JLabel jLabel_avatar_department;
+    private javax.swing.JLabel jLabel_date_appointment;
     private javax.swing.JLabel jLabel_doctor_avatar;
     private javax.swing.JLabel jLabel_doctor_email;
     private javax.swing.JLabel jLabel_doctor_loi;
     private javax.swing.JLabel jLabel_doctor_name;
+    private javax.swing.JLabel jLabel_id_user;
     private javax.swing.JLabel jLabel_ngayhientai;
-    private javax.swing.JLabel jLabel_updateMetrics_date;
+    private javax.swing.JLabel jLable_WeekSchedul;
     private javax.swing.JLabel jLable_doctor_avatar_url;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JPasswordField jPasswordField_doctor_pass;
     private javax.swing.JRadioButton jRadioButton_doctor_nam;
     private javax.swing.JRadioButton jRadioButton_doctor_nu;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTabbedPane jTabbedPane;
-    private javax.swing.JTabbedPane jTabbedPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable_Appointments;
     private javax.swing.JTable jTable_DoctorSchedul;
-    private javax.swing.JTable jTable_DoctorSchedul1;
-    private javax.swing.JTable jTable_HealthMetrics;
-    private javax.swing.JTable jTable_notification;
+    private javax.swing.JTable jTable_WeekSchedul;
+    private javax.swing.JTable jTable_departments;
+    private javax.swing.JTextArea jTextArea_department_description;
     private javax.swing.JTextArea jTextArea_doctor_description;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel jTextField_department_name;
+    private javax.swing.JLabel jTextField_department_name1;
     private javax.swing.JTextField jTextField_doctor_address;
     private javax.swing.JTextField jTextField_doctor_brithdate;
     private javax.swing.JTextField jTextField_doctor_department_id;
     private javax.swing.JTextField jTextField_doctor_emai;
     private javax.swing.JTextField jTextField_doctor_name;
     private javax.swing.JTextField jTextField_doctor_phone;
-    private javax.swing.JTextField jTextField_insurance_id;
-    private javax.swing.JTextField jTextField_patient__name;
-    private javax.swing.JTextField jTextField_patient_address;
-    private javax.swing.JTextField jTextField_patient_brithdate;
-    private javax.swing.JTextField jTextField_patient_email;
-    private javax.swing.JTextField jTextField_patient_gender;
-    private javax.swing.JTextField jTextField_patient_phone;
-    private java.awt.TextArea textArea_OtherMetrics;
-    private java.awt.TextArea textArea_appointmetnt_description;
     // End of variables declaration//GEN-END:variables
 }

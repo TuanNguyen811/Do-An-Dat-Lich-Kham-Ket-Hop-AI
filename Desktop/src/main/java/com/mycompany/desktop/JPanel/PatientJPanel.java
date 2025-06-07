@@ -4,17 +4,65 @@
  */
 package com.mycompany.desktop.JPanel;
 
+import com.google.gson.JsonObject;
+import com.mycompany.desktop.API.APIClient;
+import com.mycompany.desktop.API.AuthService;
+import com.mycompany.desktop.models.Appointment;
+import com.mycompany.desktop.models.DateTimePickerDialog;
+import com.mycompany.desktop.models.Doctor;
+import com.mycompany.desktop.models.NotificationCreate;
+import com.mycompany.desktop.models.Patient;
+import com.mycompany.desktop.models.PatientHealthMetrics;
+import com.mycompany.desktop.utils.DateUtils;
+import com.mycompany.desktop.utils.SessionManager;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  *
  * @author admin
  */
 public class PatientJPanel extends javax.swing.JPanel {
 
+    private Patient patient;
+    private Doctor doctor;
+    private Appointment appointment;
+    private AuthService authService;
+    private PatientUpdateListener listener;
+
+    private DefaultTableModel modelNotification;
+
+    public interface PatientUpdateListener {
+
+        void onPatientUpdated(Appointment appointment);
+    }
+
     /**
      * Creates new form PatientJPanel
      */
-    public PatientJPanel() {
+    public PatientJPanel(Doctor doctor, Appointment appointment, PatientUpdateListener listener) {
         initComponents();
+        this.doctor = doctor;
+        this.listener = listener;
+        this.appointment = appointment;
+
+        authService = APIClient.getAuthService();
+        SessionManager.getInstance().setCurrentUserId(doctor.getUser_id());
+        modelNotification = (DefaultTableModel) jTable_notification.getModel();
+
+        setappointmentToForm(this.appointment);
+        loadPatientById(this.appointment.getPatient_id());
     }
 
     /**
@@ -45,12 +93,11 @@ public class PatientJPanel extends javax.swing.JPanel {
         jLabel12 = new javax.swing.JLabel();
         jTextField_insurance_id = new javax.swing.JTextField();
         jTextField_patient_gender = new javax.swing.JTextField();
-        jLabel_createdAt = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable_HealthMetrics = new javax.swing.JTable();
         jLabel_updateMetrics_date = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        jButton_update_health = new javax.swing.JButton();
         textArea_OtherMetrics = new java.awt.TextArea();
         jLabel1 = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
@@ -64,11 +111,11 @@ public class PatientJPanel extends javax.swing.JPanel {
         jButton10 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        jLabel_id_appointment = new javax.swing.JLabel();
+        jLabel_patient_name = new javax.swing.JLabel();
+        jLabel_appointent_date = new javax.swing.JLabel();
+        jLabel_createdAt = new javax.swing.JLabel();
 
         jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -98,8 +145,6 @@ public class PatientJPanel extends javax.swing.JPanel {
 
         jLabel12.setText("Insurance_id");
 
-        jLabel_createdAt.setText("jLabel10");
-
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -127,9 +172,8 @@ public class PatientJPanel extends javax.swing.JPanel {
                             .addComponent(jLabel12)
                             .addComponent(jLabel_bacsi_loi)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel_createdAt))
-                        .addGap(0, 212, Short.MAX_VALUE)))
+                            .addComponent(jLabel3))
+                        .addGap(0, 223, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -165,9 +209,7 @@ public class PatientJPanel extends javax.swing.JPanel {
                 .addComponent(jTextField_insurance_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel_bacsi_loi)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel_createdAt)
-                .addGap(0, 218, Short.MAX_VALUE))
+                .addGap(0, 240, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Thông tin bệnh nhân", jPanel4);
@@ -198,10 +240,10 @@ public class PatientJPanel extends javax.swing.JPanel {
 
         jLabel_updateMetrics_date.setText("Cập nhật ngày");
 
-        jButton4.setText("Cập nhật mới");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        jButton_update_health.setText("Cập nhật mới");
+        jButton_update_health.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                jButton_update_healthActionPerformed(evt);
             }
         });
 
@@ -214,13 +256,13 @@ public class PatientJPanel extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                     .addComponent(textArea_OtherMetrics, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
                         .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                                .addComponent(jButton4)
+                                .addComponent(jButton_update_health)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jLabel_updateMetrics_date)))
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -232,10 +274,10 @@ public class PatientJPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel_updateMetrics_date)
-                    .addComponent(jButton4))
+                    .addComponent(jButton_update_health))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(textArea_OtherMetrics, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -246,10 +288,7 @@ public class PatientJPanel extends javax.swing.JPanel {
 
         jTable_notification.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null},
-                {null, null},
-                {null, null}
+
             },
             new String [] {
                 "Ngày nhắc", "Nội dung"
@@ -300,7 +339,7 @@ public class PatientJPanel extends javax.swing.JPanel {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                             .addComponent(textArea_appointmetnt_description, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -327,16 +366,17 @@ public class PatientJPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel24)
                 .addGap(1, 1, 1)
-                .addComponent(textArea_appointmetnt_description, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(textArea_appointmetnt_description, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel25)
-                    .addComponent(jButton10)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7))
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel25)
+                        .addComponent(jButton10)
+                        .addComponent(jButton6)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -345,28 +385,17 @@ public class PatientJPanel extends javax.swing.JPanel {
 
         jTabbedPane2.addTab("Khám bệnh", jPanel7);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 446, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 536, Short.MAX_VALUE)
-        );
-
-        jTabbedPane2.addTab("Kêt quả phân tích", jPanel1);
-
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel6.setText("Phiếu khám sức khỏe điện tử");
 
-        jLabel5.setText("Mã khám bệnh");
+        jLabel_id_appointment.setText("Mã lịch hẹn");
 
-        jLabel7.setText("Họ tên");
+        jLabel_patient_name.setText("Họ tên");
 
-        jLabel10.setText("Thời gian đặt");
+        jLabel_appointent_date.setText("Thời gian đặt");
+
+        jLabel_createdAt.setText("Tao luc");
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -376,16 +405,17 @@ public class PatientJPanel extends javax.swing.JPanel {
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jTabbedPane2))
                         .addGap(127, 127, 127))
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel10))
+                            .addComponent(jLabel_id_appointment)
+                            .addComponent(jLabel_patient_name)
+                            .addComponent(jLabel_appointent_date)
+                            .addComponent(jLabel_createdAt))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -396,12 +426,14 @@ public class PatientJPanel extends javax.swing.JPanel {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
+                .addComponent(jLabel_id_appointment)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
+                .addComponent(jLabel_patient_name)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel_appointent_date)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addComponent(jLabel_createdAt)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 571, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8))
         );
@@ -416,10 +448,290 @@ public class PatientJPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 11, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    //UI
+    public void setPatientToForm(Patient patient) {
+        jTextField_patient__name.setText(patient.getFull_name());
+        jTextField_patient_address.setText(patient.getAddress());
+        jTextField_patient_brithdate.setText(patient.getDate_of_birth());
+        jTextField_patient_gender.setText(patient.getGender());
+        jTextField_patient_email.setText(patient.getEmail());
+        jTextField_patient_phone.setText(patient.getPhone());
+        jTextField_insurance_id.setText(String.valueOf(patient.getInsurance_id()));
+    }
+
+    private void loadPatientById(int patientId) {
+        String token = SessionManager.getInstance().getToken();
+        authService.getPatient(token, patientId).enqueue(new Callback<Patient>() {
+            @Override
+            public void onResponse(Call<Patient> call, Response<Patient> response) {
+                if (response.isSuccessful()) {
+                    patient = response.body();
+                    setPatientToForm(response.body());
+                    loadHealthMetrics(response.body().getUser_id());
+
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Patient> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+            }
+        });
+    }
+
+    //HealthMetrics
+    private void loadHealthMetrics(int patirnId) {
+        String token = SessionManager.getInstance().getToken();
+        authService.getHealthMetrics(token, patirnId).enqueue(new Callback<PatientHealthMetrics>() {
+            @Override
+            public void onResponse(Call<PatientHealthMetrics> call, Response<PatientHealthMetrics> response) {
+                if (response.isSuccessful()) {
+                    setTableHealthMetrics(response.body());
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PatientHealthMetrics> call, Throwable thrwbl) {
+
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+
+            }
+        });
+    }
+
+    private void setTableHealthMetrics(PatientHealthMetrics patientHealthMetrics) {
+        DefaultTableModel model = (DefaultTableModel) jTable_HealthMetrics.getModel();
+        model.setRowCount(0);
+        jLabel_updateMetrics_date.setText("Patient ID: " + patientHealthMetrics.getPatient_id()
+                + "\nUpdate At: " + patientHealthMetrics.getRecorded_at());
+        textArea_OtherMetrics.setText(patientHealthMetrics.getOther_metrics());
+        Object[][] data = {
+            {"Systolic BP", patientHealthMetrics.getSystolic_bp()},
+            {"Diastolic BP", patientHealthMetrics.getDiastolic_bp()},
+            {"Heart Rate", patientHealthMetrics.getHeart_rate()},
+            {"Body Temperature", patientHealthMetrics.getBody_temperature()},
+            {"Respiratory Rate", patientHealthMetrics.getRespiratory_rate()},
+            {"Weight (kg)", patientHealthMetrics.getWeight_kg()},
+            {"Height (cm)", patientHealthMetrics.getHeight_cm()},
+            {"BMI", patientHealthMetrics.getBmi()},
+            {"Blood Glucose", patientHealthMetrics.getBlood_glucose()},
+            {"Cholesterol Total", patientHealthMetrics.getCholesterol_total()},
+            {"LDL", patientHealthMetrics.getLdl()},
+            {"HDL", patientHealthMetrics.getHdl()},
+            {"Triglycerides", patientHealthMetrics.getTriglycerides()},
+            {"Hemoglobin", patientHealthMetrics.getHemoglobin()},
+            {"ID", patientHealthMetrics.getId()},};
+
+        for (Object[] row : data) {
+            model.addRow(row); // row là Object[]{ "Tên chỉ số", giá trị }
+        }
+
+        textArea_OtherMetrics.setText(patientHealthMetrics.getOther_metrics());
+    }
+
+    public PatientHealthMetrics getPatientFromTable(JTable table) {
+        PatientHealthMetrics patient = new PatientHealthMetrics();
+
+        for (int i = 0; i < table.getRowCount(); i++) {
+            Object fieldObj = table.getValueAt(i, 0);
+            Object valueObj = table.getValueAt(i, 1);
+
+            if (fieldObj == null || valueObj == null) {
+                continue;
+            }
+
+            String field = fieldObj.toString().trim();
+            String valueStr = valueObj.toString().trim();
+
+            try {
+                switch (field) {
+                    case "Systolic BP" ->
+                        patient.setSystolic_bp(Integer.parseInt(valueStr));
+                    case "Diastolic BP" ->
+                        patient.setDiastolic_bp(Integer.parseInt(valueStr));
+                    case "Heart Rate" ->
+                        patient.setHeart_rate(Integer.parseInt(valueStr));
+                    case "Body Temperature" ->
+                        patient.setBody_temperature(Double.parseDouble(valueStr));
+                    case "Respiratory Rate" ->
+                        patient.setRespiratory_rate(Integer.parseInt(valueStr));
+                    case "Weight (kg)" ->
+                        patient.setWeight_kg(Double.parseDouble(valueStr));
+                    case "Height (cm)" ->
+                        patient.setHeight_cm(Double.parseDouble(valueStr));
+                    case "BMI" ->
+                        patient.setBmi(Double.parseDouble(valueStr));
+                    case "Blood Glucose" ->
+                        patient.setBlood_glucose(Double.parseDouble(valueStr));
+                    case "Cholesterol Total" ->
+                        patient.setCholesterol_total(Double.parseDouble(valueStr));
+                    case "LDL" ->
+                        patient.setLdl(Double.parseDouble(valueStr));
+                    case "HDL" ->
+                        patient.setHdl(Double.parseDouble(valueStr));
+                    case "Triglycerides" ->
+                        patient.setTriglycerides(Double.parseDouble(valueStr));
+                    case "Hemoglobin" ->
+                        patient.setHemoglobin(Double.parseDouble(valueStr));
+                    case "Other Metrics" ->
+                        patient.setOther_metrics(valueStr);
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Lỗi khi parse giá trị ở dòng " + i + ": " + valueStr);
+            }
+        }
+        patient.setOther_metrics(textArea_OtherMetrics.getText());
+        return patient;
+    }
+
+    private void updateHealthMetrics(int patientId, PatientHealthMetrics metrics) {
+        String token = SessionManager.getInstance().getToken();
+        authService.createHealthMetric(token, metrics, patientId).enqueue(new Callback<PatientHealthMetrics>() {
+            @Override
+            public void onResponse(Call<PatientHealthMetrics> call, Response<PatientHealthMetrics> response) {
+                if (response.isSuccessful()) {
+                    setTableHealthMetrics(response.body());
+
+                } else {
+                    try {
+                        String errorMsg = response.errorBody().string();
+                        JOptionPane.showMessageDialog(null, "Failed!\nError: " + errorMsg);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null, "Failed to read error message!");
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PatientHealthMetrics> call, Throwable thrwbl) {
+                JOptionPane.showMessageDialog(null, "Network error: " + thrwbl.getMessage());
+            }
+        });
+    }
+
+    //APPOINTMENT
+    public void setappointmentToForm(Appointment a) {
+        jLabel_id_appointment.setText("Mã lịch hẹn: A" + a.getAppointment_id()
+                + "P" + a.getPatient_id() + "D" + a.getDoctor_id());
+        jLabel_patient_name.setText("Họ tên: " + a.getPatientName() + " - " + DateUtils.formatDate2(a.getPatientDateOfBirth()));
+        jLabel_appointent_date.setText("Ngày khám: " + a.getAppointmentDate() + " : " + a.getShiftName());
+        jLabel_createdAt.setText("Thời gian tạo: " + a.getCreated_at());
+    }
+
+    private void updateAppointment(Appointment appointment) {
+        String token = SessionManager.getInstance().getToken();
+
+        authService.updateAppointmentStatus(token, appointment.getAppointment_id(), appointment).enqueue(
+                new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("Gửi thành công!");
+                    uploadNotificationCreate(appointment.getPatient_id());
+                } else {
+                    System.out.println("Lỗi gửi: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable thrwbl) {
+                thrwbl.printStackTrace();
+
+            }
+        });
+    }
+
+    //Notification
+    private void uploadNotificationCreate(int patientId) {
+        String toke = SessionManager.getInstance().getToken();
+        List<NotificationCreate> notificationsArray = getJTablNotificationCreate(patientId);
+        authService.sendNotificationsToBackend(toke, notificationsArray).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    System.out.println("Gửi thành công!");
+                    //loadListAppointments("");
+
+                    // Gọi callback
+                    if (listener != null) {
+                        listener.onPatientUpdated(appointment);
+                    }
+                    // Đóng frame hiện tại
+                    SwingUtilities.getWindowAncestor(PatientJPanel.this).dispose();
+                } else {
+                    System.out.println("Lỗi gửi: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable thrwbl) {
+                thrwbl.printStackTrace();
+            }
+        });
+
+    }
+
+    private List<NotificationCreate> getJTablNotificationCreate(int patientId) {
+        List<NotificationCreate> list = new ArrayList<>();
+
+        for (int i = 0; i < modelNotification.getRowCount(); i++) {
+            Object timeObj = modelNotification.getValueAt(i, 0);
+            Object messageObj = modelNotification.getValueAt(i, 1);
+
+            if (timeObj instanceof LocalDateTime && messageObj != null) {
+                list.add(new NotificationCreate(patientId, "Medication", messageObj.toString(), (LocalDateTime) timeObj));
+            }
+        }
+        return list;
+    }
+
+    public void addNextDayToTable(DefaultTableModel modelNotification) {
+        int rowCount = modelNotification.getRowCount();
+        if (rowCount == 0) {
+            JOptionPane.showMessageDialog(null, "Bảng chưa có dữ liệu để cộng thêm ngày.");
+            return;
+        }
+
+        // Giả sử thời gian đang lưu dưới dạng LocalDateTime (hoặc String định dạng)
+        Object lastRowValue = modelNotification.getValueAt(rowCount - 1, 0);
+        Object loiNhacObj = modelNotification.getValueAt(rowCount - 1, 1);
+        String loiNhac = (loiNhacObj != null) ? loiNhacObj.toString() : "";
+        LocalDateTime lastDateTime;
+
+        if (lastRowValue instanceof LocalDateTime) {
+            lastDateTime = (LocalDateTime) lastRowValue;
+        } else if (lastRowValue instanceof String) {
+            // Nếu lưu ở dạng chuỗi thì cần parse lại
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"); // hoặc "yyyy-MM-dd HH:mm"
+            lastDateTime = LocalDateTime.parse(lastRowValue.toString(), formatter);
+        } else {
+            JOptionPane.showMessageDialog(null, "Không thể chuyển đổi giá trị ở hàng cuối.");
+            return;
+        }
+
+        LocalDateTime newDateTime = lastDateTime.plusDays(1);
+        modelNotification.addRow(new Object[]{newDateTime, loiNhac});
+    }
+
+    //BUTTON
     private void jTextField_patient_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_patient_phoneActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField_patient_phoneActionPerformed
@@ -428,17 +740,15 @@ public class PatientJPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField_patient_emailActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        int row = jTable_Appointments.getSelectedRow();
-
-        if (row != -1) {
-            Appointment a = listAppointments.get(row);
-            updateHealthMetrics(a.getPatient_id());
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
+    private void jButton_update_healthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_update_healthActionPerformed
+        PatientHealthMetrics metrics = new PatientHealthMetrics();
+        metrics = getPatientFromTable(jTable_HealthMetrics);
+        updateHealthMetrics(patient.getUser_id(), metrics);
+    }//GEN-LAST:event_jButton_update_healthActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        modelNotification.setRowCount(0);
+        int row = jTable_notification.getSelectedRow();
+        jTable_notification.remove(row);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -449,7 +759,6 @@ public class PatientJPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(() -> {
             LocalDateTime result = DateTimePickerDialog.showDialog(null);
             if (result != null) {
-                JOptionPane.showMessageDialog(null, "Thời gian bạn chọn là: " + result);
                 modelNotification.addRow(new Object[]{result});
             } else {
                 JOptionPane.showMessageDialog(null, "Không có thời gian nào được chọn.");
@@ -458,30 +767,32 @@ public class PatientJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        int row = jTable_Appointments.getSelectedRow();
+        int result = JOptionPane.showConfirmDialog(
+                null, // null nếu không cần gắn vào cửa sổ nào
+                "Xác nhận hoàn thành?", // nội dung thông báo
+                "Khám xong", // tiêu đề
+                JOptionPane.YES_NO_OPTION, // kiểu nút (Yes/No)
+                JOptionPane.QUESTION_MESSAGE // icon (hoặc INFORMATION_MESSAGE, WARNING_MESSAGE...)
+        );
 
-        if (row != -1) {
-            Appointment a = listAppointments.get(row);
-            a.setStatus("Completed");
-            a.setNotes(textArea_appointmetnt_description.getText());
-            updateAppointment(a);
+        if (result == JOptionPane.YES_OPTION) {
+            appointment.setStatus("Completed");
+            appointment.setNotes(textArea_appointmetnt_description.getText());
+            updateAppointment(appointment);
+        } else {
+            System.out.println("Đã hủy xóa");
         }
     }//GEN-LAST:event_jButton9ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JButton jButton_update_health;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
@@ -489,23 +800,21 @@ public class PatientJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabel_appointent_date;
     private javax.swing.JLabel jLabel_bacsi_loi;
     private javax.swing.JLabel jLabel_createdAt;
+    private javax.swing.JLabel jLabel_id_appointment;
+    private javax.swing.JLabel jLabel_patient_name;
     private javax.swing.JLabel jLabel_updateMetrics_date;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTable jTable_HealthMetrics;

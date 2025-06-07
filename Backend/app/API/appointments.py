@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Form
 from sqlalchemy.orm import Session
@@ -72,6 +72,43 @@ def count_and_schedule_appointments(
     return {
         "combined_results": combined_results
     }
+
+@router.post("/appointments/weekly_count_and_schedule", response_model=List[Dict[str, Any]])
+def weekly_count_and_schedule_appointments(
+    doctor_id: int = Form(...),
+    start_date: str = Form(...),  # e.g., "2024-06-10"
+    db: Session = Depends(deps.get_db)
+):
+    shifts = ['Shift 1', 'Shift 2', 'Shift 3', 'Shift 4']
+    results = []
+
+    # Parse start_date
+    start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+
+    for i in range(7):
+        day_dt = start_dt + timedelta(days=i)
+        appointment_date = day_dt.strftime("%Y-%m-%d")
+        week, weekday = get_week_and_weekday(appointment_date)
+
+        # Get doctor's schedule for the week
+        doctor_schedules = crud_DoctorSchedule.get_doctor_schedules_by_week(db, week, doctor_id=doctor_id)
+        if not doctor_schedules:
+            max_appointments = [0, 0, 0, 0]
+        else:
+            max_appointments = doctor_schedules[0].get(weekday, "0-0-0-0").split('-')
+            max_appointments = list(map(int, max_appointments))
+
+        # Count appointments for each shift
+        appointment_counts = [
+            crud_appointment.count_appointments(db, doctor_id, appointment_date, shift)
+            for shift in shifts
+        ]
+        results.append({
+                "max_appointments": max_appointments,
+                "appointment_counts": appointment_counts
+        })
+
+    return results
 
 @router.get("/appointments", response_model=List[Dict[str, Any]])
 def get_appointments(

@@ -162,8 +162,8 @@ async def admin_get_avatar_user(
         db: Session = Depends(deps.get_db),
         department_id: Optional[int] = None
 ):
-    if current_user["role"] != "Admin":
-        raise HTTPException(status_code=403, detail="Not an admin account")
+    # if current_user["role"] != "Admin" or current_user["role"] != "Doctor":
+    #     raise HTTPException(status_code=403, detail="Not an admin account")
 
     avatar_url = get_avatar_department(db, department_id)
 

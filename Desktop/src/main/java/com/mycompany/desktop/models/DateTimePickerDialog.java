@@ -5,6 +5,7 @@
 package com.mycompany.desktop.models;
 
 import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.TimePicker;
 
 import javax.swing.*;
@@ -22,7 +23,11 @@ public class DateTimePickerDialog extends JDialog {
         super(parent, "Chọn ngày và giờ", true);
         setLayout(new FlowLayout());
 
-        datePicker = new DatePicker();
+        // Cài đặt DatePicker để chỉ chọn từ hôm nay trở đi
+        DatePickerSettings dateSettings = new DatePickerSettings();
+        dateSettings.setDateRangeLimits(LocalDate.now(), null); // null = không giới hạn ngày kết thúc
+        datePicker = new DatePicker(dateSettings);
+
         timePicker = new TimePicker();
 
         JButton okButton = new JButton("OK");

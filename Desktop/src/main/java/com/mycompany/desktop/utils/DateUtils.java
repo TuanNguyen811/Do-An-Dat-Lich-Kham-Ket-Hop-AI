@@ -36,6 +36,20 @@ public class DateUtils {
             return inputDate; // fallback nếu lỗi
         }
     }
+    
+      public static String formatDate3(String inputDate) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            Date date = inputFormat.parse(inputDate);
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return inputDate; // fallback nếu lỗi
+        }
+    }
+    
     public static boolean isDateInFuture(String today) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         try {

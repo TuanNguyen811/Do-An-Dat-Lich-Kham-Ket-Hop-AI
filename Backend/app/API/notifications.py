@@ -42,7 +42,6 @@ def create_notifications(
     if current_user.get("role") not in ["Admin", "Doctor"]:
         raise HTTPException(status_code=403, detail="Not authorized to create notifications")
 
-    created_notifications = []
     for notification in notifications:
         # Check if the user exists
         user = crud.get_user(db, user_id=notification.user_id)
@@ -54,10 +53,8 @@ def create_notifications(
         if not result:
             raise HTTPException(status_code=500, detail=f"Failed to create notification for user ID {notification.user_id}")
 
-        created_notifications.append({"notification_id": result[0], "user_id": notification.user_id})
 
-    return {"message": "Notifications created successfully", "created_notifications": created_notifications}
-
+    return {"message": "Notification created successfully"}
 
 @router.get("/notifications", response_model=List[Dict[str, Any]])
 def get_notifications(

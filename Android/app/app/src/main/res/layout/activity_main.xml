@@ -395,7 +395,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="8dp"
-                                            android:text="75"
+                                            android:text="--"
                                             android:textColor="@color/dark_blue"
                                             android:textSize="16sp"
                                             android:textStyle="bold" />
@@ -434,7 +434,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="8dp"
-                                            android:text="120/80"
+                                            android:text="--/--"
                                             android:textColor="@color/dark_blue"
                                             android:textSize="16sp"
                                             android:textStyle="bold" />
@@ -473,7 +473,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_marginTop="8dp"
-                                            android:text="5.6"
+                                            android:text="--"
                                             android:textColor="@color/dark_blue"
                                             android:textSize="16sp"
                                             android:textStyle="bold" />
@@ -510,7 +510,7 @@
                                             android:id="@+id/weight_value"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="65.5"
+                                            android:text="--"
                                             android:textColor="@color/dark_blue"
                                             android:textSize="16sp"
                                             android:textStyle="bold" />
@@ -539,7 +539,7 @@
                                             android:id="@+id/height_value"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="170.0"
+                                            android:text="--"
                                             android:textColor="@color/dark_blue"
                                             android:textSize="16sp"
                                             android:textStyle="bold" />
@@ -568,7 +568,7 @@
                                             android:id="@+id/bmi_value"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
-                                            android:text="22.5"
+                                            android:text="--"
                                             android:textColor="@color/dark_blue"
                                             android:textSize="16sp"
                                             android:textStyle="bold" />
@@ -911,6 +911,13 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="67dp" />
+
+                        <TextView
+                            android:id="@+id/textView_main_server"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp"
+                            android:text="TextView" />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>

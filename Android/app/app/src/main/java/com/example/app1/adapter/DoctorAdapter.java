@@ -1,7 +1,5 @@
 package com.example.app1.adapter;
 
-import static com.example.app1.API.ApiClient.BASE_URL;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.app1.API.ApiClient;
 import com.example.app1.R;
 import com.example.app1.models.Doctor;
+import com.example.app1.utils.SessionManager;
 
 import java.util.ArrayList;
 
@@ -63,6 +63,7 @@ public class DoctorAdapter extends RecyclerView.Adapter<DoctorAdapter.ViewHolder
         holder.description.setText("Mô tả: " + doctor.getDescription());
         holder.department.setText("Email: " + doctor.getEmail());
         // Load image using Glide or any other image loading library
+        String BASE_URL = ApiClient.getBaseUrl(context);
 
         Glide.with(context)
                 .load(BASE_URL + doctor.getAvatar_url())

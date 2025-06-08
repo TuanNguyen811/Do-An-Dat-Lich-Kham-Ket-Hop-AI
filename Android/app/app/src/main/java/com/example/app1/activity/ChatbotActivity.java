@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,7 +43,7 @@ public class ChatbotActivity extends AppCompatActivity {
     private ImageButton sendButton;
     private ImageButton newChatButton;
     private ProgressBar progressBar;
-    private ImageView backButton;
+    private ConstraintLayout button_appointments_exit;
 
     private ChatAdapter chatAdapter;
     private SessionManager sessionManager;
@@ -71,7 +72,7 @@ public class ChatbotActivity extends AppCompatActivity {
         sendButton = findViewById(R.id.button_send);
         newChatButton = findViewById(R.id.button_newChat);
         progressBar = findViewById(R.id.progress_bar);
-        backButton = findViewById(R.id.btn_back);
+        button_appointments_exit = findViewById(R.id.button_appointments_exit);
 
         // Setup RecyclerView
         chatAdapter = new ChatAdapter();
@@ -82,13 +83,11 @@ public class ChatbotActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         apiService = ApiClient.getAuthService(this);
 
-        // Set click listener for send button
+        // Set click listener
         sendButton.setOnClickListener(v -> sendMessage());
 
-        // Set click listener for new chat button
         newChatButton.setOnClickListener(v -> showNewChatConfirmation());
 
-        // Set editor action listener for EditText (for keyboard send button)
         messageEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 sendMessage();
@@ -96,24 +95,31 @@ public class ChatbotActivity extends AppCompatActivity {
             }
             return false;
         });
-        messageEditText.requestFocus();
+
 
         // Set click listener for back button
-        backButton.setOnClickListener(v -> onBackPressed());
+        button_appointments_exit.setOnClickListener(v -> {
+            // Handle back button click
+            onBackPressed();
+        });
+        messageEditText.requestFocus();
 
         // Load chat history
-
         String messages = (String) getIntent().getSerializableExtra("messages");
         if (messages != null) {
             sendMessageToApi(messages);
+            loadChatHistory();
+        }else{
+            // Start a new chat if no messages are provided
+            loadChatHistory();
         }
+
         patient = (Patient) getIntent().getSerializableExtra("patient_user");
         if (patient != null) {
             setTitle("Chatbot " + patient.getFull_name());
         } else {
             setTitle("Chatbot");
         }
-        loadChatHistory();
 
     }
 
@@ -132,7 +138,7 @@ public class ChatbotActivity extends AppCompatActivity {
         chatAdapter.clearMessages();
         // Show welcome message
         StringBuffer welcomeMessage = new StringBuffer();
-        welcomeMessage.append("Bạn hãy đóng vai là một bác sĩ tên là Bác sĩ Tuân Nguyễn AI (22 tuổi), chuyên tư vấn sức khỏe. " +
+        welcomeMessage.append("Bạn hãy đóng vai là một bác sĩ tên là Bác sĩ AI, chuyên tư vấn sức khỏe. " +
                 "Tôi sẽ hỏi bạn về các vấn đề sức khỏe, bạn chỉ cần tập trung vào tư vấn y tế thôi," +
                 " không lan man sang chủ đề khác. Trả lời ngắn gọn, rõ ràng như đang nhắn tin. " +
                 "Hãy bắt đầu bằng một lời chào và giới thiệu ngắn nhé!");

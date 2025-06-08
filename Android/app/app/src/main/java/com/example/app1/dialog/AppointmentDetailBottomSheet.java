@@ -1,7 +1,5 @@
 package com.example.app1.dialog;
 
-import static com.example.app1.API.ApiClient.BASE_URL;
-
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.app1.API.ApiClient;
 import com.example.app1.R;
 import com.example.app1.models.Appointment;
 import com.example.app1.utils.DateUtils;
@@ -33,8 +32,8 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
 
     // Interface for callback actions
     public interface OnAppointmentActionListener {
-        void onCancelAppointment(Appointment appointment);
-        void onRescheduleAppointment(Appointment appointment);
+        void onBtn1(Appointment appointment);
+        void onBtn2(Appointment appointment);
     }
 
     public static AppointmentDetailBottomSheet newInstance(Appointment appointment) {
@@ -104,8 +103,8 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
         TextView tvPatientDateOfBirth = view.findViewById(R.id.textView_patient_dob);
         TextView tvPatientGender = view.findViewById(R.id.textView_patient_gender);
         TextView tvNotes = view.findViewById(R.id.textView_appointment_notes);
-        Button btnCancel = view.findViewById(R.id.btn_cancel_appointment);
-        Button btnReschedule = view.findViewById(R.id.btn_reschedule);
+        Button btn1 = view.findViewById(R.id.btn_1);
+        Button btn2 = view.findViewById(R.id.btn_2);
 
         // Set data to views
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -123,6 +122,8 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
         tvDateTime.setText(dateTimeText);
         tvDepartment.setText(appointment.getDepartmentName());
         tvDoctor.setText("BS. " + appointment.getDoctorName());
+
+        String BASE_URL = ApiClient.getBaseUrl(requireContext());
 
         // Load doctor avatar if available
         if (appointment.getDoctorAvatarUrl() != null && !appointment.getDoctorAvatarUrl().isEmpty()) {
@@ -157,40 +158,39 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
 
         // Configure button visibility based on appointment status
         if ("Scheduled".equalsIgnoreCase(appointment.getStatus())) {
-            btnCancel.setText("Hủy lịch hẹn");
-            btnReschedule.setText("Đổi lịch hẹn");
-            btnCancel.setVisibility(View.VISIBLE);
-            btnReschedule.setVisibility(View.VISIBLE);
+            btn1.setText("Hủy lịch hẹn");
+            btn2.setText("Đặt lịch mới");
+            btn1.setVisibility(View.VISIBLE);
+            btn2.setVisibility(View.VISIBLE);
+
         }else if ("Completed".equalsIgnoreCase(appointment.getStatus())) {
-            btnCancel.setText("Đặt lại lịch");
-            btnCancel.setVisibility(View.VISIBLE);
-            btnReschedule.setVisibility(View.GONE);
+            btn2.setText("Đặt lịch mới");
+            btn2.setVisibility(View.VISIBLE);
+            btn1.setVisibility(View.GONE);
+
         } else if ("Cancelled".equalsIgnoreCase(appointment.getStatus())) {
-            btnReschedule.setText("Xóa lịch hẹn");
-            btnCancel.setText("Đặt lại lịch");
-            btnCancel.setVisibility(View.VISIBLE);
-            btnReschedule.setVisibility(View.VISIBLE);
+            btn1.setText("Xóa lịch hẹn");
+            btn2.setText("Đặt lịch mới");
+            btn1.setVisibility(View.VISIBLE);
+            btn2.setVisibility(View.VISIBLE);
         }
-        btnCancel.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.dark_blue));
-        btnReschedule.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.dark_blue));
+
+        btn1.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.dark_blue));
+        btn2.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.dark_blue));
         // Set click listeners
         btnClose.setOnClickListener(v -> dismiss());
 
-        btnCancel.setOnClickListener(v -> {
+        btn1.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onCancelAppointment(appointment);
+                listener.onBtn1(appointment);
             }
             dismiss();
         });
 
-        btnReschedule.setOnClickListener(v -> {
+        btn2.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onRescheduleAppointment(appointment);
+                listener.onBtn2(appointment);
             } else {
-                // If no listener is set, open the edit activity directly
-//                Intent intent = new Intent(getContext(), EditAppointmentActivity.class);
-//                intent.putExtra("appointment", appointment);
-//                startActivity(intent);
             }
             dismiss();
         });
@@ -221,7 +221,7 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
                 colorResId = R.color.green;
                 break;
             case "completed":
-                colorResId = R.color.blue;
+                colorResId = R.color.green;
                 break;
             case "cancelled":
                 colorResId = R.color.red;

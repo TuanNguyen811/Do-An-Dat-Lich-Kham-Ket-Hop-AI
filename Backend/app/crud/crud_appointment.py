@@ -172,6 +172,7 @@ def count_appointments(db: Session, doctor_id: int, appointment_date: str, shift
     }).scalar()
     return result
 
+# python
 def create_appointment(db: Session, appointment: schemas.AppointmentCreate):
     query = text("""
         INSERT INTO Appointments (patient_id, doctor_id, department_id, appointment_date, shift, description)
@@ -191,10 +192,8 @@ def create_appointment(db: Session, appointment: schemas.AppointmentCreate):
     )
     db.commit()
 
-    # Get the last inserted ID
-    result = db.execute(text("SELECT LAST_INSERT_ID()")).scalar()
-
-    return get_appointment(db, result)
+    appointment_id = db.execute(text("SELECT LAST_INSERT_ID()")).scalar()
+    return appointment_id
 
 
 def update_appointment(db: Session, appointment_id: int, appointment_data: Dict[str, Any]):

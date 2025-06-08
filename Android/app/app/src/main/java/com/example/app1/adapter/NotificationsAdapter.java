@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.app1.R;
 import java.util.List;
 import com.example.app1.models.Notification;
+import com.example.app1.utils.DateUtils;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.ViewHolder> {
 
@@ -30,7 +31,7 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
         Notification notification = notificationList.get(position);
         holder.type.setText(notification.getType());
         holder.message.setText(notification.getMessage());
-        holder.time.setText("Scheduled: " + notification.getScheduledTime());
+        holder.time.setText("Thời gian: " + DateUtils.formatDate1(notification.getScheduledTime()));
         holder.status.setText("Status: " + notification.getStatus());
         if ("Pending".equals(notification.getStatus())) {
             holder.status.setTextColor(holder.itemView.getContext().getResources().getColor(R.color.red));

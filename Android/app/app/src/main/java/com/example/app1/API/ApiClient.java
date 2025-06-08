@@ -1,6 +1,7 @@
 package com.example.app1.API;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -10,11 +11,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import com.example.app1.utils.*;
 
 public class ApiClient {
-    public static final String BASE_URL = "http://192.168.9.154:8000"; // For Android emulator to connect to localhost
+   // private static String BASE_URL = "http://localhost:8000"; // mặc định
     private static Retrofit retrofit = null;
 
+    // Cập nhật IP mới và lưu vào SharedPreferences
+    public static void setBaseUrl(Context context, String BASE_URL) {
+        retrofit = null;
+        SharedPreferences prefs = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+        prefs.edit().putString("base_url", BASE_URL).apply();
+    }
+
+    public static String getBaseUrl(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+        String savedUrl = prefs.getString("base_url", "http://localhost:8000"); // IP mặc định nếu chưa lưu
+        return savedUrl;
+    }
     public static Retrofit getClient(Context context) {
         if (retrofit == null) {
+            // Nếu chưa có BASE_URL từ SharedPreferences, dùng mặc định
+            SharedPreferences prefs = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+            String savedUrl = prefs.getString("base_url", "http://localhost:8000"); // IP mặc định nếu chưa lưu
+
+
             // Create logging interceptor
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -31,7 +49,7 @@ public class ApiClient {
 
             // Create and return retrofit instance
             retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(savedUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
                     .build();

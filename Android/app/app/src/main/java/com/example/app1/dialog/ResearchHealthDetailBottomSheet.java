@@ -77,7 +77,7 @@ public class ResearchHealthDetailBottomSheet extends BottomSheetDialogFragment {
         patientHealthMetrics = (PatientHealthMetrics) getArguments().getSerializable("patient_health_metrics");
         if (patient != null) {
             textViewPatientName.setText(patient.getFull_name());
-            textViewPatientPhone.setText(patient.getPhone());
+            textViewPatientPhone.setText(patient.getEmail());
             textViewPatientGender.setText(patient.getGender());
             textViewPatientAge.setText(String.valueOf(patient.getDate_of_birth()));
         }

@@ -21,7 +21,8 @@
             android:text="Appointment"
             android:textColor="@color/dark_blue"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <!-- Notification Message -->
         <TextView
@@ -51,7 +52,8 @@
             android:layout_marginTop="4dp"
             android:text="Status: Pending"
             android:textColor="@color/red"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

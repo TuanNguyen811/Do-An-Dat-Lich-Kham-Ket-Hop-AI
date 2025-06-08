@@ -44,7 +44,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             doctor = itemView.findViewById(R.id.textView_item_appointment_doctor);
             status = itemView.findViewById(R.id.textView_item_appointment_status);
             btn_view_appointment_details = itemView.findViewById(R.id.btn_view_appointment_details);
-            btn_cancel_appointment = itemView.findViewById(R.id.btn_cancel_appointment);
+            btn_cancel_appointment = itemView.findViewById(R.id.btn_1);
         }
     }
 

@@ -1,15 +1,19 @@
 package com.example.app1.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.app1.R;
@@ -31,7 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputEditText editTextEmail, editTextPassword;
     private Button buttonLogin;
     private ProgressBar progressBar;
-    private TextView textViewRegister, login_loi, forgetPassword;
+    private TextView textViewRegister, login_loi, forgetPassword, server;
     private AuthService authService;
     private SessionManager sessionManager;
 
@@ -49,9 +53,14 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         textViewRegister = findViewById(R.id.tv_register);
         forgetPassword = findViewById(R.id.tv_forgot_password);
+        server = findViewById(R.id.textView_login_server);
         // Initialize API client and SessionManager
-        authService = ApiClient.getAuthService(this);
         sessionManager = new SessionManager(this);
+        // Load base URL from SharedPreferences
+        String BASE_URL = ApiClient.getBaseUrl(this);
+        server.setText("Server: " + BASE_URL);
+        authService = ApiClient.getAuthService(this);
+
 
         // Check if user is already logged in
         if (sessionManager.isLoggedIn()) {
@@ -71,6 +80,35 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, ForgetPassswordActivity.class);
             startActivity(intent);
         });
+        ;
+
+        server.setOnClickListener(v -> {
+            showIpInputDialog(LoginActivity.this);
+        });
+    }
+    public void showIpInputDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Nhập địa chỉ IP server");
+
+        final EditText input = new EditText(context);
+        String BASE_URL = ApiClient.getBaseUrl(context);
+
+        input.setText(BASE_URL);
+        builder.setView(input);
+        builder.setPositiveButton("Lưu", (dialog, which) -> {
+            String ip = input.getText().toString().trim();
+            if (!ip.isEmpty()) {
+                // Lưu IP vào SharedPreferences
+                ApiClient.setBaseUrl(context, ip);
+                server.setText("Server: " + ip);
+                authService = ApiClient.getAuthService(context);
+
+                Toast.makeText(context, "Đã lưu IP: " + ip, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.cancel());
+        builder.show();
     }
 
     private void loginUser() {

@@ -125,7 +125,7 @@
                         <TextView
                             android:layout_width="120dp"
                             android:layout_height="wrap_content"
-                            android:text="Số điện thoại:"
+                            android:text="Gmail:"
                             android:textColor="@color/gray"
                             android:textSize="14sp" />
 

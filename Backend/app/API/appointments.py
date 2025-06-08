@@ -10,11 +10,13 @@ from Email.email_utils import send_otp_utils
 from Oauth import deps
 from crud import crud_appointment, crud_DoctorSchedule
 
+from app.Email.email_utils import send_appointment_email
+
 router = APIRouter(prefix="", tags=["appointments"])
 
 # Appointment routes
 @router.post("/appointments", response_model=Dict[str, Any])
-def create_appointment(
+def create_appointment2(
         appointment: schemas.AppointmentCreate,
         current_user=Depends(deps.get_current_user),
         db: Session = Depends(deps.get_db)
@@ -32,15 +34,15 @@ def create_appointment(
         raise HTTPException(status_code=404, detail="Department not found")
 
     # Create appointment
-    result = crud.create_appointment(db=db, appointment=appointment)
-    if not result:
+    result_id = crud.create_appointment(db=db, appointment=appointment)
+    if not result_id:
         raise HTTPException(status_code=500, detail="Failed to create appointment")
 
+    #send_otp_utils(current_user.get("email"), "Cam on da dat toi")
 
-    send_otp_utils(current_user.get("email"), "Cam on da dat toi")
+    send_appointment_email(db, result_id)
 
-
-    return {"message": "Appointment created successfully", "appointment_id": result[0]}
+    return {"message": "Appointment created successfully"}
 
 @router.post("/appointments/count_and_schedule", response_model=Dict[str, Any])
 def count_and_schedule_appointments(
@@ -220,6 +222,7 @@ def update_appointment(
     if not updated_appointment:
         raise HTTPException(status_code=500, detail="Failed to update appointment")
 
+    send_appointment_email(db, appointment_id)
     return {"message": "Appointment updated successfully"}
 
 @router.put("/appointments/{appointment_id}/status", response_model=Dict[str, Any])
@@ -248,6 +251,7 @@ def update_appointment_status(
     if not updated_appointment:
         raise HTTPException(status_code=500, detail="Failed to update appointment status")
 
+    send_appointment_email(db, appointment_id)
     return {"message": "Appointment status updated successfully", "appointment_id": appointment_id, "status": status}
 
 @router.delete("/appointments/{appointment_id}", response_model=Dict[str, Any])

@@ -13,6 +13,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -20,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.app1.API.ApiClient;
 import com.example.app1.API.AuthService;
 import com.example.app1.R;
+import com.example.app1.adapter.DepartmentAdapter;
 import com.example.app1.dialog.SelectDepartmentBottomSheet;
 import com.example.app1.dialog.SelectDoctorBottomSheet;
 import com.example.app1.dialog.SelectShiftBottomSheet;
@@ -60,7 +62,7 @@ public class AppointmentActivity extends AppCompatActivity implements SelectDepa
     private BottomSheetDialogFragment bottomSheetDialogFragment;
     private Button appointment;
     private LinearLayout layout_appointment_doctor, layout_appointment_department;
-
+    private ConstraintLayout button_appointments_exit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,12 +85,15 @@ public class AppointmentActivity extends AppCompatActivity implements SelectDepa
         layout_appointment_doctor = findViewById(R.id.layout_appointment_doctor);
         layout_appointment_department = findViewById(R.id.layout_appointment_department);
         appointment = findViewById(R.id.button_appointment);
+        button_appointments_exit = findViewById(R.id.button_appointments_exit);
 
         appointment_date = findViewById(R.id.textView_appointment_date);
         // Nhận dữ liệu
 
         departmentList = (ArrayList<Department>) getIntent().getSerializableExtra("departments");
-        if (departmentList == null) departmentList = new ArrayList<>();
+        if (departmentList == null) {
+            loadDepartments();
+        }
 
         department = (Department) getIntent().getSerializableExtra("item_department");
         if (department == null) department = new Department();
@@ -139,10 +144,18 @@ public class AppointmentActivity extends AppCompatActivity implements SelectDepa
             }
         });
         appointment.setEnabled(false);
+        appointment.setAlpha(0.5f); // Làm mờ nút
         appointment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 createAppointment();
+            }
+        });
+        button_appointments_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Chuyển hướng về trang Appointments
+                finish();
             }
         });
     }
@@ -184,7 +197,24 @@ public class AppointmentActivity extends AppCompatActivity implements SelectDepa
         });
 
     }
-
+    private void loadDepartments() {
+        departmentList = new ArrayList<>();
+        Call<List<Department>> call = apiService.getDepartments();
+        call.enqueue(new Callback<List<Department>>() {
+            @Override
+            public void onResponse(Call<List<Department>> call, Response<List<Department>> response) {
+                if (response.isSuccessful()) {
+                    departmentList = new ArrayList<>(response.body());
+                } else {
+                    Toast.makeText(AppointmentActivity.this, "Lỗi server", Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Department>> call, Throwable t) {
+                Toast.makeText(AppointmentActivity.this, "Không kết nối được: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
     private void loadListDoctors(int department_id) {
         doctorList = new ArrayList<>();
@@ -325,22 +355,27 @@ public class AppointmentActivity extends AppCompatActivity implements SelectDepa
     private void checkButton(){
         if (doctor == null) {
             appointment.setEnabled(false);
+            appointment.setAlpha(0.5f); // Làm mờ nút
             return;
         }
         if (department == null) {
             appointment.setEnabled(false);
+            appointment.setAlpha(0.5f); // Làm mờ nút
             return;
         }
         if (appointment_date.getText().toString().equals("Chọn ngày khám")) {
             appointment.setEnabled(false);
+            appointment.setAlpha(0.5f); // Làm mờ nút
             return;
         }
         if (shift == 0) {
             appointment.setEnabled(false);
+            appointment.setAlpha(0.5f); // Làm mờ nút
             return;
         }
 
         appointment.setEnabled(true);
+        appointment.setAlpha(1.0f);
     }
 
 

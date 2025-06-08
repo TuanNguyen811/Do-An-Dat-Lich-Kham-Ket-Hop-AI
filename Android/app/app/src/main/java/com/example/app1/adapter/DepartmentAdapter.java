@@ -1,6 +1,5 @@
 package com.example.app1.adapter;
 
-import static com.example.app1.API.ApiClient.BASE_URL;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,10 +14,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.app1.API.ApiClient;
 import com.example.app1.R;
 import com.example.app1.activity.AppointmentActivity;
 import com.example.app1.activity.MainActivity;
 import com.example.app1.models.Department;
+import com.example.app1.utils.SessionManager;
 
 import java.util.ArrayList;
 
@@ -64,6 +65,8 @@ public class DepartmentAdapter extends RecyclerView.Adapter<DepartmentAdapter.Vi
         Department d = departmentList.get(position);
         holder.name.setText(d.getName());
         holder.description.setText(d.getDescription());
+
+        String BASE_URL = ApiClient.getBaseUrl(context);
 
         // Tải ảnh bằng Glide
         Glide.with(context)

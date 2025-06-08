@@ -298,7 +298,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginBottom="16dp"
                     android:backgroundTint="@color/dark_blue"
-                    android:text="Tiếp tục"
+                    android:text="Đăng ký khám"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="16sp"

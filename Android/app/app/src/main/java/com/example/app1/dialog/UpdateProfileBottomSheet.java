@@ -129,7 +129,12 @@ public class UpdateProfileBottomSheet extends BottomSheetDialogFragment {
         // Get input values
         String name = editTextName.getText().toString().trim();
         //String email = editTextEmail.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
+        String password;
+        if (editTextPassword.getText().toString().trim().length() == 0) {
+            password = null; // Keep the old password if not changed
+        } else {
+            password = editTextPassword.getText().toString().trim();
+        }
         String phone = editTextPhone.getText().toString().trim();
         String birthdate = editTextBirthdate.getText().toString().trim();
         String address = editTextAddress.getText().toString().trim();
@@ -152,7 +157,7 @@ public class UpdateProfileBottomSheet extends BottomSheetDialogFragment {
         // Show progress
         setLoading(true);
         // Create registration request
-        Patient patient = new Patient(0, null, name, phone, birthdate, gender, address,"", password, insurance_id, 0);
+        Patient patient = new Patient(0, null, name, phone, birthdate, gender, address,null, password, insurance_id, 0);
         String token = sessionManager.getToken();
         authService.updatePatientProfile(token, patient).enqueue(new Callback<Patient>() {
             @Override

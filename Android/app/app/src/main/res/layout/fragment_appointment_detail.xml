@@ -214,7 +214,7 @@
                     android:backgroundTint="#808080"/>
 
                 <Button
-                    android:id="@+id/btn_cancel_appointment"
+                    android:id="@+id/btn_1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

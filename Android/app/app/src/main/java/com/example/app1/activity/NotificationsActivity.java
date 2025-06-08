@@ -22,8 +22,12 @@ import com.example.app1.adapter.NotificationsAdapter;
 import com.example.app1.utils.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,9 +37,9 @@ public class NotificationsActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     private SessionManager sessionManager;
     private AuthService apiService;
-    private RecyclerView recyclerView;
-    private NotificationsAdapter adapter;
-    private List<Notification> notificationList;
+    private RecyclerView recycler_view_notifications, recycler_view_notifications_old;
+    private NotificationsAdapter adapter, adapterOld;
+    private List<Notification> notificationList, notificationListOld;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -77,16 +81,23 @@ public class NotificationsActivity extends AppCompatActivity {
             }
             return true;
         });
-        recyclerView = findViewById(R.id.recycler_view_notifications);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recycler_view_notifications = findViewById(R.id.recycler_view_notifications);
+        recycler_view_notifications_old = findViewById(R.id.recycler_view_notifications_old);
 
+        recycler_view_notifications.setLayoutManager(new LinearLayoutManager(this));
+        recycler_view_notifications_old.setLayoutManager(new LinearLayoutManager(this));
         // Sample data for testing
         notificationList = new ArrayList<>();
+        notificationListOld = new ArrayList<>();
 
         adapter = new NotificationsAdapter(notificationList);
-        recyclerView.setAdapter(adapter);
-        loadNotifications();
+        recycler_view_notifications.setAdapter(adapter);
 
+        adapterOld = new NotificationsAdapter(notificationListOld);
+        recycler_view_notifications_old.setAdapter(adapterOld);
+
+
+        loadNotifications();
     }
     private void loadNotifications() {
         // Call your API to fetch notifications here
@@ -96,11 +107,27 @@ public class NotificationsActivity extends AppCompatActivity {
             public void onResponse(Call<List<Notification>> call, Response<List<Notification>> response) {
                 if (response.isSuccessful()) {
                     notificationList.clear();
-                    notificationList.addAll(response.body());
-                    notificationList.sort(
-                            (n1, n2) -> n2.getScheduledTime().compareTo(n1.getScheduledTime())
-                    );
+                    notificationListOld.clear();
+                    List<Notification> notifications = response.body();
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+                    Date currentTime = new Date(); // Thời gian hiện tại
+
+
+                    for (Notification notification : notifications) {
+                        try {
+                            Date scheduledTime = sdf.parse(notification.getScheduledTime());
+                            if (scheduledTime.before(currentTime)) {
+                                notificationList.add(notification);
+                            } else {
+                                notificationListOld.add(notification);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     adapter.notifyDataSetChanged();
+                    adapterOld.notifyDataSetChanged();
                 } else {
                     Toast.makeText(NotificationsActivity.this, "Failed to load notifications", Toast.LENGTH_SHORT).show();
                 }

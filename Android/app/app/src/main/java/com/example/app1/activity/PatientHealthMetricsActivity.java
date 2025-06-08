@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.app1.API.ApiClient;
 import com.example.app1.API.AuthService;
@@ -38,11 +40,12 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
     private EditText editRespiratoryRate, editWeightKg, editHeightCm, editBmi;
     private EditText editBloodGlucose, editCholesterolTotal, editLdl, editHdl;
     private EditText editTriglycerides, editHemoglobin, editOtherMetrics;
-
+    private TextView textViewPatientName, textViewPatientPhone,
+            textViewPatientGender, textViewPatientAge, textViewUpdateAt;
     private TextView textInfo;
     private Button btnUpdate, btnResearch;
     private Patient patient_user;
-    private ImageView imageViewBack;
+    private ConstraintLayout button_appointments_exit;
 
     private SessionManager sessionManager;
     private AuthService apiService;
@@ -56,16 +59,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
         initViews();
 
         patient_user = (Patient) getIntent().getSerializableExtra("patient_user");
-        if (patient_user != null) {
-            // Set the patient name in the title bar
-            setTitle("Thông tin sức khỏe của " + patient_user.getFull_name());
-            textInfo.setText("Thông tin sức khỏe của " + patient_user.getFull_name() +
-                    "\nGiới tính: " + patient_user.getGender() + "\nNgày sinh: " +
-                    DateUtils.formatDate2(patient_user.getDate_of_birth()));
-
-        } else {
-            setTitle("Thông tin sức khỏe");
-        }
+        setInfopatient(patient_user);
 
         // Initialize ViewModel
         sessionManager = new SessionManager(this);
@@ -73,18 +67,33 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
         loadPatientHealthMetrics();
 
         btnUpdate.setOnClickListener(v -> updatePatientHealthMetrics());
-        btnResearch.setOnClickListener(v ->
-                researchHealth());
+        btnResearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                researchHealth();
+            }
+        });
 
         setupBmiCalculation(editWeightKg, editHeightCm, editBmi);
-        imageViewBack = findViewById(R.id.imageView_back);
-        imageViewBack.setOnClickListener(v -> {
-            Intent intent = new Intent(PatientHealthMetricsActivity.this, MainActivity.class);
-            startActivity(intent);
+        button_appointments_exit = findViewById(R.id.button_appointments_exit);
+        button_appointments_exit.setOnClickListener(v -> {
             finish();
         });
     }
 
+    private void setInfopatient(Patient patient) {
+        if (patient != null) {
+            textViewPatientName.setText(patient.getFull_name());
+            textViewPatientPhone.setText(patient.getEmail());
+            textViewPatientGender.setText(patient.getGender());
+            textViewPatientAge.setText(DateUtils.formatDate2(patient.getDate_of_birth()));
+        } else {
+            textViewPatientName.setText("N/A");
+            textViewPatientPhone.setText("N/A");
+            textViewPatientGender.setText("N/A");
+            textViewPatientAge.setText("N/A");
+        }
+    }
     private void loadPatientHealthMetrics(){
         String token = sessionManager.getToken();
 
@@ -94,6 +103,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
                 if (response.isSuccessful() && response.body() != null) {
                     patientHealthMetrics = response.body();
                     setPatientHealthMetrics(patientHealthMetrics);
+                    textInfo.setText("Cập nhật lần cuối: " + DateUtils.formatDate1(patientHealthMetrics.getRecorded_at()));
                 } else if (response.code() == 401) {
                     Toast.makeText(PatientHealthMetricsActivity.this, "Unauthorized access", Toast.LENGTH_SHORT).show();
 
@@ -117,6 +127,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
         args.putSerializable("patient_health_metrics", getPatientHealthMetrics());
         researchHealthDetailBottomSheet.setArguments(args);
         researchHealthDetailBottomSheet.show(getSupportFragmentManager(), "ResearchHealthDetailBottomSheet");
+
     }
     private void updatePatientHealthMetrics() {
         String token = sessionManager.getToken();
@@ -130,6 +141,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
                     Toast.makeText(PatientHealthMetricsActivity.this, "Health metrics updated successfully", Toast.LENGTH_SHORT).show();
                     clearForm();
                     setPatientHealthMetrics(patientHealthMetrics);
+                    textInfo.setText("Cập nhật lần cuối: " + DateUtils.formatDate1(patientHealthMetrics.getRecorded_at()));
                 } else {
                     Toast.makeText(PatientHealthMetricsActivity.this, "Failed to update health metrics", Toast.LENGTH_SHORT).show();
                 }
@@ -143,6 +155,12 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
     }
 
     private void initViews() {
+        textViewPatientName = findViewById(R.id.textView_research_patient_name);
+        textViewPatientPhone = findViewById(R.id.textView_research_patient_phone);
+        textViewPatientGender = findViewById(R.id.textView_research_patient_gender);
+        textViewPatientAge = findViewById(R.id.textView_research_patient_dob);
+
+
         textInfo = findViewById(R.id.textView_health__thongTin);
         editSystolicBp = findViewById(R.id.editSystolicBp);
         editDiastolicBp = findViewById(R.id.editDiastolicBp);
@@ -399,6 +417,7 @@ public class PatientHealthMetricsActivity extends AppCompatActivity implements R
         Intent intent = new Intent(PatientHealthMetricsActivity.this, ChatbotActivity.class);
         intent.putExtra("messages", "Đưa ra lời khuyên cho chuẩn đoán trên");
         startActivity(intent);
+        finish();
     }
 
     @Override

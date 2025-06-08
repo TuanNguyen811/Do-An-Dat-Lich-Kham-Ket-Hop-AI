@@ -1,6 +1,7 @@
 package com.example.app1.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,6 +10,8 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private AuthService apiService;
     private static final String TAG = "MainActivity";
-    private TextView name, viewAll_main_departmainent;
+    private TextView name, viewAll_main_departmainent, server;
     public static ImageView imageView_main_Avatar;
     private RecyclerView recyclerView;
     private DepartmentAdapter adapter;
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        setViewID();
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.nav_home) {
@@ -105,15 +108,15 @@ public class MainActivity extends AppCompatActivity {
         //khai báo API, token
         sessionManager = new SessionManager(this);
         apiService = ApiClient.getAuthService(this);
-        name = findViewById(R.id.main_name);
-
+        server.setText("Server: " + ApiClient.getBaseUrl(this));
+        server.setOnClickListener(v -> {
+            showIpInputDialog(MainActivity.this);
+        });
         //khai báo recyclerView và adapter
-        recyclerView = findViewById(R.id.recyclerView_main_department);
         departmentList = new ArrayList<>();
         LinearLayoutManager horizontalLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(horizontalLayoutManager);
 
-        cardView_main_appointment = findViewById(R.id.cardView_main_appointment);
         cardView_main_appointment.setOnClickListener(v -> {
             if (cheackToken()) {
                 Intent intent = new Intent(MainActivity.this, AppointmentActivity.class);
@@ -123,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        viewAll_main_departmainent = findViewById(R.id.viewAll_main_departmainent);
         viewAll_main_departmainent.setOnClickListener(v -> {
             if (cheackToken()) {
                 Intent intent = new Intent(MainActivity.this, ListDepartmentActivity.class);
@@ -131,12 +133,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        imageView_main_Avatar = findViewById(R.id.imageView_main_Avatar);
         imageView_main_Avatar.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
             startActivity(intent);
         });
-        cardView_main_chatbot = findViewById(R.id.cardView_main_chatbot);
         cardView_main_chatbot.setOnClickListener(v -> {
             if (cheackToken()) {
                 Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
@@ -145,14 +145,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        searchView_main = findViewById(R.id.editText_main_chat);
         searchView_main.setOnClickListener(v -> {
             if (cheackToken()) {
                 Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
                 startActivity(intent);
             }
         });
-        cardView_main_PatientHealthMetrics = findViewById(R.id.cardView_main_PatientHealthMetrics);
         cardView_main_PatientHealthMetrics.setOnClickListener(v -> {
             if (cheackToken()) {
                 Intent intent = new Intent(MainActivity.this, PatientHealthMetricsActivity.class);
@@ -164,11 +162,12 @@ public class MainActivity extends AppCompatActivity {
         searchView_main.setFocusable(false);
         searchView_main.setFocusableInTouchMode(false);
         // If intro has been shown, proceed with setting the content view
+
         loadUserProfile();
         downloadAvatar();
         loadDepartments();
         loadPatientHealthMetrics();
-        headerLayout = findViewById(R.id.headerLayout);
+
         headerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,6 +179,43 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void setViewID(){
+        server = findViewById(R.id.textView_main_server);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        name = findViewById(R.id.main_name);
+        recyclerView = findViewById(R.id.recyclerView_main_department);
+        cardView_main_appointment = findViewById(R.id.cardView_main_appointment);
+        viewAll_main_departmainent = findViewById(R.id.viewAll_main_departmainent);
+        imageView_main_Avatar = findViewById(R.id.imageView_main_Avatar);
+        cardView_main_chatbot = findViewById(R.id.cardView_main_chatbot);
+        searchView_main = findViewById(R.id.editText_main_chat);
+        cardView_main_PatientHealthMetrics = findViewById(R.id.cardView_main_PatientHealthMetrics);
+        headerLayout = findViewById(R.id.headerLayout);
+    }
+    public void showIpInputDialog(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Nhập địa chỉ IP server");
+
+        final EditText input = new EditText(context);
+
+        String BASE_URL = ApiClient.getBaseUrl(context);
+
+        input.setText(BASE_URL);
+        builder.setView(input);
+        builder.setPositiveButton("Lưu", (dialog, which) -> {
+            String ip = input.getText().toString().trim();
+            if (!ip.isEmpty()) {
+                // Lưu IP vào SharedPreferences
+                ApiClient.setBaseUrl(context, ip);
+                server.setText("Server: " + ip);
+                apiService = ApiClient.getAuthService(context);
+                Toast.makeText(context, "Đã lưu IP: " + ip, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
     private boolean cheackToken() {
         String token = sessionManager.getToken();
         if (token == null || token.isEmpty()) {
@@ -370,9 +406,21 @@ public class MainActivity extends AppCompatActivity {
                 bloodPressureValue.setText("--/--");
             }
 
+            Double bmi = calculateBmi(patientHealthMetrics.getWeight_kg(), patientHealthMetrics.getHeight_cm());
+
             // Cập nhật giá trị BMI
-            if (patientHealthMetrics.getBmi() != null && patientHealthMetrics.getBmi() != 0.0) {
+            if (bmi != null && bmi > 0) {
                 bmiValue.setText(String.format(Locale.US, "%.1f", patientHealthMetrics.getBmi()));
+                // Thay đổi màu sắc của giá trị BMI dựa trên ngưỡng
+                if (patientHealthMetrics.getBmi() < 18.5) {
+                    bmiValue.setTextColor(Color.parseColor("#FF0000"));
+                } else if (patientHealthMetrics.getBmi() >= 18.5 && patientHealthMetrics.getBmi() < 24.9) {
+                    bmiValue.setTextColor(Color.parseColor("#00FF00"));
+                } else if (patientHealthMetrics.getBmi() >= 25 && patientHealthMetrics.getBmi() < 29.9) {
+                    bmiValue.setTextColor(Color.parseColor("#FFA500"));
+                } else {
+                    bmiValue.setTextColor(Color.parseColor("#FF0000"));
+                }
             } else {
                 bmiValue.setText("--");
             }
@@ -418,10 +466,27 @@ public class MainActivity extends AppCompatActivity {
             Button btnViewFullMetrics = findViewById(R.id.btn_view_full_metrics);
             btnViewFullMetrics.setOnClickListener(v -> {
                 Intent intent = new Intent(MainActivity.this, PatientHealthMetricsActivity.class);
+                intent.putExtra("patient_user", patient_user);
                 startActivity(intent);
             });
         }else {
 
+        }
+    }
+    private Double calculateBmi(Double weightKg,  Double heightCm ) {
+        // Kiểm tra giá trị hợp lệ
+        if (weightKg > 0 && heightCm > 0) {
+            // Chuyển chiều cao từ cm sang m
+            Double heightM = heightCm / 100f;
+
+            // Tính BMI = cân nặng (kg) / (chiều cao (m) * chiều cao (m))
+            Double bmi = weightKg / (heightM * heightM);
+
+            // Định dạng BMI với 2 chữ số thập phân, sử dụng Locale.US để đảm bảo dùng dấu chấm
+            String formattedBmi = String.format(Locale.US, "%.2f", bmi);
+            return bmi;
+        } else {
+            return 0.0d; // Trả về 0 nếu giá trị không hợp lệ
         }
     }
     @Override

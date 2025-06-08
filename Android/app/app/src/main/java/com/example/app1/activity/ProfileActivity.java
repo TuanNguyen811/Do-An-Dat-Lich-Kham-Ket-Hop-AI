@@ -107,7 +107,6 @@ public class ProfileActivity extends AppCompatActivity implements UpdateProfileB
         textViewInsuranceId = findViewById(R.id.profile_textViewinsurance_id);
         // Set button click listeners
         button_profile_exit.setOnClickListener(v -> {
-            startActivity(new Intent(ProfileActivity.this, MainActivity.class));
             finish();
         });
 

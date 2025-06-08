@@ -177,26 +177,21 @@ public class AppointmentsActivity extends AppCompatActivity {
         AppointmentDetailBottomSheet bottomSheet = AppointmentDetailBottomSheet.newInstance(appointment);
         bottomSheet.setOnAppointmentActionListener(new AppointmentDetailBottomSheet.OnAppointmentActionListener() {
             @Override
-            public void onCancelAppointment(Appointment appointment) {
+            public void onBtn1(Appointment appointment) {
                 // Handle cancel appointment action
-                if (appointment.getStatus().equals("Cancelled")){
-                    updateAppointments(appointment, "Scheduled");
-                }else if(appointment.getStatus().equals("Scheduled")){
+                if (appointment.getStatus().equals("Scheduled")){
                     updateAppointments(appointment, "Cancelled");
-                }else {
+                }else if(appointment.getStatus().equals("Completed")){
 
+                }else if(appointment.getStatus().equals("Cancelled")){
+                    deteleAppointment(appointment);
                 }
             }
 
             @Override
-            public void onRescheduleAppointment(Appointment appointment) {
-
-                if(appointment.getStatus().equals("Cancelled")){
-                    deteleAppointment(appointment);
-                }
-                // Handle reschedule appointment action
-               // showRescheduleDialog(appointment);
-               // updateAppointments(appointment, "Cancelled");
+            public void onBtn2(Appointment appointment) {
+                Intent intent = new Intent(AppointmentsActivity.this, AppointmentActivity.class);
+                startActivity(intent);
             }
         });
         bottomSheet.show(getSupportFragmentManager(), "AppointmentDetailBottomSheet");

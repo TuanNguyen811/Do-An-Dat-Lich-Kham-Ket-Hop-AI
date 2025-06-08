@@ -11,6 +11,9 @@ from crud import get_user_by_email
 
 from datetime import timedelta
 
+from app.Email.email_utils import send_otp_email
+
+
 class EmailRequest(BaseModel):
     email: EmailStr
 
@@ -35,15 +38,14 @@ def send_otp(request: EmailRequest, db: Session = Depends(deps.get_db)):
     if not result_user: #Khong co email duoi database
         raise HTTPException(status_code=404, detail="Email khong ton tai.")
 
-    #Ton tai thi tao OTP
-
     #Tao OTP va ma hoa
     opt = generate_otp()
     opt_hashed = get_password_hash(opt)
 
     #Gui otp qua email
-    send_otp_utils(receiver_email=request.email, otp_code=opt)
+    #send_otp_utils(receiver_email=request.email, otp_code=opt)
 
+    send_otp_email(receiver_email=request.email, otp_code=opt)
 
     #Luu ma OTP da hash vao truong password_hash
     update_password_hash_with_email(db, otp_hash=opt_hashed, email=request.email)
@@ -74,7 +76,8 @@ def send_password_reset_otp(request: EmailRequest, db: Session = Depends(deps.ge
             raise HTTPException(status_code=500, detail=f"Lỗi khi lưu OTP {e}")
 
         # Gửi email với OTP
-        send_otp_utils(receiver_email=request.email, otp_code=otp)
+        #send_otp_utils(receiver_email=request.email, otp_code=otp)
+        send_otp_email(receiver_email=request.email, otp_code=otp, full_name=dict(user._mapping).get("full_name"))
 
         return {"message": "Password reset OTP sent to your email"}
 

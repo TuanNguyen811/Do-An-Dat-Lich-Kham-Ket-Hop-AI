@@ -24,21 +24,48 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingEnd="16dp"
-                android:src="@drawable/back"
-                app:tint="@color/white" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/button_appointments_exit"
+                android:layout_width="56dp"
+                android:layout_height="65dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView3appointments"
+                    android:layout_width="29dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/back"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="4dp"
+                android:gravity="center"
                 android:text="Bác sĩ ảo A.I"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="220dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="8dp"
+                android:padding="6dp"
+                android:scaleType="fitEnd"
+                app:srcCompat="@drawable/gemini_color"
+                tools:srcCompat="@drawable/gemini_color" />
         </LinearLayout>
 
     </androidx.appcompat.widget.Toolbar>

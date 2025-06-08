@@ -35,6 +35,8 @@ def create_appointment2(
 
     # Create appointment
     result_id = crud.create_appointment(db=db, appointment=appointment)
+
+
     if not result_id:
         raise HTTPException(status_code=500, detail="Failed to create appointment")
 
@@ -276,6 +278,7 @@ def delete_appointment(
 
     # Delete the appointment
     deleted_appointment = crud.delete_appointment(db, appointment_id=appointment_id)
+
     if not deleted_appointment:
         raise HTTPException(status_code=500, detail="Failed to delete appointment")
 

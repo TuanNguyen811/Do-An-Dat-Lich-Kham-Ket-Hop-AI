@@ -167,7 +167,7 @@ public class AppointmentsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Appointment>> call, Throwable t) {
+            public void onFailure(Call<List<Appointment>> call, Throwable t) { 
                 Toast.makeText(AppointmentsActivity.this, "E: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

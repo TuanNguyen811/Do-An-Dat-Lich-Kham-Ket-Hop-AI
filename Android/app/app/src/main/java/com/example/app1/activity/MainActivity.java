@@ -171,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         headerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                loadUserProfile();
                 downloadAvatar();
                 loadDepartments();
                 loadPatientHealthMetrics();

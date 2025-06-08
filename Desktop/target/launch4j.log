@@ -1,0 +1,37 @@
+
+
+Version:	3.50
+CmdLine:	D:\Do-An-2\DoAn\Do-An-Dat-Lich-Kham-Ket-Hop-AI\Desktop\target\Desktop-1.0-SNAPSHOT.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	D:\Do-An-2\DoAn\Do-An-Dat-Lich-Kham-Ket-Hop-AI\Desktop\target\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	1.017.000
+Java max ver:	1.022.000
+Substitute:	JAVA_HOME = D:\Programfile123\jdk23
+Substitute:	PATH = C:\Program Files\swipl\bin;D:\Programfile123\vmware\bin\;C:\Users\admin\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages;C:\msys64\mingw64\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files\Microsoft MPI\Bin\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\160\Tools\Binn\;C:\Program Files\Microsoft SQL Server\160\Tools\Binn\;C:\Program Files\Microsoft SQL Server\160\DTS\Binn\;C:\Program Files\Java\jdk-22\bin;D:\Programfile123\apache-maven-3.9.9\bin;D:\Programfile123\jdk23\bin;D:\Programfile123\sqlite-tools-win-x64-3490100\sqlite3;C:\Program Files\Git\cmd;C:\msys64a\mingw64\bin;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Users\admin\.dotnet\tools;C:\msys64\mingw64\bin;D:\Programfile123\Microsoft VS Code\bin;D:\Programfile123\IntelliJ IDEA Community Edition 2024.3.3\bin;;D:\Programfile123\IntelliJ IDEA 2024.3.3\bin;;D:\Programfile123\PyCharm 2024.3.4-2\bin;C:\msys64a\mingw64\bin;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Azure Data Studio\bin;C:\msys64\mingw64\bin;D:\Programfile123\Microsoft VS Code\bin;D:\Programfile123\IntelliJ IDEA Community Edition 2024.3.3\bin;;D:\Programfile123\IntelliJ IDEA 2024.3.3\bin;;D:\Programfile123\PyCharm 2024.3.4-2\bin;;C:\Users\admin\AppData\Local\GitHubDesktop\bin;C:\apktool;C:\msys64a\mingw64\bin;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Azure Data Studio\bin;C:\msys64\mingw64\bin;D:\Programfile123\Microsoft VS Code\bin;D:\Programfile123\IntelliJ IDEA Community Edition 2024.3.3\bin;;D:\Programfile123\IntelliJ IDEA 2024.3.3\bin;;D:\Programfile123\PyCharm 2024.3.4-2\bin;;C:\Users\admin\AppData\Local\GitHubDesktop\bin;C:\maven\apache-maven-3.9.9-bin (1)\apache-maven-3.9.9\bin;C:\Users\admin\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\admin\AppData\Local\Programs\Python\Python39\;C:\Users\admin\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\admin\AppData\Local\Programs\Python\Python310\;C:\msys64a\mingw64\bin;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Azure Data Studio\bin;C:\msys64\mingw64\bin;D:\Programfile123\Microsoft VS Code\bin;D:\Programfile123\IntelliJ IDEA Community Edition 2024.3.3\bin;;D:\Programfile123\IntelliJ IDEA 2024.3.3\bin;;D:\Programfile123\PyCharm 2024.3.4-2\bin;;C:\Users\admin\AppData\Local\GitHubDesktop\bin;D:\Programfile123\jdk23\bin
+JRE paths:	D:\Programfile123\jdk23;C:\Program Files\swipl\bin;D:\Programfile123\vmware\bin\;C:\Users\admin\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages;C:\msys64\mingw64\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files\Microsoft MPI\Bin\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\;C:\Program Files (x86)\Microsoft SQL Server\160\Tools\Binn\;C:\Program Files\Microsoft SQL Server\160\Tools\Binn\;C:\Program Files\Microsoft SQL Server\160\DTS\Binn\;C:\Program Files\Java\jdk-22\bin;D:\Programfile123\apache-maven-3.9.9\bin;D:\Programfile123\jdk23\bin;D:\Programfile123\sqlite-tools-win-x64-3490100\sqlite3;C:\Program Files\Git\cmd;C:\msys64a\mingw64\bin;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Users\admin\.dotnet\tools;C:\msys64\mingw64\bin;D:\Programfile123\Microsoft VS Code\bin;D:\Programfile123\IntelliJ IDEA Community Edition 2024.3.3\bin;;D:\Programfile123\IntelliJ IDEA 2024.3.3\bin;;D:\Programfile123\PyCharm 2024.3.4-2\bin;C:\msys64a\mingw64\bin;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Azure Data Studio\bin;C:\msys64\mingw64\bin;D:\Programfile123\Microsoft VS Code\bin;D:\Programfile123\IntelliJ IDEA Community Edition 2024.3.3\bin;;D:\Programfile123\IntelliJ IDEA 2024.3.3\bin;;D:\Programfile123\PyCharm 2024.3.4-2\bin;;C:\Users\admin\AppData\Local\GitHubDesktop\bin;C:\apktool;C:\msys64a\mingw64\bin;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Azure Data Studio\bin;C:\msys64\mingw64\bin;D:\Programfile123\Microsoft VS Code\bin;D:\Programfile123\IntelliJ IDEA Community Edition 2024.3.3\bin;;D:\Programfile123\IntelliJ IDEA 2024.3.3\bin;;D:\Programfile123\PyCharm 2024.3.4-2\bin;;C:\Users\admin\AppData\Local\GitHubDesktop\bin;C:\maven\apache-maven-3.9.9-bin (1)\apache-maven-3.9.9\bin;C:\Users\admin\AppData\Local\Programs\Python\Python39\Scripts\;C:\Users\admin\AppData\Local\Programs\Python\Python39\;C:\Users\admin\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\admin\AppData\Local\Programs\Python\Python310\;C:\msys64a\mingw64\bin;C:\Users\admin\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Azure Data Studio\bin;C:\msys64\mingw64\bin;D:\Programfile123\Microsoft VS Code\bin;D:\Programfile123\IntelliJ IDEA Community Edition 2024.3.3\bin;;D:\Programfile123\IntelliJ IDEA 2024.3.3\bin;;D:\Programfile123\PyCharm 2024.3.4-2\bin;;C:\Users\admin\AppData\Local\GitHubDesktop\bin;D:\Programfile123\jdk23\bin
+Check launcher:	D:\Programfile123\jdk23\bin\javaw.exe (OK)
+Version string: 1.023.000_002 / 64-Bit (Ignore)
+Check launcher:	C:\Program Files\swipl\bin\javaw.exe (not found)
+Check launcher:	D:\Programfile123\vmware\bin\bin\javaw.exe (not found)
+Check launcher:	C:\Users\admin\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\bin\javaw.exe (not found)
+Check launcher:	C:\msys64\mingw64\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Common Files\Oracle\Java\javapath\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Microsoft MPI\Bin\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\system32\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\System32\Wbem\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\System32\WindowsPowerShell\v1.0\bin\javaw.exe (not found)
+Check launcher:	C:\WINDOWS\System32\OpenSSH\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files (x86)\Microsoft SQL Server\160\Tools\Binn\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Microsoft SQL Server\160\Tools\Binn\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Microsoft SQL Server\160\DTS\Binn\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Java\jdk-22\bin\javaw.exe (OK)
+Version string: 1.022.000 / 64-Bit (OK)
+Launcher:	C:\Program Files\Java\jdk-22\bin\javaw.exe
+Launcher args:	-jar "D:\Do-An-2\DoAn\Do-An-Dat-Lich-Kham-Ket-Hop-AI\Desktop\target\Desktop-1.0-SNAPSHOT.exe"
+Args length:	93/32768 chars
+Exit code:	0

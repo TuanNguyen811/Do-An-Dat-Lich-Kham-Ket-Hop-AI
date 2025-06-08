@@ -193,6 +193,7 @@ def create_appointment(db: Session, appointment: schemas.AppointmentCreate):
     db.commit()
 
     appointment_id = db.execute(text("SELECT LAST_INSERT_ID()")).scalar()
+
     return appointment_id
 
 

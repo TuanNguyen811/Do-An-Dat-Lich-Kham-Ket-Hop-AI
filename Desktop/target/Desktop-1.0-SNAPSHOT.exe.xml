@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>D:\Do-An-2\DoAn\Do-An-Dat-Lich-Kham-Ket-Hop-AI\Desktop\target\Desktop-1.0-SNAPSHOT-jar-with-dependencies.jar</jar>
+  <outfile>D:\Do-An-2\DoAn\Do-An-Dat-Lich-Kham-Ket-Hop-AI\Desktop\target\Desktop-1.0-SNAPSHOT.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl></downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon></icon>
+  <jre>
+    <path>%JAVA_HOME%;%PATH%</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>false</requires64Bit>
+    <minVersion>17</minVersion>
+    <maxVersion>22</maxVersion>
+  </jre>
+</launch4jConfig>

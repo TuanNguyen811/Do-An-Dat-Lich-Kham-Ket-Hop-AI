@@ -149,6 +149,8 @@ public class AppointmentActivity extends AppCompatActivity implements SelectDepa
             @Override
             public void onClick(View view) {
                 createAppointment();
+                appointment.setEnabled(false);
+                appointment.setVisibility(View.GONE);
             }
         });
         button_appointments_exit.setOnClickListener(new View.OnClickListener() {

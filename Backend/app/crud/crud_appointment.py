@@ -1,12 +1,12 @@
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+import time
 
 import schemas
 import crud
 
 from typing import Optional, Dict, Any, List
 from datetime import datetime
-
 
 # Appointment CRUD operations
 def get_appointment(db: Session, appointment_id: int):
@@ -192,10 +192,11 @@ def create_appointment(db: Session, appointment: schemas.AppointmentCreate):
     )
     db.commit()
 
+    # ... after db.commit()
+    #time.sleep(0.3)
+
     appointment_id = db.execute(text("SELECT LAST_INSERT_ID()")).scalar()
-
     return appointment_id
-
 
 def update_appointment(db: Session, appointment_id: int, appointment_data: Dict[str, Any]):
     # First check if appointment exists

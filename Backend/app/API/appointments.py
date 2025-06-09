@@ -10,7 +10,7 @@ from Email.email_utils import send_otp_utils
 from Oauth import deps
 from crud import crud_appointment, crud_DoctorSchedule
 
-from app.Email.email_utils import send_appointment_email
+from Email.email_utils import send_appointment_email
 
 router = APIRouter(prefix="", tags=["appointments"])
 
@@ -41,7 +41,6 @@ def create_appointment2(
         raise HTTPException(status_code=500, detail="Failed to create appointment")
 
     #send_otp_utils(current_user.get("email"), "Cam on da dat toi")
-
     send_appointment_email(db, result_id)
 
     return {"message": "Appointment created successfully"}
@@ -254,6 +253,7 @@ def update_appointment_status(
         raise HTTPException(status_code=500, detail="Failed to update appointment status")
 
     send_appointment_email(db, appointment_id)
+
     return {"message": "Appointment status updated successfully", "appointment_id": appointment_id, "status": status}
 
 @router.delete("/appointments/{appointment_id}", response_model=Dict[str, Any])

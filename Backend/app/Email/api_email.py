@@ -11,7 +11,7 @@ from crud import get_user_by_email
 
 from datetime import timedelta
 
-from app.Email.email_utils import send_otp_email
+from Email.email_utils import send_otp_email
 
 
 class EmailRequest(BaseModel):

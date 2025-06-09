@@ -550,7 +550,7 @@
                   <Component id="jLabel16" min="-2" pref="242" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel_ngayhientai" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="361" max="32767" attributes="0"/>
+                  <EmptySpace pref="349" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jLabel_admin_name" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel_admin_email" min="-2" max="-2" attributes="0"/>

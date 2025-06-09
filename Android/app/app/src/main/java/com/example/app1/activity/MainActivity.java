@@ -413,15 +413,15 @@ public class MainActivity extends AppCompatActivity {
             if (bmi != null && bmi > 0) {
                 bmiValue.setText(String.format(Locale.US, "%.1f", patientHealthMetrics.getBmi()));
                 // Thay đổi màu sắc của giá trị BMI dựa trên ngưỡng
-                if (patientHealthMetrics.getBmi() < 18.5) {
-                    bmiValue.setTextColor(Color.parseColor("#FF0000"));
-                } else if (patientHealthMetrics.getBmi() >= 18.5 && patientHealthMetrics.getBmi() < 24.9) {
-                    bmiValue.setTextColor(Color.parseColor("#00FF00"));
-                } else if (patientHealthMetrics.getBmi() >= 25 && patientHealthMetrics.getBmi() < 29.9) {
-                    bmiValue.setTextColor(Color.parseColor("#FFA500"));
-                } else {
-                    bmiValue.setTextColor(Color.parseColor("#FF0000"));
-                }
+//                if (patientHealthMetrics.getBmi() < 18.5) {
+//                    bmiValue.setTextColor(Color.parseColor("#FF0000"));
+//                } else if (patientHealthMetrics.getBmi() >= 18.5 && patientHealthMetrics.getBmi() < 24.9) {
+//                    bmiValue.setTextColor(Color.parseColor("#00FF00"));
+//                } else if (patientHealthMetrics.getBmi() >= 25 && patientHealthMetrics.getBmi() < 29.9) {
+//                    bmiValue.setTextColor(Color.parseColor("#FFA500"));
+//                } else {
+//                    bmiValue.setTextColor(Color.parseColor("#FF0000"));
+//                }
             } else {
                 bmiValue.setText("--");
             }

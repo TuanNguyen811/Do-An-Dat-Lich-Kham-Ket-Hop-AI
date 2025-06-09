@@ -72,7 +72,6 @@ def get_doctors(
 
     return doctors
 
-
 @router.get("/doctors/{doctor_id}", response_model=Dict[str, Any])
 def get_doctor(
         doctor_id: int,
@@ -121,8 +120,6 @@ def update_doctor_me(
         raise HTTPException(status_code=404, detail="Doctor not found")
 
     return {"message": "Doctor updated successfully", "doctor_id": updated_doctor["doctor_id"]}
-
-
 
 @router.delete("/doctors/{doctor_id}", response_model=dict)
 def delete_doctor(

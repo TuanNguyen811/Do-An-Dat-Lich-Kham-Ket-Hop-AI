@@ -65,7 +65,16 @@ public class ForgetPassswordActivity extends AppCompatActivity {
         authService = ApiClient.getAuthService(this);
 
         // Send OTP button click
-        btnSendOtp.setOnClickListener(v -> sendOtp());
+        btnSendOtp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendOtp();
+                btnSendOtp.setVisibility(View.GONE);
+//                etOtp.setVisibility(View.VISIBLE);
+//                etNewPassword.setVisibility(View.VISIBLE);
+//                btnResetPassword.setVisibility(View.VISIBLE);
+            }
+        });
 
         // Reset Password button click
         btnResetPassword.setOnClickListener(v -> resetPassword());
@@ -110,7 +119,6 @@ public class ForgetPassswordActivity extends AppCompatActivity {
             Toast.makeText(this, "OTP and new password are required", Toast.LENGTH_SHORT).show();
             return;
         }
-
         authService.verifyOtp(new VerifyOtpRequest(email, otp, newPassword)).enqueue(new Callback<TokenResponse>() {
             @Override
             public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {

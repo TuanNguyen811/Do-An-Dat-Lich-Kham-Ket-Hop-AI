@@ -1096,7 +1096,7 @@ public class DoctorHome extends javax.swing.JFrame {
                                     int max = dayData.getMax_appointments().get(slot);
                                     int count = dayData.getAppointment_counts().get(slot);
 
-                                    row.add("Đặt: " + count + "\\" + max); // VD: 10\0
+                                    row.add(count + "\\" + max); // VD: 10\0
                                 }
 
                                 // Thêm dòng vào bảng

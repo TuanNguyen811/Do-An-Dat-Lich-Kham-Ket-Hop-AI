@@ -103,6 +103,7 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
         TextView tvPatientDateOfBirth = view.findViewById(R.id.textView_patient_dob);
         TextView tvPatientGender = view.findViewById(R.id.textView_patient_gender);
         TextView tvNotes = view.findViewById(R.id.textView_appointment_notes);
+        TextView textView_thoigiandat = view.findViewById(R.id.textView_thoigiandat);
         Button btn1 = view.findViewById(R.id.btn_1);
         Button btn2 = view.findViewById(R.id.btn_2);
 
@@ -122,6 +123,8 @@ public class AppointmentDetailBottomSheet extends BottomSheetDialogFragment {
         tvDateTime.setText(dateTimeText);
         tvDepartment.setText(appointment.getDepartmentName());
         tvDoctor.setText("BS. " + appointment.getDoctorName());
+        textView_thoigiandat.setText(appointment.getCreated_at() != null && !appointment.getCreated_at().isEmpty() ?
+                "Thời gian đặt: " + DateUtils.formatDate1(appointment.getCreated_at()) : "Không có dữ liệu");
 
         String BASE_URL = ApiClient.getBaseUrl(requireContext());
 

@@ -338,6 +338,12 @@
             </androidx.cardview.widget.CardView>
 
             <!-- Action Buttons -->
+            <TextView
+                android:id="@+id/textView_thoigiandat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thời gian đặt:" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

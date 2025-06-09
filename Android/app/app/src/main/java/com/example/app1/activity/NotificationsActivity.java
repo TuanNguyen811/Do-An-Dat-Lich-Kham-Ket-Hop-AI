@@ -96,7 +96,6 @@ public class NotificationsActivity extends AppCompatActivity {
         adapterOld = new NotificationsAdapter(notificationListOld);
         recycler_view_notifications_old.setAdapter(adapterOld);
 
-
         loadNotifications();
     }
     private void loadNotifications() {
@@ -112,6 +111,17 @@ public class NotificationsActivity extends AppCompatActivity {
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
                     Date currentTime = new Date(); // Thời gian hiện tại
+
+                    notifications.sort((Notification n1, Notification n2) -> {
+                        try {
+                            Date date1 = sdf.parse(n1.getScheduledTime());
+                            Date date2 = sdf.parse(n2.getScheduledTime());
+                            return date1.compareTo(date2);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            return 0; // Nếu có lỗi, không thay đổi thứ tự
+                        }
+                    });
 
 
                     for (Notification notification : notifications) {

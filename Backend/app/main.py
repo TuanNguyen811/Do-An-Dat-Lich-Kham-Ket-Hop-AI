@@ -58,16 +58,16 @@ AVATAR_DIR = os.path.join(os.getcwd(), "data", "avatars")
 os.makedirs(AVATAR_DIR, exist_ok=True)
 app.mount("/avatars", StaticFiles(directory=AVATAR_DIR), name="avatars")
 
-# Khởi tạo scheduler
-scheduler = BackgroundScheduler()
-scheduler.start()
-
-# Đảm bảo shutdown scheduler khi chương trình kết thúc
-try:
-    # Chạy các logic khác ở đây
-    pass
-finally:
-    scheduler.shutdown()
+# # Khởi tạo scheduler
+# scheduler = BackgroundScheduler()
+# scheduler.start()
+#
+# # Đảm bảo shutdown scheduler khi chương trình kết thúc
+# try:
+#     # Chạy các logic khác ở đây
+#     pass
+# finally:
+#     scheduler.shutdown()
 
 
 # Root endpoint

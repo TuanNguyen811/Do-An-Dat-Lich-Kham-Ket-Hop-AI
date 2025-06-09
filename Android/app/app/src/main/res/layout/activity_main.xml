@@ -643,7 +643,8 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="24dp"
                             android:layout_marginEnd="20dp"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:visibility="gone">
 
                             <TextView
                                 android:id="@+id/healthInfo"
@@ -667,6 +668,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?android:attr/selectableItemBackground"
+                            android:visibility="gone"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="4dp">
 
@@ -717,6 +719,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?android:attr/selectableItemBackground"
+                            android:visibility="gone"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="4dp">
 
@@ -767,6 +770,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?android:attr/selectableItemBackground"
+                            android:visibility="gone"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="4dp">
 
@@ -817,6 +821,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?android:attr/selectableItemBackground"
+                            android:visibility="gone"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="4dp">
 
@@ -867,6 +872,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:foreground="?android:attr/selectableItemBackground"
+                            android:visibility="gone"
                             app:cardCornerRadius="16dp"
                             app:cardElevation="4dp">
 

@@ -114,12 +114,6 @@ uvicorn main:app --reload
 - Hỗ trợ đa ngôn ngữ, nền tảng Web/iOS.
 
 ---
-
-## 📎 Tài Liệu & Demo
-
-- 📘 Báo cáo: [`Bao_cao_nhom2.pdf`](./Bao_cao_nhom2.pdf)
-- 📊 Slide: [`Slide_nhom2.pdf`](./Slide_nhom2.pdf)
-
 ---
 
 ## ✅ Tác Giả

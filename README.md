@@ -3,7 +3,7 @@
 > Đồ án môn Nhập môn Công nghệ Phần mềm – Học viện Công nghệ Bưu chính Viễn thông
 
 Ứng dụng hỗ trợ bệnh nhân đặt lịch khám bệnh, theo dõi sức khỏe cá nhân và nhận tư vấn thông minh từ AI. Dự án gồm hệ thống **Android App cho bệnh nhân**, **Desktop App cho bác sĩ & Admin**, và **Backend** xử lý nghiệp vụ.
-
+video demo: https://youtu.be/qG-ZNh1VEDI?si=BJ_4-__BBDuzU-lu
 ---
 
 ## 🚀 Tính Năng Chính
